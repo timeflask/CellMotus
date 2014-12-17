@@ -1,0 +1,11 @@
+gameSettingsLua
+.project
+.cproject
+Makefile
+CMakeCache*
+CMakeFiles
+cmake_install.cmake
+bin
+*~
+src/core/test
+
