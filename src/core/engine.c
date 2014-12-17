@@ -33,7 +33,7 @@ static double           g_prev_dt = 0.0f;
 static float            fps_accumulator = 0.0;
 static int              frames = 0;
 static int              g_drop_dt = 1;
-static float            dt = 0.0f;
+static double           dt = 0;
 static const float      FPS_INTERVAL = 1.5f;
 
 extern char* g_assetsRoot;
