@@ -66,7 +66,7 @@ return {
     msStart = "START",
     msStart2 = "[choose level] screen",
     msSettings = "SETTINGS",
-    msSettings2 = "sounds, colors, et cetera",
+    msSettings2 = "sounds, colors et cetera",
     msContinue = "CONTINUE",
     msContinue2 = "game from current level",
     msQuit = "QUIT",
@@ -90,6 +90,7 @@ return {
     osAboutL2          = "COPYRIGHT [c] TIME FLASK 2014",
     osAboutL3          = "PLATFORM: ",
     
+    utf8test = "",
   },
   
 }
