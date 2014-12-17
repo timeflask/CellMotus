@@ -84,12 +84,21 @@ ffi.cdef[[
       };
   } vec3;
     
+  typedef struct input_point {
+  
+    double x;
+    double y;
+    double z;
+    double w;
+  
+  } input_point;
+    
   typedef struct touch_t {
     int    id;
     int    has_start;
-    vec4   start;
-    vec4   point;
-    vec4   prev;
+    input_point   start;
+    input_point   point;
+    input_point   prev;
   }touch_t;
     
   float sen_fps();

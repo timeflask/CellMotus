@@ -1,16 +1,18 @@
-#include <time.h>
 #include "hrtimer.h"
 #include "macro.h"
+#include <sys/time.h>
 
 
-typedef struct timespec timespec;
+//typedef struct timespec timespec;
 
-float sen_timer_now() {
-  timespec now;
-  clock_gettime(CLOCK_MONOTONIC, &now);
-  return (float)(now.tv_sec*1000000000ull + now.tv_nsec)  * 0.000000001f;
+double sen_timer_now() {
+  struct timeval now;
+  if (gettimeofday(&now, NULL) != 0) return 0;
+
+//  clock_gettime(CLOCK_REALTIME, &now);
+  return (double)now.tv_sec +  (now.tv_usec/ 1000000.0f);
 }
-
+/*
 void sen_timer_restart(sen_timer_t *t) {
   t->T = 0.0f;
   t->dT = 0.0f;
@@ -25,3 +27,4 @@ float sen_timer_update(sen_timer_t *t) {
   return t->dT;
 }
 
+*/

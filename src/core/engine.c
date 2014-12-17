@@ -19,7 +19,7 @@
 #include "shapes.h"
 #include "audio.h"
 #include "image.h"
-#include <sys/time.h>
+//#include <sys/time.h>
 //#include <time.h>
 
 
@@ -28,7 +28,8 @@ static float            g_fps = 0.0f;
 static camera_t*        g_camera  = NULL;
 static scheduler_t*     g_scheduler = NULL;
 extern scene_t*         g_scene;
-static struct timeval * g_last_dt = NULL;
+//static struct timeval * g_last_dt = NULL;
+static double           g_prev_dt = 0.0f;
 static float            fps_accumulator = 0.0;
 static int              frames = 0;
 static int              g_drop_dt = 1;
@@ -166,7 +167,7 @@ sen_init(float w, float h)
   g_camera = sen_camera_new("mainCamera");
   g_scheduler = sen_scheduler_new("mainScheduler");
 
-  g_last_dt = malloc(sizeof(struct timeval));
+  //g_last_dt = malloc(sizeof(struct timeval));
 
   sen_signal_connect_name("platform", "reload", &on_reload, "engine");
   sen_signal_connect_name("platform", "enterBackground", &on_bg, "engine");
@@ -204,7 +205,7 @@ void sen_destroy() {
 
   if (g_assetsRoot) free(g_assetsRoot);
 
-  free(g_last_dt);
+  //free(g_last_dt);
   g_status = SEN_STATUS_DEAD;
 }
 
@@ -234,15 +235,9 @@ static void show_stats()
 static scene_t* prev = NULL;
 void sen_process()
 {
+  double now = sen_timer_now();
+
   if ((g_status&SEN_STATUS_STOPPED) || g_status == SEN_STATUS_DEAD) return;
-
-  struct timeval now;
-
-  if (gettimeofday(&now, NULL) != 0)
-  {
-      dt = 0;
-      return;
-  }
 
   if (g_drop_dt) {
     g_drop_dt = 0;
@@ -250,9 +245,9 @@ void sen_process()
   }
   else
   {
-    dt = (now.tv_sec - g_last_dt->tv_sec) + (now.tv_usec - g_last_dt->tv_usec) / 1000000.0f;
-    dt = max(0, dt);
+    dt = max(0, now - g_prev_dt);
   }
+
 
 #ifdef SEN_DEBUG
   if (dt > 0.25)
@@ -261,8 +256,7 @@ void sen_process()
   if (dt > 0.25)
     dt = 0.25;
 #endif
-  *g_last_dt = now;
-
+  g_prev_dt = now;
   if (dt < F_EPSILON) return;
 
   node_t* cam = (node_t*)sen_camera();

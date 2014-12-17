@@ -12,15 +12,15 @@ typedef struct scheduler_entry_t
 {
   object_t*                 node;
   scheduler_update_callback callback;
-  float                     interval;
+  double                    interval;
   int                       repeat;
-  float                     delay;
+  double                    delay;
   int                       pause;
   //------------------------------
   int                       bEveryFrame;
   int                       bUseDelay;
   int                       bRunForever;
-  float                     elapsed;
+  double                    elapsed;
   int                       execTimes;
   //-------------------------------
   int                       markedForDeath;
@@ -35,9 +35,9 @@ scheduler_entry_t*
 scheduler_entry_new(object_t*                 node,
                     scheduler_update_callback callback,
                     const char*               key,
-                    float                     interval,
+                    double                    interval,
                     int                       repeat,
-                    float                     delay,
+                    double                    delay,
                     int                       pause)
 {
   sen_assert(node);
@@ -81,7 +81,7 @@ scheduler_entry_delete(scheduler_entry_t* self)
 }
 
 int
-scheduler_entry_update(scheduler_entry_t* self, float dt)
+scheduler_entry_update(scheduler_entry_t* self, double dt)
 {
   if (self->markedForDeath) return 1;
   if (self->elapsed < 0)
@@ -161,7 +161,7 @@ scheduler_node_delete(scheduler_node_t* self)
 static int g_update_break = 0;
 static int g_total_updated = 0;
 void
-scheduler_node_update(scheduler_node_t* self, float dt)
+scheduler_node_update(scheduler_node_t* self, double dt)
 {
   if (self->pause) return;
 
@@ -224,9 +224,9 @@ sen_scheduler_add(scheduler_t*              self,
                   object_t*                 node_self,
                   scheduler_update_callback callback,
                   const char*               key,
-                  float                     interval,
+                  double                    interval,
                   int                       repeat,
-                  float                     delay,
+                  double                    delay,
                   int                       pause)
 {
   sen_assert(node_self);
@@ -407,7 +407,7 @@ void sen_scheduler_resume(scheduler_t* self,
 
 
 int
-sen_scheduler_update(void* _self, float dt)
+sen_scheduler_update(void* _self, double dt)
 {
   scheduler_t* self = (scheduler_t*)_self;
   khash_t(hmip) *nodes = (khash_t(hmip) *)self->nodes;

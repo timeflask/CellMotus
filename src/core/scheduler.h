@@ -3,7 +3,7 @@
 #include "config.h"
 #include "node.h"
 
-typedef int (*scheduler_update_callback)(void*, float, const char*);
+typedef int (*scheduler_update_callback)(void*, double, const char*);
 
 typedef struct scheduler_t {
   object_t super;
@@ -22,9 +22,9 @@ sen_scheduler_add(scheduler_t*              self,
                   object_t*                 obj,
                   scheduler_update_callback callback,
                   const char*               key,
-                  float                     interval,
+                  double                    interval,
                   int                       repeat,
-                  float                     delay,
+                  double                    delay,
                   int                       pause);
 
 void
@@ -49,6 +49,6 @@ extern
 scheduler_t* sen_scheduler();
 //---------------------------------------------------------------------------
 int
-sen_scheduler_update(void* self, float dt);
+sen_scheduler_update(void* self, double dt);
 
 #endif

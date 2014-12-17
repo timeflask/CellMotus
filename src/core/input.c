@@ -35,6 +35,8 @@ sen_touch_delete(touch_t* self)
 void
 sen_touch_reset(touch_t* self, int id, float x, float y, int reset_start)
 {
+  double now = sen_timer_now();
+
   if (reset_start) self->has_start = 0;
   self-> id = id;
   self->prev = self->point;
@@ -43,16 +45,22 @@ sen_touch_reset(touch_t* self, int id, float x, float y, int reset_start)
   if (! self->has_start )
   {
     self->start =  self->point;
-    self->start.z = sen_timer_now();
+
+    self->start.z = now;
     self->start.w = 0;
+
     self->point.z = 0;
     self->point.w = 0;
+
+    self->prev.z = 0;
+    self->prev.w = 0;
+
     self->has_start = 1;
   }
   else
   {
-    self->point.z = sen_timer_now() - self->start.z;
-    self->point.z = sen_timer_now() - self->start.z;
+    self->point.z = max(0, now - self->start.z );
+    //self->point.z = sen_timer_now() - self->start.z;
     self->point.w = self->prev.w +
         sqrtf((x - self->prev.x)*(x - self->prev.x) + (y - self->prev.y)*(y - self->prev.y));
   }

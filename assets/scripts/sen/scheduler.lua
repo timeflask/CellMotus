@@ -7,7 +7,7 @@ local clsCoro = require "sen.rcoro"
 
 ffi.cdef[[
 
-  typedef int (*scheduler_update_callback)(void*, float, const char*);
+  typedef int (*scheduler_update_callback)(void*, double, const char*);
   
   typedef struct scheduler_t {
     object_t super;
@@ -20,9 +20,9 @@ ffi.cdef[[
                     object_t*                 obj,
                     scheduler_update_callback callback,
                     const char*               key,
-                    float                     interval,
+                    double                    interval,
                     int                       repeat,
-                    float                     delay,
+                    double                    delay,
                     int                       pause);
   
   void

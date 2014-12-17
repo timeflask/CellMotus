@@ -13,12 +13,21 @@ typedef struct touch_data_t{
 
 
 //--------------------------------------------------------------------
+typedef struct input_point {
+
+  double x;
+  double y;
+  double z;
+  double w;
+
+} input_point;
+
 typedef struct touch_t {
-  int    id;
-  int    has_start;
-  vec4   start;
-  vec4   point;
-  vec4   prev;
+  int       id;
+  int       has_start;
+  input_point start;
+  input_point point;
+  input_point prev;
 }touch_t;
 
 touch_t*
