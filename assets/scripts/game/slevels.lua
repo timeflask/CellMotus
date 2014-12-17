@@ -1010,7 +1010,7 @@ function lboard:fill_levels()
       end
       ci = c
       cc = 1
-      scroll_min = c.y - self.hcell/3*lcell_scale_y
+      scroll_min = c.y - self.hcell/3--*lcell_scale_y
       if l2r then
        -- cl:runMatrixEffect(4,true,1)
        cl.matrix = 4
@@ -1038,7 +1038,7 @@ function lboard:fill_levels()
   
  -- print('--------------------------------------   ', row_len)
   local sh = (self.scene_bbox.t-self.scene_bbox.b)/2
-  scrLock = math.abs(scroll_max - scroll_min )+2*self.hcell*lcell_scale_y <=   (self.scene_bbox.t-self.scene_bbox.b)
+  scrLock = math.abs(scroll_max - scroll_min )+2*self.hcell <=   (self.scene_bbox.t-self.scene_bbox.b)
   scroll_min = scroll_min + sh - self.hcell
   scroll_max = scroll_max - sh + self.hcell
 
