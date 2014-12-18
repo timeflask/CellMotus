@@ -29,7 +29,7 @@
 #if defined(WIN32)
   #undef SEN_PLATFORM
   #define SEN_DECL __declspec(dllexport)
-  #define SEN_PLATFORM SEN_PLATFORM_WINDOWS
+  #define SEN_PLATFORM SEN_PLATFORM_WIN32
 #endif
 
 #if (SEN_PLATFORM == SEN_PLATFORM_ANDROID)

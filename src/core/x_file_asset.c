@@ -16,7 +16,7 @@ void
 asset_init(asset_t* self, const char* path)
 {
   FILE* stream;
-
+  size_t rsize = 0;
   sen_assert(self);
   sen_assert(path);
 
@@ -41,13 +41,13 @@ asset_init(asset_t* self, const char* path)
   fseek(stream, 0, SEEK_SET);
 
   self->handle = malloc(self->size);
-  fread(self->handle, self->size, 1, stream);
+  rsize = fread(self->handle, self->size, 1, stream);
 
   sen_assert(ferror(stream) == 0);
   fclose(stream);
 
   self->data = self->handle;
-  _logfi("+asset[%p]: %s, data=%p, size=%d", self->handle, self->path, self->data, self->size);
+  _logfi("+asset[%p]: %s, data=%p, size=%d [%d]", self->handle, self->path, self->data, self->size, rsize);
 }
 
 asset_t*

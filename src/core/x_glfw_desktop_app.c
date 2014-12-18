@@ -4,7 +4,7 @@
 #include "glfw3.h"
 
 
-#if (SEN_PLATFORM == SEN_PLATFORM_WINDOWS)
+#if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
 #ifndef GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WIN32
 #endif
@@ -29,7 +29,6 @@
 
 
 static GLFWwindow* mainWindow = NULL;
-static GLFWmonitor* monitor = NULL;
 
 static int init_glew();
 static void init_signals();
@@ -139,9 +138,9 @@ void sen_desktop_app_exit()
   }
 }
 
-#if (SEN_PLATFORM == SEN_PLATFORM_WINDOWS)
 static int glew_bind()
 {
+#if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
     const char *gl_extensions = (const char*)glGetString(GL_EXTENSIONS);
 
     if (!glGenFramebuffers)
@@ -197,9 +196,9 @@ static int glew_bind()
             return 0;
         }
     }
+#endif
     return 1;
 }
-#endif
 
 static int init_glew()
 {
@@ -314,7 +313,6 @@ iconify_callback(GLFWwindow* window, int iconified)
 
 #define MAX_BUTTONS 32
 static int buttons[MAX_BUTTONS];
-static int mouse_captured = 0;
 static float mouseX = 0.0f;
 static float mouseY = 0.0f;
 

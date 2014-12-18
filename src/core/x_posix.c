@@ -4,7 +4,7 @@
 #include "platform.h"
 #include "view.h"
 #include "engine.h"
-
+#include "x_glfw_desktop_app.h"
 int
 sen_platform_dpi()
 {
@@ -27,10 +27,9 @@ sen_platform_screen_size_name()
   return size_names[0];
 }
 
-extern int g_exit_flag;
 void sen_exit()
 {
-  g_exit_flag = 1;
+  sen_desktop_app_exit();
 }
 
 static const char PLATFORM_NAME[] = "Posix/OpenGL GLUT";
