@@ -132,13 +132,13 @@ mat4_set_orthographic( mat4 *self,
 
     mat4_set_zero( self );
 
-    self->m00 = +2.0/(right-left);
+    self->m00 = +2.0f/(right-left);
     self->m30 = -(right+left)/(right-left);
-    self->m11 = +2.0/(top-bottom);
+    self->m11 = +2.0f/(top-bottom);
     self->m31 = -(top+bottom)/(top-bottom);
-    self->m22 = -2.0/(zfar-znear);
+    self->m22 = -2.0f/(zfar-znear);
     self->m32 = -(zfar+znear)/(zfar-znear);
-    self->m33 = 1.0;
+    self->m33 = 1.0f;
 }
 
 void
@@ -151,7 +151,7 @@ mat4_set_perspective( mat4 *self,
     assert( self );
     assert( znear != zfar );
 
-    h = tan(fovy / 360.0 * M_PI) * znear;
+    h = (float) ( tan(fovy / 360.0f * M_PI) * znear );
     w = h * aspect;
 
     mat4_set_frustum( self, -w, w, -h, h, znear, zfar );
@@ -171,16 +171,16 @@ mat4_set_frustum( mat4 *self,
 
     mat4_set_zero( self );
 
-    self->m00 = +2.0*znear/(right-left);
+    self->m00 = +2.0f*znear/(right-left);
     self->m20 = (right+left)/(right-left);
 
-    self->m11 = +2.0*znear/(top-bottom);
+    self->m11 = +2.0f*znear/(top-bottom);
     self->m31 = (top+bottom)/(top-bottom);
 
     self->m22 = -(zfar+znear)/(zfar-znear);
-    self->m32 = -2.0*znear/(zfar-znear);
+    self->m32 = -2.0f*znear/(zfar-znear);
 
-    self->m23 = -1.0;
+    self->m23 = -1.0f;
 }
 
 void
@@ -192,9 +192,9 @@ mat4_set_rotation( mat4 *self,
 
     assert( self );
 
-    c = cos( M_PI*angle/180.0 );
-    s = sin( M_PI*angle/180.0 );
-    norm = sqrt(x*x+y*y+z*z);
+    c = cosf( M_PI*angle/180.0f );
+    s = sinf( M_PI*angle/180.0f );
+    norm = sqrtf(x*x+y*y+z*z);
 
     x /= norm; y /= norm; z /= norm;
 

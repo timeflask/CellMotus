@@ -42,39 +42,96 @@ static const GLushort  indices[6] = {0,1,2, 0,2,3};
 static void
 update_buffer(sprite_t* self)
 {
-  int status  = ((node_t*)self)->updated;
+  int status  =  ((node_t*)self)->updated;
+  const vec4* col = &(((node_t*)self)->color);
+  float r = col->r;
+  float g = col->g;
+  float b = col->b;
+  float a = col->a;
+  vec4* bbox = & ( ((node_t*) self)->bbox );
+  vec2* size = & ( ((node_t*) self)->size );
+  const vec4* coords;
+  float sw, sh;
+  float x0,y0,x1,y1,s0,s1,t0,t1;
+  V4F_T2F_C4F vertices[4];
+  int update_model;
 
   if (status & SEN_NODE_UPDATE_INVALIDATE_BUFFER) {
     vertex_buffer_invalidate(self->quad);
-    //vertex_buffer_delete(self->quad);
-    //self->quad = vertex_buffer_new("a_pos:4f,a_tex_coords:2f,a_color:4f");
     status &= ~SEN_NODE_UPDATE_INVALIDATE_BUFFER;
-    //status= SEN_NODE_UPDATE_ALL;
   }
-
-  const vec4* col = &(((node_t*)self)->color);
-  vec4* bbox = & ( ((node_t*) self)->bbox );
-  vec2* size = & ( ((node_t*) self)->size );
 
   if (status & SEN_NODE_UPDATE_BBOX) {
     vertex_buffer_clear(self->quad);
 
-    const vec4* coords = &(self->tex->coords);
+    sw = self->tex->img_width / 2.0f;
+    sh = self->tex->img_height / 2.0f;
 
-    float sw = self->tex->img_width / 2.0f;
-    float sh = self->tex->img_height / 2.0f;
+    x0 = -sw; x1 = sw;
+    y0 = -sh; y1 = sh;
 
+    coords = &(self->tex->coords);
 
+    s0 = coords->s0;
+    t0 = coords->t0;
+    s1 = coords->s1;
+    t1 = coords->t1;
 
+    /*
     V4F_T2F_C4F vertices[4] = {{ -sw,-sh,0,1, coords->s0,coords->t1, col->r,col->g,col->b,col->a,},
                               {  -sw, sh,0,1, coords->s0,coords->t0, col->r,col->g,col->b,col->a,},
                               {   sw, sh,0,1, coords->s1,coords->t0, col->r,col->g,col->b,col->a,},
-                              {   sw,-sh,0,1, coords->s1,coords->t1, col->r,col->g,col->b,col->a,}};
+                              {   sw,-sh,0,1, coords->s1,coords->t1, col->r,col->g,col->b,col->a,}};*/
+
+    vertices[0].x = (float)x0;
+    vertices[0].y = (float)y0;
+    vertices[0].z = 0.0f;
+    vertices[0].w = 1.0f;
+    vertices[0].s = s0;
+    vertices[0].t = t1;
+    vertices[0].r = r;
+    vertices[0].g = g;
+    vertices[0].b = b;
+    vertices[0].a = a;
+
+
+    vertices[1].x = (float)x0;
+    vertices[1].y = (float)y1;
+    vertices[1].z = 0.0f;
+    vertices[1].w = 1.0f;
+    vertices[1].s = s0;
+    vertices[1].t = t0;
+    vertices[1].r = r;
+    vertices[1].g = g;
+    vertices[1].b = b;
+    vertices[1].a = a;
+
+    vertices[2].x = (float)x1;
+    vertices[2].y = (float)y1;
+    vertices[2].z = 0.0f;
+    vertices[2].w = 1.0f;
+    vertices[2].s = s1;
+    vertices[2].t = t0;
+    vertices[2].r = r;
+    vertices[2].g = g;
+    vertices[2].b = b;
+    vertices[2].a = a;
+
+    vertices[3].x = (float)x1;
+    vertices[3].y = (float)y0;
+    vertices[3].z = 0.0f;
+    vertices[3].w = 1.0f;
+    vertices[3].s = s1;
+    vertices[3].t = t1;
+    vertices[3].r = r;
+    vertices[3].g = g;
+    vertices[3].b = b;
+    vertices[3].a = a;
 
 
     bbox->x = -sw; bbox->y = -sh;  bbox->z = sw; bbox->w = sh;
-    size->x = self->tex->img_width;
-    size->y = self->tex->img_height;
+    size->x = (float) (self->tex->img_width);
+    size->y = (float) (self->tex->img_height);
 
     vertex_buffer_push_back( self->quad, vertices, 4, indices, 6 );
    // vertex_buffer_push_back_vertices( self->quad, vertices, 4);
@@ -83,7 +140,7 @@ update_buffer(sprite_t* self)
     status |= SEN_NODE_UPDATE_MODEL;
   }
 
-  int update_model = status & SEN_NODE_UPDATE_MODEL;
+  update_model = status & SEN_NODE_UPDATE_MODEL;
 
   if ( status & (SEN_NODE_UPDATE_MODEL | SEN_NODE_UPDATE_COLOR)) {
     //V4F_T2F_C4F vertices[4];
@@ -98,7 +155,7 @@ update_buffer(sprite_t* self)
         //vec4* v =  (vec4*) ( i*sizeof(V4F_T2F_C4F )+(vertices));
         //vec4* v =  (vec4*)  (& vertices[i]);// ( i*sizeof(V4F_T2F_C4F )+(vertices));
         vec4* vp =  (vec4*)  (& (self->vertices[i]) );
-        vec4* v =   ( i*sizeof(V4F_T2F_C4F )+(self->quad->vertices->items));
+        vec4* v =   (vec4*)  ( (char*)(self->quad->vertices->items) + i*sizeof(V4F_T2F_C4F ) );
         //v4_transform(model->data, v->data,v->data);
         v4_transform(model->data, vp->data,v->data);
 
@@ -113,7 +170,9 @@ update_buffer(sprite_t* self)
       }
 
       if (status & SEN_NODE_UPDATE_COLOR) {
-        vec4* c =  (vec4*) ( i*sizeof(V4F_T2F_C4F )+sizeof(float)*6+(self->quad->vertices->items));
+        vec4* c =  (vec4*) ( (char*)(self->quad->vertices->items)+
+                             i*sizeof(V4F_T2F_C4F )+
+                             sizeof(float)*6);
 //        vec4* c =  (vec4*) ( i*sizeof(V4F_T2F_C4F )+sizeof(float)*6+(vertices));
         //vec4* c =  (vec4*) (& (vertices[i].r) );//  i*sizeof(V4F_T2F_C4F )+sizeof(float)*6+(vertices));
 //        vec4* c =  (vec4*) (& (self->vertices[i].r) );//  i*sizeof(V4F_T2F_C4F )+sizeof(float)*6+(vertices));
@@ -156,12 +215,13 @@ sen_sprite_new(const char* name,
 void
 sen_sprite_delete(void *_self)
 {
-  sen_assert(_self);
   sprite_t *self = (sprite_t *)_self;
+  int status;
+  sen_assert(_self);
  // _logfi("-sprite %s", ((object_t*)self)->name);
   sen_textures_release(self->tex);
   sen_shaders_release(self->program);
-  int status  = ((node_t*)self)->updated;
+  status  = ((node_t*)self)->updated;
   if (status & SEN_NODE_UPDATE_INVALIDATE_BUFFER) {
     vertex_buffer_invalidate(self->quad);
   }
@@ -173,29 +233,39 @@ sen_sprite_delete(void *_self)
 void
 sen_sprite_render(void* _self)
 {
-  sen_assert(_self);
   sprite_t *self = (sprite_t *)_self;
+  vec4* bbox;
+  const vec4* vp;
+  node_t* cam_node;
+  const mat4* mv;
+  vec4* v;
+  int use_cam;
+
+
+  sen_assert(_self);
 
   if ( ((node_t*)self)->color.a < F_EPSILON ) return;
   update_buffer(self);
 
-  vec4* bbox = & ( ((node_t*) self)->bbox );
-  const vec4* vp = sen_view_get_viewport();
+  bbox = & ( ((node_t*) self)->bbox );
+  vp = sen_view_get_viewport();
 
   //const mat4* mv = sen_node_model(sen_camera());
 
-  node_t* cam_node = (node_t* ) sen_camera();
-  const mat4* mv = &(cam_node->model);
+  cam_node = (node_t* ) sen_camera();
+  mv = &(cam_node->model);
 
-  vec4* v = (vec4*)self->quad->vertices->items;
-  int use_cam = v->z < 0.9 && v->z > -0.9 ;
+  v = (vec4*)self->quad->vertices->items;
+  use_cam = v->z < 0.9 && v->z > -0.9 ;
 
   if (use_cam) {
-    float sx =  mv->data[12];
-    float sy =  mv->data[13];
+    float sx,sy,vw,vh;
 
-    float vw = (vp->z - vp->x) / 2.0 ;
-    float vh = (vp->w - vp->y) / 2.0 ;
+    sx =  mv->data[12];
+    sy =  mv->data[13];
+
+    vw = (vp->z - vp->x) / 2.0f ;
+    vh = (vp->w - vp->y) / 2.0f ;
     //if (bbox->x > 250) {
     //_logfi("%.f %.f %.f %.f", vp->x, vp->y, vp->z, vp->w);
     //_logfi("%.f %.f %.f %.f", bbox->x, bbox->y, bbox->z, bbox->w);

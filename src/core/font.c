@@ -58,10 +58,13 @@ const glyph_t *
 sen_font_get_glyph(const font_t * font,
                    wchar_t        charcode )
 {
+  khash_t(hmip) *glyphs;
+  khiter_t k;
   sen_assert( font );
-  khash_t(hmip) *glyphs = (khash_t(hmip)*) font->glyphs;
-  khiter_t k = kh_get(hmip, glyphs, (int)charcode );
-  return k == kh_end(glyphs) ? NULL : (const glyph_t *) kh_val( glyphs, k );;
+  glyphs = (khash_t(hmip)*) font->glyphs;
+  k = kh_get(hmip, glyphs, (int)charcode );
+
+  return k == kh_end(glyphs) ? NULL : (const glyph_t *) kh_val( glyphs, k );
 }
 
 float
@@ -128,14 +131,16 @@ font_face_load( FT_Library  *library,
                 const float  size,
                 FT_Face     *face )
 {
-  sen_assert(font_file);
-  _logfi("... loading font face [%s], size=%.1f", font_file->path, size);
   size_t hres = 64;
   FT_Error error;
   FT_Matrix matrix = { (int)((1.0/hres) * 0x10000L),
                        (int)((0.0)      * 0x10000L),
                        (int)((0.0)      * 0x10000L),
                        (int)((1.0)      * 0x10000L) };
+
+
+  sen_assert(font_file);
+  _logfi("... loading font face [%s], size=%.1f", font_file->path, size);
 
   sen_assert( library );
   sen_assert( font_file );
@@ -193,9 +198,44 @@ sen_font_init(font_t* self,
                const wchar_t* alphabet,
                texture_atlas_t* atlas)
 {
+  static unsigned char data[4*4*4] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+                                      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+                                      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+                                      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+  FT_UInt       glyph_index;
+  FT_Error      error;
+  FT_GlyphSlot  slot;
+
+  FT_Bitmap     ft_bitmap;
+  size_t        i, x, y, w, h;
+
+  FT_Library      library;
+  FT_Face         face;
+  FT_Size_Metrics metrics;
+
+  FT_Int32 flags = 0;
+  int ft_bitmap_width = 0;
+  int ft_bitmap_rows = 0;
+  int ft_glyph_top = 0;
+  int ft_glyph_left = 0;
+
+  size_t sz, j;
+  unsigned char* buff;
+
+  asset_t* font_file;
+  size_t width, height;
+  ivec4 region;
+  glyph_t * glyph;
+
+  FT_UInt prev_index;
+  glyph_t *prev_glyph;
+  FT_Vector kerning;
+  khash_t(hmip) *glyphs;
+
+  khint_t __i, __j;
+
   sen_assert( size > 4 );
   sen_assert( atlas );
-  asset_t* font_file = asset_new( filename );
 
   if (alphabet)
     self->alphabet = sen_strdupW(alphabet);
@@ -210,36 +250,30 @@ sen_font_init(font_t* self,
   self->kerning = 1;
   self->filtering = 1;
 
-  FT_Library      library;
-  FT_Face         face;
-  FT_Size_Metrics metrics;
+  font_file = asset_new( filename );
   font_face_load(&library, font_file, self->size, &face);
 
 
   metrics = face->size->metrics;
-  self->ascender = (metrics.ascender >> 6) / 100.0;
-  self->descender = (metrics.descender >> 6) / 100.0;
-  self->height = (metrics.height >> 6) / 100.0;
+  self->ascender = (metrics.ascender >> 6) / 100.0f;
+  self->descender = (metrics.descender >> 6) / 100.0f;
+  self->height = (metrics.height >> 6) / 100.0f;
   self->linegap = self->height - self->ascender + self->descender;
 
 
   self->glyphs = kh_init(hmip);
 
-  size_t width  = atlas->width;
-  size_t height = atlas->height;
+  width  = atlas->width;
+  height = atlas->height;
 
-  ivec4 region = texture_atlas_get_region( atlas, 5, 5 );
+  region = texture_atlas_get_region( atlas, 5, 5 );
   if ( region.x < 0 )
   {
       _logfe("Cannot load glyph [%d] from [%s], atlas is full", -1, filename);
       goto end;
   }
 
-  glyph_t * glyph = glyph_new( );
-  static unsigned char data[4*4*4] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-                                      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-                                      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-                                      -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+  glyph = glyph_new( );
   texture_atlas_set_region( atlas, region.x, region.y, 4, 4, data, 0 );
   glyph->charcode = (wchar_t)(-1);
   glyph->s0 = (region.x+2)/(float)width;
@@ -248,12 +282,6 @@ sen_font_init(font_t* self,
   glyph->t1 = (region.y+3)/(float)height;
   kh_insert(hmip, ((khash_t(hmip)*)self->glyphs), (int)glyph->charcode , glyph);
 
-  FT_UInt       glyph_index;
-  FT_Error      error;
-  FT_GlyphSlot  slot;
-
-  FT_Bitmap     ft_bitmap;
-  size_t        i, x, y, w, h;
   for( i=0; i<wcslen(self->alphabet); ++i )
   {
 
@@ -262,11 +290,12 @@ sen_font_init(font_t* self,
 
 
 
-      FT_Int32 flags = 0;
-      int ft_bitmap_width = 0;
-      int ft_bitmap_rows = 0;
-      int ft_glyph_top = 0;
-      int ft_glyph_left = 0;
+      flags = 0;
+      ft_bitmap_width = 0;
+      ft_bitmap_rows = 0;
+      ft_glyph_top = 0;
+      ft_glyph_left = 0;
+
       glyph_index = FT_Get_Char_Index( face, self->alphabet[i] );
 
       flags |= FT_LOAD_RENDER;
@@ -356,8 +385,8 @@ sen_font_init(font_t* self,
       x = region.x;
       y = region.y;
 
-      size_t sz = ft_bitmap_width*ft_bitmap_rows*4; size_t j;
-      unsigned char* buff = calloc(sz,1);
+      sz = ft_bitmap_width*ft_bitmap_rows*4;
+      buff = calloc(sz,1);
       //unsigned char* map = make_distance_map(ft_bitmap.buffer, ft_bitmap_width, ft_bitmap_rows);
       for (j=0; j<(sz/4); ++j)
         buff[j*4+3] = ft_bitmap.buffer[j];
@@ -419,19 +448,15 @@ sen_font_init(font_t* self,
       // Discard hinting to get advance
       FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);
       slot = face->glyph;
-      glyph->advance_x = slot->advance.x/64.0;
-      glyph->advance_y = slot->advance.y/64.0;
+      glyph->advance_x = slot->advance.x/64.0f;
+      glyph->advance_y = slot->advance.y/64.0f;
 
       kh_insert(hmip, ((khash_t(hmip)*)self->glyphs), (int)glyph->charcode , glyph);
 
   }
 
-  FT_UInt prev_index;
-  glyph_t *prev_glyph;
-  FT_Vector kerning;
-  khash_t(hmip) *glyphs = (khash_t(hmip)*) self->glyphs;
+  glyphs = (khash_t(hmip)*) self->glyphs;
 
-  khint_t __i, __j;
   for (__i = kh_begin(glyphs); __i != kh_end(glyphs); ++__i)
   {
     if (!kh_exist(glyphs,__i)) continue;
@@ -462,8 +487,8 @@ end:
 void
 sen_font_clean(font_t* self)
 {
-  sen_assert(self);
   glyph_t* glyph;
+  sen_assert(self);
   kh_foreach_value( ((khash_t(hmip)*)self->glyphs), glyph, glyph_delete(glyph) );
   kh_destroy(hmip, self->glyphs);
   free(self->alphabet);
@@ -475,8 +500,8 @@ sen_font_new( const char* filename,
                const wchar_t* alphabet,
                texture_atlas_t* atlas)
 {
-  _logfi("+font object [%s]", filename);
   struct_malloc(font_t, self);
+  _logfi("+font object [%s]", filename);
   sen_font_init(self, filename, size, alphabet, atlas);
   return self;
 }
@@ -492,6 +517,7 @@ sen_font_delete(font_t* self)
 
 
 //------------------------------------------------------------------------------------------
+/*
 unsigned char *
 make_distance_map( unsigned char *img,
                    unsigned int width, unsigned int height )
@@ -714,3 +740,4 @@ resize( double *src_data, size_t src_width, size_t src_height,
     }
     return 0;
 }
+*/

@@ -355,8 +355,8 @@ vector_for_each( vector_t          *self,
                  vector_for_each_fp func,
                  void*              user_data)
 {
-  assert( self );
   size_t  i;
+  assert( self );
   for( i=0; i<self->size; ++i )
   {
       if(  (*func) (vector_get(self,i), user_data)  )

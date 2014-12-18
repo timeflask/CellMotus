@@ -40,9 +40,9 @@ scheduler_entry_new(object_t*                 node,
                     double                    delay,
                     int                       pause)
 {
+  struct_malloc(scheduler_entry_t, self);
   sen_assert(node);
   sen_assert(callback);
-  struct_malloc(scheduler_entry_t, self);
 
   if (key)
     self->key = sen_strdup(key);
@@ -152,8 +152,8 @@ scheduler_node_new()
 scheduler_node_t*
 scheduler_node_delete(scheduler_node_t* self)
 {
-  sen_assert(self);
   scheduler_entry_t* entry;
+  sen_assert(self);
   kh_foreach_value(self->entries, entry, scheduler_entry_delete(entry) );
   kh_destroy(hmsp, self->entries);
   return self;
@@ -163,9 +163,9 @@ static int g_total_updated = 0;
 void
 scheduler_node_update(scheduler_node_t* self, double dt)
 {
+  scheduler_entry_t* entry;
   if (self->pause) return;
 
-  scheduler_entry_t* entry;
   kh_foreach_value( self->entries, entry,
       //if (g_update_break) break;
       if (!entry->pause && !entry->markedForDeath) {
@@ -188,9 +188,8 @@ scheduler_node_update(scheduler_node_t* self, double dt)
 scheduler_t*
 sen_scheduler_new(const char* name)
 {
-  _logfi("init scheduler");
   struct_malloc(scheduler_t, self);
-
+  _logfi("init scheduler");
   self->scale = 1.0f;
   self->nodes      = kh_init(hmip);
   sen_object_init(self, name, NULL);
@@ -229,13 +228,18 @@ sen_scheduler_add(scheduler_t*              self,
                   double                    delay,
                   int                       pause)
 {
+  khash_t(hmip) *nodes;
+  uint32_t uid;
+  scheduler_node_t* node;
+  khiter_t k;
+  scheduler_entry_t* new_entry;
+
   sen_assert(node_self);
   sen_assert(callback);
 
-  khash_t(hmip) *nodes = (khash_t(hmip) *)self->nodes;
-  scheduler_node_t* node;
-  uint32_t uid = node_self->uid;
-  khiter_t k = kh_get(hmip, nodes, uid );
+  nodes = (khash_t(hmip) *)self->nodes;
+  uid = node_self->uid;
+  k = kh_get(hmip, nodes, uid );
   if ( k != kh_end(nodes) )
   {
     node = kh_val(nodes, k);
@@ -256,7 +260,7 @@ sen_scheduler_add(scheduler_t*              self,
     kh_insert(hmip, nodes, uid, node);
   }
 
-  scheduler_entry_t* new_entry =
+  new_entry =
   scheduler_entry_new(node_self,
                       callback,
                       key,
@@ -273,11 +277,12 @@ int sen_scheduler_is_running(scheduler_t* self,
                               object_t* node_self,
                               const char* key)
 {
+  scheduler_node_t* node;
   khash_t(hmip) *nodes = (khash_t(hmip) *)self->nodes;
   uint32_t uid = node_self->uid;
   khiter_t k = kh_get(hmip, nodes, uid );
   if (k == kh_end(nodes)) return 0;
-  scheduler_node_t* node = kh_val(nodes, k);
+  node = kh_val(nodes, k);
   return key ?
       kh_get(hmsp, node->entries, key) != kh_end(node->entries) :
       kh_size(node->entries) > 0;
@@ -341,17 +346,18 @@ sen_scheduler_pause_node(scheduler_t* self,
                           khiter_t k,
                           int pause)
 {
+  scheduler_entry_t* entry;
+  khiter_t k2;
   khash_t(hmip) *nodes = (khash_t(hmip) *)self->nodes;
   scheduler_node_t* node = kh_val(nodes, k);
   if (key == NULL)
   {
     node->pause = pause;
-    scheduler_entry_t* entry;
     kh_foreach_value(node->entries, entry, entry->pause = pause );
   }
   else
   {
-    khiter_t k2 = kh_get(hmsp, node->entries, key);
+    k2 = kh_get(hmsp, node->entries, key);
     if (k2 == kh_end(node->entries)) {
       _logfe("scheduler node has no entries with key[%s]",  key);
     }
@@ -363,7 +369,7 @@ sen_scheduler_pause_node(scheduler_t* self,
   }
 }
 
-static inline void _sen_scheduler_pause(scheduler_t* self,
+static void _sen_scheduler_pause(scheduler_t* self,
                                         object_t* obj,
                                         const char* key,
                                         int pause)

@@ -18,9 +18,9 @@ typedef struct slot_t
 slot_t*
 slot_new(object_t* listener, const char* name, signal_callback_t cb)
 {
+  struct_malloc(slot_t, self);
   sen_assert(listener || name);
   sen_assert(cb);
-  struct_malloc(slot_t, self);
   if (listener) {
     self->obj = listener;
     self->name = sen_strdup(listener->name);
@@ -59,7 +59,7 @@ signal_new(const char* _name, void* parent)
 {
   struct_malloc(sig_t, self);
   _logfi("new signal [%s]", _name);
-  self->name = strdup(_name);
+  self->name = sen_strdup(_name);
   self->slots = kh_init(hmsp);
   self->refcount = 0;
   self->node = parent;
@@ -69,10 +69,10 @@ signal_new(const char* _name, void* parent)
 void
 signal_destroy(sig_t* self)
 {
+  slot_t* slot;
   sen_assert(self);
   _logfi("-delete signal [%s]", self->name);
 
-  slot_t* slot;
   kh_foreach_value(self->slots, slot, slot_destroy(slot) );
   kh_destroy(hmsp, self->slots);
 
@@ -80,11 +80,12 @@ signal_destroy(sig_t* self)
   free(self);
 }
 
-static inline slot_t*
+static slot_t*
 signal_find_slot(sig_t* self, const char* listener_name)
 {
+  khiter_t pos;
   sen_assert(listener_name);
-  khiter_t pos = kh_get(hmsp, self->slots, listener_name);
+  pos = kh_get(hmsp, self->slots, listener_name);
   return pos != kh_end(self->slots) ? kh_val(self->slots, pos) : 0;
 }
 //-----------------------------------------------------------------------
@@ -104,14 +105,14 @@ emitter_node_new (object_t *emitter,  const char* emitter_name)
 
 
   if (emitter) {
-    self->name = strdup((char*)emitter->name);
+    self->name = sen_strdup((char*)emitter->name);
     self->emitter = emitter;
     _logfi("new emitter node [%s]", self->name );
   }
   else
   {
     sen_assert(emitter_name);
-    self->name = strdup(emitter_name);
+    self->name = sen_strdup(emitter_name);
     _logfi("new anon emitter node [%s]", self->name );
     self->emitter = 0;
   }
@@ -122,20 +123,21 @@ emitter_node_new (object_t *emitter,  const char* emitter_name)
 void
 emitter_node_destroy(emitter_node_t* self)
 {
+  sig_t* sig;
   sen_assert(self);
   _logfi(" -emitter node [%s]", self->name );
   free(self->name);
-  sig_t* sig;
   kh_foreach_value(self->signals, sig, signal_destroy( sig) );
   kh_destroy(hmsp, self->signals);
   free(self);
 }
 
-static inline sig_t*
+static sig_t*
 emitter_node_find_signal(emitter_node_t* self, const char* signal_name)
 {
+  khiter_t pos;
   sen_assert(signal_name);
-  khiter_t pos = kh_get(hmsp, self->signals, signal_name);
+  pos = kh_get(hmsp, self->signals, signal_name);
   return pos != kh_end(self->signals) ? kh_val(self->signals, pos) : 0;
 }
 //--------------------------------------------------------------------------
@@ -163,11 +165,12 @@ signals_destroy(signals_t* self)
   free(self);
 }
 
-static inline emitter_node_t*
+static emitter_node_t*
 signals_find_emitter (const char* emitter_name)
 {
+  khiter_t pos;
   sen_assert(emitter_name);
-  khiter_t pos = kh_get(hmsp, g_self->emitters, emitter_name);
+  pos = kh_get(hmsp, g_self->emitters, emitter_name);
   return pos != kh_end(g_self->emitters) ? kh_val(g_self->emitters, pos) : 0;
 }
 
@@ -175,11 +178,14 @@ signals_find_emitter (const char* emitter_name)
 const void*
 sen_signal_get(const char* signal_name, object_t* emitter)
 {
+  const char* e_name;
+  emitter_node_t* node;
+  sig_t* signal = 0;
+
   sen_assert(g_self);
   sen_assert(signal_name);
-  const char* e_name = emitter ? (const char*)emitter->name : UNKNOWN_EMITTER;
-  emitter_node_t* node = signals_find_emitter(e_name);
-  sig_t* signal = 0;
+  e_name = emitter ? (const char*)emitter->name : UNKNOWN_EMITTER;
+  node = signals_find_emitter(e_name);
   if (node) {
 
     if ((node->emitter == 0) && emitter) {
@@ -204,11 +210,14 @@ const void*
 sen_signal_get_name(const char* signal_name,
                     const char* emmiter_name)
 {
+  const char* e_name ;
+  emitter_node_t* node;
+  sig_t* signal = 0;
+
   sen_assert(g_self);
   sen_assert(signal_name);
-  const char* e_name = emmiter_name ? emmiter_name : UNKNOWN_EMITTER;
-  emitter_node_t* node = signals_find_emitter(e_name);
-  sig_t* signal = 0;
+  e_name = emmiter_name ? emmiter_name : UNKNOWN_EMITTER;
+  node = signals_find_emitter(e_name);
   if (node) {
     signal = emitter_node_find_signal(node, signal_name);
   }
@@ -229,8 +238,8 @@ sen_signal_get_name(const char* signal_name,
 void
 sen_signal_release(const void* _signal)
 {
-  sen_assert(_signal);
   sig_t* signal = (sig_t*)_signal;
+  sen_assert(_signal);
   if (signal->refcount) signal->refcount--;
   if (signal->refcount == 0 && signal->slots->size == 0) {
     emitter_node_t* node = (emitter_node_t*)signal->node;
@@ -252,8 +261,9 @@ sen_signal_release(const void* _signal)
 void
 sen_signal_release_emitter_name(const char* name)
 {
+  khiter_t pos;
   sen_assert(name);
-  khiter_t pos = kh_get(hmsp, g_self->emitters, name);
+  pos = kh_get(hmsp, g_self->emitters, name);
   if (pos != kh_end(g_self->emitters)){
     emitter_node_t * node = kh_val(g_self->emitters, pos);
     emitter_node_destroy(node);
@@ -271,9 +281,12 @@ sen_signal_release_emitter(object_t* emitter)
 void
 sen_signal_emit(const void* _signal, void* data)
 {
-  sen_assert(_signal);
-  sig_t* signal = (sig_t*)_signal;
+  sig_t* signal;
   slot_t* slot;
+
+  sen_assert(_signal);
+
+  signal = (sig_t*)_signal;
   kh_foreach_value(signal->slots, slot,
       if (
       (*slot->proc) ( slot->obj, data, ((emitter_node_t*)signal->node)->emitter, signal->name )
@@ -285,23 +298,28 @@ sen_signal_emit(const void* _signal, void* data)
   );
 }
 
-static inline void
+static void
 _sen_signal_connect(const char*       emitter_name,
                     const char*       signal_name,
                     signal_callback_t proc,
                     object_t*         listener,
                     const char*       listener_name)
 {
+  const char* e_name;
+  const char* l_name;
+  sig_t* signal = 0;
+  emitter_node_t* node;
+  slot_t* new_slot;
+
   if (!g_self) return;
   sen_assert(signal_name);
   sen_assert(proc);
   sen_assert(listener || listener_name);
 
-  const char* e_name = emitter_name ? emitter_name : UNKNOWN_EMITTER;
-  const char* l_name = listener ? (char*)listener->name : listener_name;
+  e_name = emitter_name ? emitter_name : UNKNOWN_EMITTER;
+  l_name = listener ? (char*)listener->name : listener_name;
 
-  emitter_node_t* node = signals_find_emitter (e_name);
-  sig_t* signal = 0;
+  node = signals_find_emitter (e_name);
   if (node) {
     signal = emitter_node_find_signal(node, signal_name);
   }
@@ -322,7 +340,7 @@ _sen_signal_connect(const char*       emitter_name,
     }
   }
   _logfi("SLOT[%s] connected to SIGNAL[%s] on [%s]", l_name, signal_name, e_name);
-  slot_t* new_slot = slot_new(listener, listener_name, proc);
+  new_slot = slot_new(listener, listener_name, proc);
   kh_insert(hmsp, signal->slots, (char*) new_slot->name, new_slot );
 }
 
@@ -350,24 +368,28 @@ _sen_signal_disconnect(object_t*         listener,
                        const char*       signal_name,
                        const char*       emitter_name)
 {
+  const char* l_name;
+  sig_t* signal;
+  emitter_node_t* node;
+  khiter_t pos;
+
   sen_assert(listener || listener_name);
-  const char* l_name = listener ? (char*)listener->name : listener_name;
+  l_name = listener ? (char*)listener->name : listener_name;
   if (emitter_name) {
     emitter_node_t* node = signals_find_emitter (emitter_name);
     if (!node) return;
     if (signal_name) {
-      sig_t* signal = emitter_node_find_signal(node, signal_name);
+      signal = emitter_node_find_signal(node, signal_name);
       if (!signal) return;
-      khiter_t pos = kh_get(hmsp, signal->slots, l_name);
+      pos = kh_get(hmsp, signal->slots, l_name);
       if (pos != kh_end(signal->slots)) {
         slot_destroy( kh_val(signal->slots, pos) );
         kh_del(hmsp, signal->slots, pos);
       }
     }
     else {
-      sig_t* signal;
       kh_foreach_value(node->signals, signal,
-          khiter_t pos = kh_get(hmsp, signal->slots, l_name);
+          pos = kh_get(hmsp, signal->slots, l_name);
           if (pos != kh_end(signal->slots)) {
             slot_destroy( kh_val(signal->slots, pos) );
             kh_del(hmsp, signal->slots, pos);
@@ -377,7 +399,6 @@ _sen_signal_disconnect(object_t*         listener,
   }
   else
   {
-    emitter_node_t* node;
     kh_foreach_value(g_self->emitters, node,
         _sen_signal_disconnect(listener, listener_name, signal_name, node->name)
     );

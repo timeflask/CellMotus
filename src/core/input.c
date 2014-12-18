@@ -143,8 +143,8 @@ static int get_index() {
 }
 static void release_index(int index)
 {
-  sen_assert( index >= 0 && index < MAX_TOUCHES );
   uint32_t temp = 1 << index;
+  sen_assert( index >= 0 && index < MAX_TOUCHES );
   temp = ~temp;
   g_usedBits &= temp;
 }
@@ -152,10 +152,12 @@ static void release_index(int index)
 static const void* signal_touchesBegin = NULL;
 static int on_touches_begin(object_t* _null, void* data, object_t* _null2, const char* sig)
 {
-  UNUSED(_null); UNUSED(_null2); UNUSED(sig);
-  sen_assert(data);
   touch_data_t *td = (touch_data_t *)data;
+  touch_t* t;
   int i;
+
+  sen_assert(data);
+
   for ( i = 0; i < td->num; ++i )
   {
     int  id = td->ids[i];
@@ -164,7 +166,7 @@ static int on_touches_begin(object_t* _null, void* data, object_t* _null2, const
       int index = get_index();
       if (index == -1) continue;
 
-      touch_t* t = g_touches[index];
+      t = g_touches[index];
       sen_touch_reset(t, index, td->xs[i], td->ys[i], 1);
 
       kh_insert(hmip, g_touches_indexer, id, t);
@@ -174,16 +176,18 @@ static int on_touches_begin(object_t* _null, void* data, object_t* _null2, const
      // _logfi("TOUCHES BEGIN id=%d x=%.2f y=%.2f", td->ids[i], td->xs[i], td->ys[i]);
     }
   }
+  UNUSED(_null); UNUSED(_null2);UNUSED(sig);
   return 0;
 }
 
 static const void* signal_touchesMove = NULL;
 static int on_touches_move(object_t* _null, void* data, object_t* _null2, const char* sig)
 {
-  UNUSED(_null); UNUSED(_null2);UNUSED(sig);
-  sen_assert(data);
+//  UNUSED(_null); UNUSED(_null2);UNUSED(sig);
   touch_data_t *td = (touch_data_t *)data;
-  int i;
+  int i; touch_t* t;
+
+  sen_assert(data);
   for ( i = 0; i < td->num; ++i )
   {
     int  id = td->ids[i];
@@ -191,7 +195,7 @@ static int on_touches_move(object_t* _null, void* data, object_t* _null2, const 
     if (k == kh_end(g_touches_indexer))
       continue;
 
-    touch_t* t = kh_val(g_touches_indexer, k);
+    t = kh_val(g_touches_indexer, k);
 
     sen_touch_reset(t, t->id, td->xs[i], td->ys[i], 0);
 
@@ -200,14 +204,16 @@ static int on_touches_move(object_t* _null, void* data, object_t* _null2, const 
  //   _logfi("TOUCHES MOVE id=%d x=%.2f y=%.2f", td->ids[i], td->xs[i], td->ys[i]);
 
   }
-
+  UNUSED(_null); UNUSED(_null2);UNUSED(sig);
   return 0;
 }
 
 static int do_touches_end(touch_data_t *td, const void* signal)
 {
+  int i; touch_t* t;
+
   sen_assert(td);
-  int i;
+
   for ( i = 0; i < td->num; ++i )
   {
     int  id = td->ids[i];
@@ -215,7 +221,7 @@ static int do_touches_end(touch_data_t *td, const void* signal)
     if (k == kh_end(g_touches_indexer))
       continue;
 
-    touch_t* t = kh_val(g_touches_indexer, k);
+    t = kh_val(g_touches_indexer, k);
 
     sen_touch_reset(t, t->id, td->xs[i], td->ys[i], 0);
 
@@ -251,6 +257,8 @@ static int on_touches_cancel(object_t* _null, void* data, object_t* _null2, cons
 void
 sen_input_init()
 {
+  int i;
+
   sen_signal_connect_name("platform", "keyDown", &on_key_down, "input");
   sen_signal_connect_name("platform", "touchesBegin", &on_touches_begin, "input");
   sen_signal_connect_name("platform", "touchesEnd", &on_touches_end, "input");
@@ -267,7 +275,6 @@ sen_input_init()
   g_touches_indexer = kh_init(hmip);
   kh_resize(hmip, g_touches_indexer, MAX_TOUCHES);
 
-  int i;
   for (i = 0; i < MAX_TOUCHES; ++i)
     g_touches[i] = sen_touch_new();
 
@@ -277,11 +284,12 @@ sen_input_init()
 void
 sen_input_destroy()
 {
+  int i;
+
   sen_signal_release_emitter_name("input");
   sen_signal_disconnect_name("input",NULL,NULL);
 
 
-  int i;
   for (i = 0; i < MAX_TOUCHES; ++i)
     sen_touch_delete(g_touches[i]);
 

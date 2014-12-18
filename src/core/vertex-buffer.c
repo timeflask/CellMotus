@@ -6,7 +6,7 @@
 #include "lmath.h"
 #include "vertex-buffer.h"
 #include "logger.h"
-
+#include "utils.h"
 /**
  * Buffer status
  */
@@ -29,7 +29,7 @@ vertex_buffer_new( const char *format )
         return NULL;
     }
 
-    self->format = strdup( format );
+    self->format = sen_strdup( format );
 
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
@@ -46,11 +46,11 @@ vertex_buffer_new( const char *format )
 
         if (end == NULL)
         {
-            desc = strdup( start );
+            desc = sen_strdup( start );
         }
         else
         {
-            desc = strndup( start, end-start );
+            desc = sen_strndup( start, end-start );
         }
         attribute = vertex_attribute_parse( desc );
         start = end+1;

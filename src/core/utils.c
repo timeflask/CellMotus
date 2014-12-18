@@ -18,6 +18,23 @@ char *sen_strdup (const char *s)
     return d;
 }
 
+char *
+sen_strndup (const char *s, size_t n)
+{
+  char *result;
+  size_t len = strlen (s);
+
+  if (n < len)
+    len = n;
+
+  result = (char *) malloc (len + 1);
+  if (!result)
+    return 0;
+
+  result[len] = '\0';
+  return (char *) memcpy (result, s, len);
+}
+
 wchar_t *sen_strdupW (const wchar_t *s)
 {
   size_t memc = wcslen (s) * sizeof(wchar_t);

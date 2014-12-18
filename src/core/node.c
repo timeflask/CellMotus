@@ -112,7 +112,11 @@ sen_node_set_anchor(void* _self, float ax, float ay)
 const mat4*
 sen_node_model(void* _self)
 {
+  vec2 ap;
   node_t* self = (node_t*)_self;
+  float* data;
+  object_t* parent;
+
   if (self->updated&SEN_NODE_UPDATE_MODEL) {
 
   //  _logfi(".%f .%f", self->rotZ_X,self->posY);
@@ -149,7 +153,6 @@ sen_node_model(void* _self)
         sy = sinf(radiansY);
     }
 
-    vec2 ap;
     ap.x = self->anchorX * self->scaleX;
     ap.y = self->anchorY * self->scaleY;
 
@@ -157,7 +160,7 @@ sen_node_model(void* _self)
     y += sy * -ap.x +  cx * -ap.y;
 
 
-    float* data = self->model.data;
+    data = self->model.data;
     data[0]  = cy * self->scaleX;  data[1]  = sy * self->scaleX; data[2]  = 0; data[3]  = 0;
     data[4]  = -sx * self->scaleY; data[5]  = cx * self->scaleY; data[6]  = 0; data[7]  = 0;
     data[8]  = 0;                  data[9]  = 0;                 data[10] = 1; data[11] = 0;
@@ -168,7 +171,7 @@ sen_node_model(void* _self)
     //mat4_translate( &(self->model),ap.x,ap.y, 0);
     //mat4_translate( &(self->model),-ap.x,-ap.y, 0);
 
-    object_t* parent =  (((object_t*)_self)->parent);
+    parent =  (((object_t*)_self)->parent);
     if (parent) {
       mat4* parent_model = (mat4* )sen_node_model(parent);
       mat4_multiply( &(self->model) , parent_model );
@@ -193,9 +196,9 @@ static void
 sen_node_set_update_model(void* _self)
 {
   node_t* self = (node_t*)_self;
+  size_t i;
   self->updated |= SEN_NODE_UPDATE_MODEL;
   if (!self->children) return ;
-  size_t i;
   for (i = 0; i<self->children->size; ++i) {
     node_t* node = *(node_t**)vector_get(self->children, i);
     sen_node_set_update_model(node);
@@ -259,10 +262,11 @@ sen_node_sort_children_z(void* _self)
 void
 sen_render_node_children(void* _self)
 {
-  sen_assert(_self);
-  node_t* self = (node_t*)_self;
-  if (!self->children) return;
   size_t i;
+  node_t* self = (node_t*)_self;
+  sen_assert(_self);
+
+  if (!self->children) return;
   //sen_node_sort_children_z(_self);
   for (i = 0; i<self->children->size; ++i)
     sen_render_node( *(node_t**)vector_get(self->children, i) );
@@ -271,10 +275,11 @@ sen_render_node_children(void* _self)
 void
 sen_node_add_child(void* _self, void* node, int setParent)
 {
+  node_t* self = (node_t*)_self;
+
   sen_assert(_self);
   sen_assert(node);
 
-  node_t* self = (node_t*)_self;
   if (!self->children)
     self->children = vector_new( sizeof (node_t*) );
 
@@ -289,11 +294,12 @@ sen_node_add_child(void* _self, void* node, int setParent)
 void
 sen_node_remove_child(void* _self, const char* name, void *obj, uint32_t child_id)
 {
-  sen_assert(_self);
   node_t* self = (node_t*)_self;
-  if (!self->children) return;
-
   size_t i;
+
+  sen_assert(_self);
+
+  if (!self->children) return;
 
   if (name == NULL && obj == NULL && child_id == 0) {
     for (i = 0; i<self->children->size; ++i) {
@@ -322,11 +328,11 @@ sen_node_remove_child(void* _self, const char* name, void *obj, uint32_t child_i
 int
 sen_node_visit(void* _self, void* node_visitor, node_visitor_callback cb)
 {
-  sen_assert(_self);
+  size_t i;
   node_t* self = (node_t*)_self;
+  sen_assert(_self);
   if ( (*cb)(node_visitor,self) ) return 1;
   if (!self->children) return 0;
-  size_t i;
   for (i = 0; i<self->children->size; ++i) {
     node_t* node = *(node_t**)vector_get(self->children, i);
     if ( sen_node_visit(node, node_visitor, cb) ) return 1;
@@ -379,10 +385,11 @@ sen_node_moveTo(void* _self,float x, float y)
 void
 sen_node_Z(void* _self,float z)
 {
+  object_t* parent;
   node_t* self = (node_t*)_self;
  // if (self->posZ!=z) {
     self->posZ=z;
-    object_t* parent =  (((object_t*)_self)->parent);
+    parent =  (((object_t*)_self)->parent);
     if (parent) {
       sen_node_sort_children_z(parent);
     }

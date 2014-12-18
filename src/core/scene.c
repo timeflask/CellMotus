@@ -11,20 +11,17 @@
 
 
 void update_scene_bbox(object_t* _self, const vec4* vp){
-  if (!_self) return;
   node_t* self = (node_t* )_self;
   scene_t* sself = (scene_t* )_self;
-
   const vec4* rect = vp ? vp : sen_view_get_viewport();
-
   camera_t* cam = sen_camera();
-
-  sen_camera_update_view((object_t*)cam, rect);
-
   const mat4* mv = sen_node_model(cam);
-
   float sx =  mv->data[12];
   float sy =  mv->data[13];
+
+  if (!_self) return;
+
+  sen_camera_update_view((object_t*)cam, rect);
 
   self->bbox.x = -rect->width/2 - sx;
   self->bbox.y = -rect->height/2 - sy;
@@ -78,9 +75,10 @@ static void scenes_add_global(scene_t* s)
 }
 static void scenes_del_global(scene_t* s)
 {
+  khiter_t pos;
   sen_assert(s);
   if (g_scenes == NULL) return;
-  khiter_t pos = kh_get(hmsp, g_scenes, obj_name_(s));
+  pos = kh_get(hmsp, g_scenes, obj_name_(s));
   if ( pos != kh_end(g_scenes) ) {
     kh_del(hmsp, g_scenes, pos);
     if (kh_size(g_scenes) == 0) {
@@ -93,12 +91,11 @@ static void scenes_del_global(scene_t* s)
 scene_t*
 sen_scene_new(const char* name)
 {
-  _logfi("-scene init");
   struct_malloc(scene_t, self);
+  _logfi("-scene init");
   sen_node_init((node_t*)self, name, NULL);
   self->sig_resize = sen_signal_get("resize", (object_t*)self);
   on_view_change((object_t*)self, (void*)(sen_view_get_viewport()), NULL, NULL );
-
 
   scenes_add_global(self);
   return self;
@@ -125,9 +122,10 @@ scene_t* g_scene = 0;
 void
 sen_set_scene_name(const char* name)
 {
+  khiter_t pos;
   sen_assert(name);
   if (g_scenes == NULL) return;
-  khiter_t pos = kh_get(hmsp, g_scenes, name);
+  pos = kh_get(hmsp, g_scenes, name);
   if ( pos != kh_end(g_scenes) ) {
     sen_set_scene ( kh_val(g_scenes, pos) );
   }
@@ -143,8 +141,8 @@ static int invalidate_nodes_cb (void* self, node_t* node)
 void
 sen_scenes_reload()
 {
-  if (g_scenes == NULL) return;
   scene_t* scene;
+  if (g_scenes == NULL) return;
   kh_foreach_value(g_scenes, scene, sen_node_visit(scene, NULL, &invalidate_nodes_cb) );
 }
 

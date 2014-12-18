@@ -15,6 +15,8 @@
 void
 asset_init(asset_t* self, const char* path)
 {
+  FILE* stream;
+
   sen_assert(self);
   sen_assert(path);
 
@@ -31,7 +33,7 @@ asset_init(asset_t* self, const char* path)
     self->path = sen_strdup(path);
   _logfi("Read asset from %s", self->path);
 
-  FILE* stream = fopen(self->path, "r");
+  stream = fopen(self->path, "r");
   sen_assert (stream != NULL);
 
   fseek(stream, 0, SEEK_END);
@@ -51,8 +53,8 @@ asset_init(asset_t* self, const char* path)
 asset_t*
 asset_new(const char* path)
 {
-  sen_assert(path);
   struct_malloc(asset_t, self);
+  sen_assert(path);
   memset(self, 0, sizeof(asset_t));
   asset_init(self, path);
   return self;
@@ -76,10 +78,12 @@ asset_delete(asset_t* self)
 int
 asset_exists(const char* _path)
 {
-  if ( _path == NULL || *_path == '\0') return 0;
   char* path = (char*)_path;
   int bFound = 0;
-  FILE *fp = fopen(path, "r");
+  FILE *fp;
+
+  if ( _path == NULL || *_path == '\0') return 0;
+  fp = fopen(path, "r");
   if(fp)
   {
     bFound = 1;

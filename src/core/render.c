@@ -30,7 +30,7 @@ sen_render_clear()
     glClearColor( color->x, color->y, color->z, color->w );
   }
   else
-    glClearColor( 0.1, 0.1, 0.1, 1 );
+    glClearColor( 0.1f, 0.1f, 0.1f, 1.0f );
   //glClear( GL_COLOR_BUFFER_BIT ); //| GL_DEPTH_BUFFER_BIT
   glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -106,8 +106,8 @@ tex_group_new(const texture_t* tex, const font_t* font)
 void
 tex_group_delete(tex_group_t* self)
 {
-  sen_assert(self);
   shader_group_t* sg;
+  sen_assert(self);
   kh_foreach_value(self->sgs, sg, shader_group_delete(sg));
   kh_destroy(hmsp, self->sgs);
   free(self);
@@ -133,8 +133,8 @@ blend_group_new(unsigned int key)
 void
 blend_group_delete(blend_group_t* self)
 {
-  sen_assert(self);
   tex_group_t* tg;
+  sen_assert(self);
   kh_foreach_value(self->tgs, tg, tex_group_delete(tg));
   kh_destroy(hmsp, self->tgs);
 
@@ -153,18 +153,24 @@ get_group_buffer(vertex_buffer_t* buff,
 {
   tex_group_t* tg;
   blend_group_t* bg;
-
-
+  unsigned int bkey;
+  khiter_t i,j;
+  khash_t(hmsp)* tgs;
   const char* atlas_name = NO_ATLAS;
+  char buffer [128];
+  vec4* v;
+  int z;
+  shader_group_t* sg;
+  khash_t(hmsp)*  sgs;
 
   if (tex)
     atlas_name = sen_texture_atlas(tex);
   else if (font)
     atlas_name = sen_font_atlas(font);
 
-  unsigned int bkey =  (unsigned int)blend;
+  bkey =  (unsigned int)blend;
 
-  khiter_t i = kh_get(hmip, g_bgs, bkey);
+  i = kh_get(hmip, g_bgs, bkey);
 
   if (i != kh_end(g_bgs))
     bg = kh_val(g_bgs, i);
@@ -174,9 +180,9 @@ get_group_buffer(vertex_buffer_t* buff,
   }
   bg->num++;
 
-  khash_t(hmsp)* tgs = bg->tgs;
+  tgs = bg->tgs;
 
-  khiter_t j = kh_get(hmsp, tgs, atlas_name);
+  j = kh_get(hmsp, tgs, atlas_name);
   if (j != kh_end(tgs))
     tg = kh_val(tgs, j);
   else {
@@ -185,13 +191,11 @@ get_group_buffer(vertex_buffer_t* buff,
   }
 
   tg->num++;
-  vec4* v = (vec4*) buff->vertices->items;
-  int z = (int) (v->z * 10000);
-  char buffer [128];
+  v = (vec4*) buff->vertices->items;
+  z = (int) (v->z * 10000);
 
   sprintf (buffer, "%05d%s",z,program->name);
-  shader_group_t* sg;
-  khash_t(hmsp)*  sgs = tg->sgs;
+  sgs = tg->sgs;
   i = kh_get(hmsp, sgs, buffer);
   if (i != kh_end(sgs))
     sg = kh_val(sgs, i);
@@ -240,7 +244,7 @@ sen_render_push_buffer(vertex_buffer_t* buff,
   //  vertex_buffer_push_back_indicies(gb, buff->indicies->items, buff->indicies->size );
 
     vertex_buffer_push_back( gb,
-                             buff->vertices->items + ivsize*item->x, item->y,
+                             (char*)(buff->vertices->items) + ivsize*item->x, item->y,
                              indices, 6);
     //vertex_buffer_insert( gb, 0,
       //                       buff->vertices->items + ivsize*item->x, item->y,
@@ -314,30 +318,35 @@ zcmp (const void *pn1, const void *pn2)
 size_t
 sen_render_flush(int clear_buff)
 {
-  gl_check_error();
+//  gl_check_error();
   //_logfi("1");
-
-  khint_t i,k;
+  blend_group_t* bg;
+  khint_t i,k,j;
   size_t total = 0;
+  khash_t(hmsp)*  tgs;
   camera_t* cam = sen_camera();
+  tex_group_t* tg;
+  khash_t(hmsp)* sgs;
+  shader_group_t* sg;
+
   vector_clear(zsorter);
   for (k = kh_begin(g_bgs); k != kh_end(g_bgs); ++k)
   {
     if (!kh_exist(g_bgs,k)) continue;
-    blend_group_t* bg = kh_val(g_bgs, k);
+    bg = kh_val(g_bgs, k);
 
     if (bg->num == 0) {
       kh_del(hmip,g_bgs,k);
       continue;
     }
-    khash_t(hmsp)*  tgs = bg->tgs;
+    tgs = bg->tgs;
 
    // set_blending( (blend_func) (kh_key(g_bgs, k))  );
 
     for (i = kh_begin(tgs); i != kh_end(tgs); ++i)
     {
       if (!kh_exist(tgs,i)) continue;
-      tex_group_t* tg = kh_val(tgs, i);
+      tg = kh_val(tgs, i);
       if (tg->num == 0) {
         kh_del(hmsp,tgs,i);
         continue;
@@ -350,13 +359,12 @@ sen_render_flush(int clear_buff)
         sen_font_bind(tg->font);
         */
 
-      khash_t(hmsp)*  sgs = tg->sgs;
-      khint_t j;
+      sgs = tg->sgs;
 
       for (j = kh_begin(sgs); j != kh_end(sgs); ++j)
       {
         if (!kh_exist(sgs,j)) continue;
-        shader_group_t* sg = kh_val(sgs, j);
+        sg = kh_val(sgs, j);
         if (sg->num == 0 || !sg->buff) {
           kh_del(hmsp,sgs,j);
           continue;
@@ -384,7 +392,7 @@ sen_render_flush(int clear_buff)
   }
   if (zsorter->size > 0)
     vector_sort(zsorter, zcmp);
-  size_t j;
+
   for (j = 0; j < zsorter->size; j++) {
     shader_group_t* sg = *(shader_group_t**)vector_get(zsorter, j);
    // _logfi("%s %d",sg->name, sg->z);
@@ -420,24 +428,28 @@ sen_render_flush(int clear_buff)
 void
 sen_render_reload()
 {
-  khint_t i,k;
+  blend_group_t* bg;
+  khash_t(hmsp)*  tgs;
+  khint_t i,k,j;
+  tex_group_t* tg;
+  khash_t(hmsp)*  sgs;
+  shader_group_t* sg;
+
   for (k = kh_begin(g_bgs); k != kh_end(g_bgs); ++k)
   {
     if (!kh_exist(g_bgs,k)) continue;
-    blend_group_t* bg = kh_val(g_bgs, k);
-
-    khash_t(hmsp)*  tgs = bg->tgs;
+    bg = kh_val(g_bgs, k);
+    tgs = bg->tgs;
 
     for (i = kh_begin(tgs); i != kh_end(tgs); ++i)
     {
       if (!kh_exist(tgs,i)) continue;
-      tex_group_t* tg = kh_val(tgs, i);
-      khash_t(hmsp)*  sgs = tg->sgs;
-      khint_t j;
+      tg = kh_val(tgs, i);
+      sgs = tg->sgs;
       for (j = kh_begin(sgs); j != kh_end(sgs); ++j)
       {
         if (!kh_exist(sgs,j)) continue;
-        shader_group_t* sg = kh_val(sgs, j);
+        sg = kh_val(sgs, j);
 
         if (sg->buff) {
           vertex_buffer_delete( sg->buff );

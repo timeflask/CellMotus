@@ -44,11 +44,11 @@ void lua_error_exit(const char *msg)
 
 void lua_register_loader(lua_CFunction func)
 {
+  int i;
   sen_assert(func);
   lua_getglobal(g_Lua, "package");
   lua_getfield(g_Lua, -1, "loaders");
   lua_pushcfunction(g_Lua, func);
-  int i;
   for (i = (int)(lua_objlen(g_Lua, -2) + 1); i > 2; --i)
   {
       lua_rawgeti(g_Lua, -2, i - 1);
@@ -94,17 +94,29 @@ char* substring(const char* str, size_t begin, size_t len)
   if (str == 0 || lens == 0 || lens < begin || lens < (begin+len))
     return 0;
 
-  return strndup(str + begin, len);
+  return sen_strndup(str + begin, len);
 }
 
 int lua_loader(lua_State *L)
 {
 
   const char *lstr = luaL_checkstring(L, 1);
-  sen_assert(lstr);
-  char* filename = sen_strdup(lstr);
+  char* filename; char* c_pos;
+  const char* searchpath;
+  int spLen;
+  int begin;
+  char* c_next;
+  int next;
+  asset_t* script_asset = NULL;
+  char fn_buffer[256];
+  char* prefix;
+  int pos;
+  char* tmp;
 
-  char* c_pos = strrstr(filename, ".lua");
+  sen_assert(lstr);
+  filename = sen_strdup(lstr);
+
+  c_pos = strrstr(filename, ".lua");
 
   if (c_pos) {
     int pos = c_pos - filename;
@@ -121,21 +133,19 @@ int lua_loader(lua_State *L)
 
   lua_getglobal(L, "package");
   lua_getfield(L, -1, "path");
-  const char* searchpath = lua_tostring(L, -1);
-  int spLen = strlen(searchpath);
+  searchpath = lua_tostring(L, -1);
+  spLen = strlen(searchpath);
   lua_pop(L, 1);
-  int begin = 0;
-  char* c_next = strchr(searchpath, ';');
-  int next = c_next ? c_next - searchpath : -1;
+  begin = 0;
+  c_next = strchr(searchpath, ';');
+  next = c_next ? c_next - searchpath : -1;
 
-  asset_t* script_asset = NULL;
-  char fn_buffer[256];
   do
   {
       if (next < 0 )
           next = strlen(searchpath);
 
-      char* prefix = substring(searchpath, begin, next - begin );
+      prefix = substring(searchpath, begin, next - begin );
       if (prefix[0] == '.' && prefix[1] == '/')
       {
         char* tmp = prefix;
@@ -144,9 +154,9 @@ int lua_loader(lua_State *L)
       }
 
       c_pos = strstr(prefix,"?.lua");
-      int pos = c_pos ? c_pos - prefix : -1;
+      pos = c_pos ? c_pos - prefix : -1;
 
-      char* tmp = substring(prefix, 0, pos);
+      tmp = substring(prefix, 0, pos);
       free(prefix);
       *fn_buffer = '\0';
       if (tmp) {
@@ -183,8 +193,8 @@ int lua_loader(lua_State *L)
 int
 sen_lua_execFile(const char* filename)
 {
-  sen_assert(filename);
   char buff[256];
+  sen_assert(filename);
   sprintf(buff, "require \"%.200s\"", filename);
   return sen_lua_execString(buff);
 
@@ -201,6 +211,8 @@ sen_lua_execString(const char* code)
 
 int lua_exec_function(int numArgs)
 {
+  int error = 0;
+  int ret = 0;
   int functionIndex = -(numArgs + 1);
   if (!lua_isfunction(g_Lua, functionIndex))
   {
@@ -209,7 +221,6 @@ int lua_exec_function(int numArgs)
       return 0;
   }
 
-  int error = 0;
 
   error = lua_pcall(g_Lua, numArgs, 1, 0);
 
@@ -219,7 +230,6 @@ int lua_exec_function(int numArgs)
     return 0;
   }
 
-  int ret = 0;
   if (lua_isnumber(g_Lua, -1))
   {
       ret = (int)lua_tointeger(g_Lua, -1);

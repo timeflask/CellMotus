@@ -46,10 +46,12 @@ sen_shapes_line(const vec2* start, const vec2* end)
   V3F_C4F vertices[2] = { { start->x, start->y, 0, 1, 1,1,1,1 },
                           { end->x, end->y, 0, 1, 1,1,1,1 },
   };
+  mat4 mvp;
+
   vertex_buffer_clear(g_buffer);
   vertex_buffer_push_back_vertices(g_buffer, vertices, 2);
 
-  mat4 mvp; mat4_set_identity(&mvp);
+  mat4_set_identity(&mvp);
 
   sen_shader_use(g_shader);
   {

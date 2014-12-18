@@ -17,12 +17,15 @@ sen_settings_get_str(const char* key, const char* defaultValue)
 
   char* path = (char*)key;
   FILE *fp = fopen(path, "rb");
+  long fsize;
+  char *string;
+
   if(fp)
   {
     fseek(fp, 0, SEEK_END);
-    long fsize = ftell(fp);
+    fsize = ftell(fp);
     fseek(fp, 0, SEEK_SET);
-    char *string = malloc(fsize + 1);
+    string = malloc(fsize + 1);
     fread(string, fsize, 1, fp);
     string[fsize] = 0;
     fclose(fp);

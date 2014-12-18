@@ -66,7 +66,7 @@ uniform_t*
 uniform_data_new( const shader_t* parent, const char* name, GLint loc, GLenum type, GLint size)
 {
   struct_malloc(uniform_t, self);
-  self->name = strdup(name); //!!!
+  self->name = sen_strdup(name); //!!!
   self->location = loc;
   self->size = size;
   self->type = type;
@@ -85,9 +85,9 @@ static void
 shader_data_clear_uniforms(shader_data_t* self)
 {
   uniform_t* data;
+  int i;
   kh_foreach_value(self->uniforms, data, uniform_data_delete(data) );
   kh_clear(hmsp, self->uniforms);
-  int i;
   for (i = 0; i < DATAMAP_MAX; ++i)
     if (self->datamap[i].data)
       free(self->datamap[i].data);
@@ -97,14 +97,17 @@ shader_data_clear_uniforms(shader_data_t* self)
 static void
 shader_data_reload(shader_data_t* self)
 {
+  GLint link_status;
+  GLuint vert_id, frag_id;
+  GLchar messages[256];
+
   sen_assert(self);
 
   self->program_id = glCreateProgram( );
   sen_assert(self->program_id != 0);
-  GLint link_status;
 
-  GLuint vert_id = shader_data_compile( self->vdata, GL_VERTEX_SHADER);
-  GLuint frag_id = shader_data_compile( self->fdata, GL_FRAGMENT_SHADER);
+  vert_id = shader_data_compile( self->vdata, GL_VERTEX_SHADER);
+  frag_id = shader_data_compile( self->fdata, GL_FRAGMENT_SHADER);
 
   glAttachShader( self->program_id, vert_id );
   glAttachShader( self->program_id, frag_id );
@@ -117,7 +120,6 @@ shader_data_reload(shader_data_t* self)
   glGetProgramiv( self->program_id, GL_LINK_STATUS, &link_status );
   if (link_status == GL_FALSE)
   {
-      GLchar messages[256];
       glGetProgramInfoLog( self->program_id, sizeof(messages), 0, &messages[0] );
       _logfe( "%s\n", messages );
       exit(EXIT_FAILURE);
@@ -138,9 +140,10 @@ shader_data_reload(shader_data_t* self)
 
 static int uniform_datamap_update(const uniform_t* uni, const GLvoid* p, int size)
 {
+  uniform_datamap_t* ud;
   sen_assert(uni);
   if (uni->location < 0 || uni->location >= DATAMAP_MAX) return 0;
-  uniform_datamap_t* ud = &(((shader_data_t*) uni->shader->handle)->datamap[uni->location]);
+  ud = &(((shader_data_t*) uni->shader->handle)->datamap[uni->location]);
   if ( ud->data == 0 ) {
     ud->data = malloc(size);
     ud->size = size;
@@ -160,10 +163,14 @@ static int uniform_datamap_update(const uniform_t* uni, const GLvoid* p, int siz
 const uniform_t*
 sen_shader_uniform(const shader_t* shader, const char* uniform_name)
 {
+  shader_data_t* data;
+  khiter_t k;
+
   sen_assert(shader);
   sen_assert(uniform_name);
-  shader_data_t* data = (shader_data_t*)(shader->handle);
-  khiter_t k = kh_get(hmsp, data->uniforms, uniform_name);
+
+  data = (shader_data_t*)(shader->handle);
+  k = kh_get(hmsp, data->uniforms, uniform_name);
   if ( k == kh_end(data->uniforms) ) {
     _logfw("uniform [%s] not found in [%s]", uniform_name, shader->name);
     return 0;
@@ -179,13 +186,13 @@ shader_data_new(const char* name,
                 const char* fdata,
                 const int   fsize)
 {
-  sen_assert( vdata && fdata );
   struct_malloc(shader_data_t, self);
+  sen_assert( vdata && fdata );
   self->vdata = (char*)calloc(sizeof(char), vsize+1);
   memcpy(self->vdata, vdata, vsize);
   self->fdata = (char*)calloc(sizeof(char), fsize+1);
   memcpy(self->fdata, fdata, fsize);
-  self->name          = strdup(name);
+  self->name          = sen_strdup(name);
 
   self->refcount      = 0;
   self->uniforms = kh_init(hmsp);
@@ -225,7 +232,7 @@ typedef struct shader_manager_t{
 
 static shader_manager_t* g_self = 0;
 
-static inline const preloaded_shader_t*
+static const preloaded_shader_t*
 preloaded_shader_find(const char* name)
 {
   int i;
@@ -247,8 +254,8 @@ shader_manager_new()
 void
 shader_manager_delete(shader_manager_t* self)
 {
-  sen_assert(self);
   shader_data_t* data;
+  sen_assert(self);
   kh_foreach_value(self->shaders, data, shader_data_delete(data) );
   kh_destroy(hmsp, self->shaders);
 
@@ -262,16 +269,19 @@ shader_manager_load_shader( const char * name,
                      const char * fdata,
                      const int    fdata_size)
 {
+  khiter_t k;
+  shader_data_t* new_data;
+
   sen_assert(name);
   sen_assert(vdata && vdata_size);
   sen_assert(fdata && fdata_size);
-  khiter_t k = kh_get(hmsp, g_self->shaders, name);
+  k = kh_get(hmsp, g_self->shaders, name);
   if (k != kh_end(g_self->shaders)) {
     _logfi("shader [%s] already in use", name);
     return;
   }
 
-  shader_data_t* new_data = shader_data_new(
+  new_data = shader_data_new(
       name,
       vdata, vdata_size,
       fdata, fdata_size);
@@ -289,8 +299,8 @@ sen_shaders_load(const char* name,
                  const char* fs_name)
 {
   const preloaded_shader_t* vsp = preloaded_shader_find(vs_name);
-  sen_assert(vsp);
   const preloaded_shader_t* fsp = preloaded_shader_find(fs_name);
+  sen_assert(vsp);
   sen_assert(fsp);
   shader_manager_load_shader(name, vsp->data, vsp->size, fsp->data, fsp->size);
 }
@@ -316,22 +326,28 @@ sen_shaders_load_files(const char* name,
 const shader_t*
 sen_shaders_get(const char* name)
 {
+  khiter_t k;
+  shader_data_t* data;
+
   sen_assert(name);
-  khiter_t k = kh_get(hmsp, g_self->shaders, name );
+  k = kh_get(hmsp, g_self->shaders, name );
   if (k == kh_end(g_self->shaders))
     return 0;
-  shader_data_t* data = (shader_data_t*) kh_val( g_self->shaders, k );
+  data = (shader_data_t*) kh_val( g_self->shaders, k );
   data->refcount++;
   return & (data->shader);
 }
 
 void
 sen_shaders_release(const shader_t* shader){
+  khiter_t k;
+  shader_data_t* data;
+
   sen_assert(shader);
-  khiter_t k = kh_get(hmsp, g_self->shaders, shader->name );
+  k = kh_get(hmsp, g_self->shaders, shader->name );
   if (k == kh_end(g_self->shaders))
     return ;
-  shader_data_t* data = (shader_data_t*) kh_val( g_self->shaders, k );
+  data = (shader_data_t*) kh_val( g_self->shaders, k );
   if ( data->refcount ) data->refcount--;
 }
 
@@ -354,9 +370,9 @@ sen_shader_use(const shader_t* shader){
 
 void
 sen_shaders_reload() {
+  shader_data_t* data;
   _logfi("*** RELOAD SHADERS ***");
   sen_assert(g_self);
-  shader_data_t* data;
   kh_foreach_value(g_self->shaders, data, shader_data_reload(data) );
   sen_shader_use(NULL);
   _logfi("*** END RELOAD SHADERS ***");
@@ -365,9 +381,9 @@ sen_shaders_reload() {
 void
 sen_shaders_collect()
 {
+  shader_data_t* data; int exit_flag;
   _logfi("*** COLLECT SHADERS ***");
   sen_assert(g_self);
-  shader_data_t* data; int exit_flag;
   do {
     exit_flag = 0;
     kh_foreach_value(g_self->shaders, data,
@@ -481,7 +497,8 @@ shader_data_parse_attrs(shader_data_t* self)
 
 static void   shader_data_parse_uniforms(shader_data_t* self)
 {
-  GLint unis;
+  GLint unis; GLint loc;
+
   shader_data_clear_uniforms(self);
   glGetProgramiv(self->program_id, GL_ACTIVE_UNIFORMS, &unis);
   if(unis > 0) {
@@ -501,7 +518,7 @@ static void   shader_data_parse_uniforms(shader_data_t* self)
               char* c = strrchr(name, '[');
               if(c) *c = '\0';
             }
-            GLint loc = glGetUniformLocation(self->program_id, name);
+            loc = glGetUniformLocation(self->program_id, name);
             _logfi(" UNI[%s], loc=%d", name, loc);
             if (loc >= 0) {
               uniform_t* new_uni = uniform_data_new(&(self->shader), name, loc, type, size );

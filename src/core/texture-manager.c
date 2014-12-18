@@ -55,15 +55,15 @@ int texture_node_cmp(const void * pt1, const void *pt2)
 static atlas_node_t*
 atlas_node_new (const char* name, size_t atlas_size)
 {
-  struct_malloc(atlas_node_t,self);
   static uint32_t uniqCounter = 0;
-  static char buffer[32];
+  char buffer[32];
+  struct_malloc(atlas_node_t,self);
 
   if (name)
-    self->name = strdup(name);
+    self->name = sen_strdup(name);
   else {
     sprintf(buffer, "auto_%zd_atlas_%u",atlas_size, ++uniqCounter);
-    self->name = strdup(buffer);
+    self->name = sen_strdup(buffer);
   }
   self->atlas = 0;
   self->size = atlas_size;
@@ -94,10 +94,10 @@ atlas_node_delete(atlas_node_t* self)
 static texture_node_t*
 texture_node_new(const char* filename,  const char* name,  atlas_node_t* ref)
 {
-  sen_assert(ref);
   struct_malloc(texture_node_t,self);
-  self->name = strdup(name);
-  self->filename = strdup(filename);
+  sen_assert(ref);
+  self->name = sen_strdup(name);
+  self->filename = sen_strdup(filename);
   self->ref = ref;
   self->order = 0;
 
@@ -133,9 +133,9 @@ static texture_manager_t* g_self = 0;
 //------------------------------------------------------- Manager new
 static texture_manager_t*
 texture_manager_new(size_t default_atlas_size) {
+  struct_malloc(texture_manager_t, self);
   _logfi("Create new texture manager");
 
-  struct_malloc(texture_manager_t, self);
   self->default_size = default_atlas_size;
   self->current = 0;
 
@@ -150,13 +150,13 @@ texture_manager_new(size_t default_atlas_size) {
 
 static void clear_nodes(texture_manager_t* self)
 {
+  texture_node_t* tex;
+  atlas_node_t* atl;
   sen_assert(self);
 
-  texture_node_t* tex;
   kh_foreach_value(self->tex_map, tex, texture_node_delete(tex) );
   kh_clear(hmsp, self->tex_map);
 
-  atlas_node_t* atl;
   kh_foreach_value(self->atlas_map, atl, atlas_node_delete( atl) );
   kh_clear(hmsp, self->atlas_map);
 }
@@ -204,14 +204,14 @@ is_good_atlas_size (size_t x)
 }
 
 //------------------------------------------------------- Manager find atlas node
-static inline atlas_node_t*
+static atlas_node_t*
 atlas_find(const char* atlas_name, khiter_t * pos)
 {
   *pos = kh_get(hmsp, g_self->atlas_map, atlas_name);
   return *pos != kh_end(g_self->atlas_map) ? kh_val(g_self->atlas_map, *pos) : 0;
 }
 
-static inline texture_node_t*
+static texture_node_t*
 tex_find(const char* name, khiter_t * pos)
 {
   *pos = kh_get(hmsp, g_self->tex_map, name);
@@ -222,6 +222,16 @@ tex_find(const char* name, khiter_t * pos)
 static void
 atlas_reload( atlas_node_t* a_node )
 {
+  vector_t *textures;
+  texture_node_t* t_node;
+  size_t i;
+  size_t width;
+  size_t height;
+  image_t* img;
+  ivec4 reg;
+  float sz;
+  wchar_t* tmp;
+
   sen_assert(g_self);
 
   if (a_node->atlas)
@@ -232,8 +242,7 @@ atlas_reload( atlas_node_t* a_node )
   a_node->atlas = texture_atlas_new(a_node->size, a_node->size, 4);
 
 
-  vector_t *textures = vector_new( sizeof (texture_node_t*) );
-  texture_node_t* t_node;
+  textures = vector_new( sizeof (texture_node_t*) );
   kh_foreach_value(g_self->tex_map, t_node,
       if ( t_node->ref == a_node ) {
         vector_push_back(textures, &t_node);
@@ -241,16 +250,15 @@ atlas_reload( atlas_node_t* a_node )
   );
   if (textures->size > 1)
     vector_sort(textures, &texture_node_cmp);
-  size_t i;
   for (i=0;i<textures->size;++i) {
     t_node = *(texture_node_t**)vector_get(textures, i);
     if (t_node->tex != NULL) {
-      image_t* img = image_new(t_node->filename);
-      ivec4 reg = texture_atlas_get_region(a_node->atlas, img->width + 1, img->height + 1);
+      img = image_new(t_node->filename);
+      reg = texture_atlas_get_region(a_node->atlas, img->width + 1, img->height + 1);
       sen_assert( reg.x > 0 );
       texture_atlas_set_region(a_node->atlas, reg.x, reg.y, img->width, img->height, img->raw_data, img->stride);
-      size_t width  = a_node->atlas->width;
-      size_t height = a_node->atlas->width;
+      width  = a_node->atlas->width;
+      height = a_node->atlas->height;
       t_node->tex->coords.x = reg.x/(float)width;
       t_node->tex->coords.y = reg.y/(float)height;
       t_node->tex->coords.z = (reg.x + img->width)/(float)width;
@@ -260,8 +268,8 @@ atlas_reload( atlas_node_t* a_node )
     else if ( t_node->font != NULL )
     {
       //font_t* font = _sen_font_new(t_node->filename, t_node->font->size, t_node->font->alphabet, a_node->atlas);
-      size_t sz = t_node->font->size;
-      wchar_t* tmp = sen_strdupW(t_node->font->alphabet);
+      sz = (t_node->font->size);
+      tmp = sen_strdupW(t_node->font->alphabet);
       sen_font_clean(t_node->font);
       sen_font_init(t_node->font, t_node->filename, sz, tmp, a_node->atlas);
       free(tmp);
@@ -282,13 +290,15 @@ static void
 sen_atlas_select(const char* atlas_name,
                  size_t      atlas_size)
 {
-  sen_assert(g_self);
   texture_manager_t* self = (texture_manager_t* )g_self;
+  khiter_t i;
+  atlas_node_t* found;
+
+  sen_assert(g_self);
 
   if (atlas_name) {
     if (!self->current || strcmp(atlas_name, self->current->name) ) {
-      khiter_t i;
-      atlas_node_t* found = atlas_find(atlas_name, &i);
+      found = atlas_find(atlas_name, &i);
       if (found) {
        _logfi (" current texture atlas => %s", found->name);
         self->current = found;
@@ -331,32 +341,40 @@ sen_textures_load(const char* filename,
                 const char* atlas_name,
                 size_t atlas_size)
 {
-  sen_assert(g_self);
   texture_manager_t* self = (texture_manager_t* )g_self;
+  const char* _name;
+  khiter_t i;
+  texture_node_t* found;
+  image_t* img;
+  ivec4 reg;
+  atlas_node_t* new_node;
+  texture_node_t* new_tex;
+  size_t width, height;
+
+  sen_assert(g_self);
 
   sen_atlas_select(atlas_name, atlas_size);
 
   if (filename == NULL)
     return;
 
-  const char* _name = name?name:filename;
+  _name = name?name:filename;
+  found = tex_find(_name, &i);
 
-  khiter_t i;
-  texture_node_t* found = tex_find(_name, &i);
   if (found) {
    _logfi ("texture name %s already loaded to %s, refcount=%d", found->name, found->ref->name, found->ref->refcount);
    return;
   }
 
-  image_t* img = image_new(filename);
+  img = image_new(filename);
   atlas_reload( self->current );
-  ivec4 reg = texture_atlas_get_region(self->current->atlas, img->width+1, img->height+1);
+  reg = texture_atlas_get_region(self->current->atlas, img->width+1, img->height+1);
   //
   if (reg.x < 0 || reg.y < 0) {
     _logfw (" current atlas %s is full, creating new ...", self->current->name);
     if (atlas_size == 0)
       atlas_size = self->current->atlas->width;
-    atlas_node_t* new_node = atlas_node_new(atlas_name, max(atlas_size, max(img->width, img->height)) );
+    new_node = atlas_node_new(atlas_name, max(atlas_size, max(img->width, img->height)) );
     kh_insert(hmsp, self->atlas_map, new_node->name, new_node);
     _logfi (" current texture atlas => %s", new_node->name);
     self->current = new_node;
@@ -366,9 +384,9 @@ sen_textures_load(const char* filename,
 
 
   texture_atlas_set_region(self->current->atlas, reg.x, reg.y, img->width, img->height, img->raw_data, img->stride);
-  texture_node_t* new_tex = texture_node_new(filename,_name, self->current);
-  size_t width  = self->current->atlas->width;
-  size_t height = self->current->atlas->width;
+  new_tex = texture_node_new(filename,_name, self->current);
+  width  = self->current->atlas->width;
+  height = self->current->atlas->height;
   if (new_tex->tex == NULL) {
     new_tex->tex = (texture_t*)malloc(sizeof(texture_t));
     new_tex->tex->name = new_tex->name;
@@ -399,18 +417,22 @@ sen_textures_load_fontW(const char*      filename,
                        const char*      atlas_name,
                        size_t           atlas_size)
 {
-  sen_assert(g_self);
   texture_manager_t* self = (texture_manager_t* )g_self;
+  const char* _name;
+  khiter_t i;
+  texture_node_t* found;
+  font_t* font;
+  texture_node_t* new_tex;
+
+  sen_assert(g_self);
 
   sen_atlas_select(atlas_name, atlas_size);
 
   if (filename == NULL)
     return;
 
-  const char* _name = name?name:filename;
-
-  khiter_t i;
-  texture_node_t* found = tex_find(_name, &i);
+  _name = name?name:filename;
+  found = tex_find(_name, &i);
   if (found) {
    _logfi ("texture name %s already loaded to %s, refcount=%d", found->name, found->ref->name, found->ref->refcount);
    return;
@@ -418,9 +440,9 @@ sen_textures_load_fontW(const char*      filename,
 
   atlas_reload( self->current );
 
-  font_t* font = sen_font_new(filename, font_size, alphabet, self->current->atlas);
+  font = sen_font_new(filename, font_size, alphabet, self->current->atlas);
 
-  texture_node_t* new_tex = texture_node_new(filename,_name, self->current);
+  new_tex = texture_node_new(filename,_name, self->current);
   font->name = new_tex->name;
   font->id = 0;
   font->_node = new_tex->ref;
@@ -448,6 +470,7 @@ static void
 atlas_unload( atlas_node_t* found, khiter_t pos)
 {
   texture_node_t* node;  int flag;
+  atlas_node_t* anode;
   do {
     flag = 0;
     kh_foreach_value(g_self->tex_map, node,
@@ -462,10 +485,9 @@ atlas_unload( atlas_node_t* found, khiter_t pos)
 
   if (found == g_self->current) {
      g_self->current = 0;
-     atlas_node_t* node;
-     kh_foreach_value(g_self->atlas_map, node,
-       if (strcmp(found->name, node->name)) {
-         g_self->current = node;
+     kh_foreach_value(g_self->atlas_map, anode,
+       if (strcmp(found->name, anode->name)) {
+         g_self->current = anode;
        }
      );
      _logfi (" current texture atlas => %s", g_self->current->name);
@@ -478,15 +500,16 @@ atlas_unload( atlas_node_t* found, khiter_t pos)
 void
 sen_textures_collect(const char* atlas_name)
 {
+  atlas_node_t* found;
+  khiter_t i;
+  atlas_node_t* node;
 
   sen_assert(g_self);
   _logfi("*** COLLECT TEXTURES ***");
 
   if (atlas_name) {
-    atlas_node_t* found;
     do {
       _logfi (" -unloading %s ", atlas_name);
-      khiter_t i;
       found = atlas_find(atlas_name, &i);
       if (found && found->refcount == 0)
         atlas_unload(found, i);
@@ -502,9 +525,8 @@ sen_textures_collect(const char* atlas_name)
   }
   else {
     _logfi ("Textures clearing...");
-    khiter_t i;
     do {
-      atlas_node_t* found = 0; atlas_node_t* node;
+      found = 0;
       kh_foreach_value(g_self->atlas_map, node,
         if (node->refcount == 0) {
           found = node;
@@ -520,7 +542,6 @@ sen_textures_collect(const char* atlas_name)
     } while (1);
     _logfi ("Textures clearing done!");
 #ifdef SEN_DEBUG
-    atlas_node_t* node;
     kh_foreach_value(g_self->atlas_map, node,
         _logfi ("  [%s] refs:%d", node->name, node->refcount);
     );
@@ -532,11 +553,13 @@ sen_textures_collect(const char* atlas_name)
 const texture_t*
 sen_textures_get(const char* name)
 {
+  khiter_t i;
+  texture_node_t* found;
+
   sen_assert(g_self);
   sen_assert(name);
 
-  khiter_t i;
-  texture_node_t* found = tex_find(name, &i);
+  found = tex_find(name, &i);
   if (found && found->tex!=NULL) {
     found->ref->refcount++;
     return found->tex;
@@ -547,8 +570,8 @@ sen_textures_get(const char* name)
 void
 sen_textures_release(const texture_t* tex)
 {
-  sen_assert(tex);
   atlas_node_t* node = (atlas_node_t*)(tex->_node);
+  sen_assert(tex);
   if (node->refcount)
     node->refcount--;
 }
@@ -556,11 +579,13 @@ sen_textures_release(const texture_t* tex)
 const font_t*
 sen_textures_get_font(const char* name)
 {
+  khiter_t i;
+  texture_node_t* found;
+
   sen_assert(g_self);
   sen_assert(name);
 
-  khiter_t i;
-  texture_node_t* found = tex_find(name, &i);
+  found = tex_find(name, &i);
   if (found && found->font!=NULL) {
     found->ref->refcount++;
     return found->font;
@@ -572,8 +597,9 @@ sen_textures_get_font(const char* name)
 void
 sen_textures_release_font(const font_t* font)
 {
+  atlas_node_t* node;
   sen_assert(font);
-  atlas_node_t* node = (atlas_node_t*)(font->_node);
+  node = (atlas_node_t*)(font->_node);
   if (node->refcount)
     node->refcount--;
 }
@@ -581,6 +607,7 @@ sen_textures_release_font(const font_t* font)
 void
 sen_texture_manager_upload_atlas(atlas_node_t* node)
 {
+  texture_node_t* t;
 
   sen_assert(g_self);
   sen_assert(node);
@@ -590,7 +617,6 @@ sen_texture_manager_upload_atlas(atlas_node_t* node)
   node->id = texture_atlas_upload(node->atlas);
   _logfi("Uploading/Binding texture atlas \"%s\", id=%d", node->name, node->id);
 
-  texture_node_t* t;
   kh_foreach_value(g_self->tex_map, t,
       if ( t->ref == node ) {
         if (t->tex != NULL)
@@ -630,17 +656,18 @@ sen_font_atlas(const font_t* font)
 void
 sen_textures_reload()
 {
+  texture_node_t* t;
+  atlas_node_t* a;
+
   sen_assert(g_self);
   _logfi("*** RELOAD TEXTURES ***");
 
-  texture_node_t* t;
   kh_foreach_value(g_self->tex_map, t,
       if (t->tex != NULL)
         t->tex->id = 0;
       else if (t->font != NULL)
         t->font->id = 0;
   );
-  atlas_node_t* a;
   kh_foreach_value(g_self->atlas_map, a, atlas_reload( a ) );
 
   sen_font_bind(NULL);

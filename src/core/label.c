@@ -15,6 +15,7 @@
 #undef SEN_LOG_TAG
 #define SEN_LOG_TAG "SEN:Label"
 
+static const GLushort indices[6] = {0,1,2, 0,2,3};
 
 void update_text( label_t* self )
 {
@@ -33,13 +34,13 @@ void update_text( label_t* self )
     vertex_buffer_t* buffer  = self->buff;
     const font_t *font       = self->font;
     const wchar_t *text      = self->text;
-
+    size_t len = wcslen(text);
     vector_t* verts = self->verts;
     vec2 pen = {{0,0}};
 
     vertex_buffer_clear(buffer);
     vector_clear(verts);
-    size_t len = wcslen(text);
+
     vector_reserve( verts, len*4 );
     for( i=0; i<len; ++i )
     {
@@ -47,45 +48,90 @@ void update_text( label_t* self )
         if( glyph != NULL )
         {
             int kerning = 0;
+            int x0,y0,x1,y1;
+            float s0,t0,s1,t1;
+            V4F_T2F_C4F vertices[4];
+
             if( i > 0)
             {
-                kerning = sen_glyph_kerning( glyph, text[i-1] );
+                kerning = (int)sen_glyph_kerning( glyph, text[i-1] );
             }
             pen.x += kerning;
 
-            int x0  = (int)( pen.x + glyph->offset_x );
-            int y0  = (int)( pen.y + glyph->offset_y );
-            int x1  = (int)( x0 + glyph->width );
-            int y1  = (int)( y0 - glyph->height );
+            x0  = (int)( pen.x + glyph->offset_x );
+            y0  = (int)( pen.y + glyph->offset_y );
+            x1  = (int)( x0 + glyph->width );
+            y1  = (int)( y0 - glyph->height );
 
-/*
-            float x0  = (float)( pen.x + glyph->offset_x );
-            float y0  = (float)( pen.y + glyph->offset_y );
-            float x1  = (float)( x0 + glyph->width );
-            float y1  = (float)( y0 - glyph->height );
-*/
-            float s0 = glyph->s0;
-            float t0 = glyph->t0;
-            float s1 = glyph->s1;
-            float t1 = glyph->t1;
-            GLushort indices[6] = {0,1,2, 0,2,3};
+            s0 = glyph->s0;
+            t0 = glyph->t0;
+            s1 = glyph->s1;
+            t1 = glyph->t1;
+
+            /*
             V4F_T2F_C4F vertices[4] = { { x0,y0,0,1,  s0,t0,  r,g,b,a },
                                         { x0,y1,0,1,  s0,t1,  r,g,b,a },
                                         { x1,y1,0,1,  s1,t1,  r,g,b,a },
                                         { x1,y0,0,1,  s1,t0,  r,g,b,a } };
+                                        */
+            vertices[0].x = (float)x0;
+            vertices[0].y = (float)y0;
+            vertices[0].z = 0.0f;
+            vertices[0].w = 1.0f;
+            vertices[0].s = s0;
+            vertices[0].t = t0;
+            vertices[0].r = r;
+            vertices[0].g = g;
+            vertices[0].b = b;
+            vertices[0].a = a;
+
+
+            vertices[1].x = (float)x0;
+            vertices[1].y = (float)y1;
+            vertices[1].z = 0.0f;
+            vertices[1].w = 1.0f;
+            vertices[1].s = s0;
+            vertices[1].t = t1;
+            vertices[1].r = r;
+            vertices[1].g = g;
+            vertices[1].b = b;
+            vertices[1].a = a;
+
+            vertices[2].x = (float)x1;
+            vertices[2].y = (float)y1;
+            vertices[2].z = 0.0f;
+            vertices[2].w = 1.0f;
+            vertices[2].s = s1;
+            vertices[2].t = t1;
+            vertices[2].r = r;
+            vertices[2].g = g;
+            vertices[2].b = b;
+            vertices[2].a = a;
+
+            vertices[3].x = (float)x1;
+            vertices[3].y = (float)y0;
+            vertices[3].z = 0.0f;
+            vertices[3].w = 1.0f;
+            vertices[3].s = s1;
+            vertices[3].t = t0;
+            vertices[3].r = r;
+            vertices[3].g = g;
+            vertices[3].b = b;
+            vertices[3].a = a;
+
             vertex_buffer_push_back( buffer, vertices, 4, indices, 6 );
             vector_push_back_data(verts, vertices, 4);
             pen.x += glyph->advance_x;
 
             if (i==0) {
-              bbox->x = x0;
-              bbox->y = y1;
+              bbox->x = (float) x0;
+              bbox->y = (float) y1;
               bbox->width  = x1-bbox->x;
               bbox->height = y0-bbox->y;
             }
             else {
-              if  (x0 < bbox->x)                 bbox->x = x0;
-              if  (y1 < bbox->y)                 bbox->y = y1;
+              if  (x0 < bbox->x)                 bbox->x = (float) x0;
+              if  (y1 < bbox->y)                 bbox->y = (float) y1;
               if ((x1 - bbox->x) > bbox->width)  bbox->width  = x1-bbox->x;
               if ((y0 - bbox->y) > bbox->height) bbox->height = y0-bbox->y;
             }
@@ -95,19 +141,19 @@ void update_text( label_t* self )
     ((node_t*)self)->updated |= SEN_NODE_UPDATE_MODEL ;
 }
 
-static const GLushort  indices[6] = {0,1,2, 0,2,3};
 static void
 update_buffer(label_t* self)
 {
   int status  = ((node_t*)self)->updated;
+  const vec4* col = &(((node_t*)self)->color);
+  vec4* bbox = & ( ((node_t*) self)->bbox );
+  int update_model;
 
   if (status & SEN_NODE_UPDATE_INVALIDATE_BUFFER) {
     vertex_buffer_invalidate(self->buff);
     status &= ~SEN_NODE_UPDATE_INVALIDATE_BUFFER;
   }
 
-  const vec4* col = &(((node_t*)self)->color);
-  vec4* bbox = & ( ((node_t*) self)->bbox );
   //vec2* size = & ( ((node_t*) self)->size );
 
   if (status & SEN_NODE_UPDATE_BBOX) {
@@ -115,7 +161,7 @@ update_buffer(label_t* self)
     status |= SEN_NODE_UPDATE_MODEL;
   }
 
-  int update_model = status & SEN_NODE_UPDATE_MODEL;
+  update_model = status & SEN_NODE_UPDATE_MODEL;
 
   if ( status & (SEN_NODE_UPDATE_MODEL | SEN_NODE_UPDATE_COLOR)) {
 
@@ -125,7 +171,7 @@ update_buffer(label_t* self)
     for (i=0; i<sz; ++i) {
       if (update_model) {
         vec4* vp = (vec4*) vector_get( self->verts, i );
-        vec4* v =  ( i*sizeof(V4F_T2F_C4F )+(self->buff->vertices->items));
+        vec4* v =  (vec4*)( (char*)(self->buff->vertices->items) + i*sizeof(V4F_T2F_C4F));
 
         v4_transform(model->data, vp->data,v->data);
 
@@ -140,7 +186,10 @@ update_buffer(label_t* self)
       }
 
       if (status & SEN_NODE_UPDATE_COLOR) {
-        vec4* c =  (vec4*) ( i*sizeof(V4F_T2F_C4F )+sizeof(float)*6+(self->buff->vertices->items));
+        vec4* c =(vec4*)( (char*)(self->buff->vertices->items) +
+                          i*sizeof(V4F_T2F_C4F ) +
+                          sizeof(float)*6);
+
         memcpy(c,col,sizeof(vec4));
       }
     }
@@ -196,13 +245,15 @@ sen_label_new(const char* name,
 void
 sen_label_delete(void *_self)
 {
-  sen_assert(_self);
   label_t *self = (label_t *)_self;
+  int status;
+
+  sen_assert(_self);
  // _logfi("-label %s", ((object_t*)self)->name);
   free(self->text);
   sen_textures_release_font(self->font);
   sen_shaders_release(self->program);
-  int status = ((node_t*)self)->updated;
+  status = ((node_t*)self)->updated;
   if (status & SEN_NODE_UPDATE_INVALIDATE_BUFFER) {
     vertex_buffer_invalidate(self->buff);
   }
@@ -215,28 +266,32 @@ sen_label_delete(void *_self)
 void
 sen_label_render(void* _self)
 {
-  sen_assert(_self);
   label_t *self = (label_t *)_self;
   node_t* node = (node_t*) _self;
+  vec4* bbox;
+  const vec4* vp;
+  node_t* cam_node = (node_t* ) sen_camera();
+  const mat4* mv = &(cam_node->model);
+  vec4* v;
+  int use_cam;
+
+  sen_assert(_self);
 
   if ( node->color.a < F_EPSILON || self->buff->vertices->size == 0 ) return;
   update_buffer(self);
 
 
-  vec4* bbox = & ( ((node_t*) self)->bbox );
-  const vec4* vp = sen_view_get_viewport();
+  bbox = & ( ((node_t*) self)->bbox );
+  vp = sen_view_get_viewport();
 
-
-  node_t* cam_node = (node_t* ) sen_camera();
-  const mat4* mv = &(cam_node->model);
-  vec4* v = (vec4*) (self->buff->vertices->items);
-  int use_cam = v->z < 0.9 && v->z > -0.9 ;
+  v = (vec4*) (self->buff->vertices->items);
+  use_cam = v->z < 0.9 && v->z > -0.9 ;
   if (use_cam) {
     float sx =   mv->data[12] ;
     float sy =   mv->data[13] ;
 
-    float vw = (vp->z - vp->x) / 2.0 ;
-    float vh = (vp->w - vp->y) / 2.0 ;
+    float vw = (vp->z - vp->x) / 2.0f ;
+    float vh = (vp->w - vp->y) / 2.0f ;
 
     if (bbox->z+ sx< -vw  ||
         bbox->x+ sx>  vw  ||
@@ -311,14 +366,16 @@ sen_label_render(void* _self)
 void
 sen_label_set_textW(void* _self, const wchar_t* text)
 {
+  label_t *self = (label_t *)_self;
+  size_t len;
+
   sen_assert(_self);
   sen_assert(text);
 
-  label_t *self = (label_t *)_self;
   if (self->text && wcscmp(self->text, text)==0) return;
 
 
-  size_t len = wcslen(text);
+  len = wcslen(text);
   if (self->text) {
     if (len <= self->text_length)
       memcpy(self->text, text, sizeof(wchar_t)*(len+1) );

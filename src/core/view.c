@@ -48,11 +48,11 @@ static int on_resize2(object_t* _null,
                      object_t* _null2,
                      const char* sig)
 {
-  UNUSED(_null); UNUSED(_null2);UNUSED(sig);
-  sen_assert(data);
   vec2 *size = (vec2 *)data;
+  sen_assert(data);
   sen_view_set_screen(0,0,size->w, size->h);
   //sen_view_set_screen(0,0,1024, 768);
+  UNUSED(_null); UNUSED(_null2);UNUSED(sig);
   return 0;
 }
 

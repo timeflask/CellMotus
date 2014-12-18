@@ -16,26 +16,69 @@ static void
 update_buffer(cquad_t* self)
 {
   int status  = ((node_t*)self)->updated;
+  const vec4* col = &(((node_t*)self)->color);
+  float r = col->r;
+  float g = col->g;
+  float b = col->b;
+  float a = col->a;
+  vec4* bbox = & ( ((node_t*) self)->bbox );
+  vec2* size = & ( ((node_t*) self)->size );
+  float sw = 0.5f; float sh = 0.5f;
+  V4F_C4F vertices[4];
+  int update_model;
 
   if (status & SEN_NODE_UPDATE_INVALIDATE_BUFFER) {
     vertex_buffer_invalidate(self->quad);
     status &= ~SEN_NODE_UPDATE_INVALIDATE_BUFFER;
   }
 
-  const vec4* col = &(((node_t*)self)->color);
-  vec4* bbox = & ( ((node_t*) self)->bbox );
-  vec2* size = & ( ((node_t*) self)->size );
 
   if (status & SEN_NODE_UPDATE_BBOX) {
     vertex_buffer_clear(self->quad);
 
-
-    float sw = 0.5f; float sh = 0.5f;
+    /*
     V4F_C4F vertices[4] = {{ -sw,-sh,0,1,  col->r,col->g,col->b,col->a,},
                            { -sw, sh,0,1, col->r,col->g,col->b,col->a,},
                            {  sw, sh,0,1, col->r,col->g,col->b,col->a,},
                            {  sw,-sh,0,1, col->r,col->g,col->b,col->a,}};
+                           */
 
+    vertices[0].x = -sw;
+    vertices[0].y = -sh;
+    vertices[0].z = 0.0f;
+    vertices[0].w = 1.0f;
+    vertices[0].r = r;
+    vertices[0].g = g;
+    vertices[0].b = b;
+    vertices[0].a = a;
+
+
+    vertices[1].x = -sw;
+    vertices[1].y = sh;
+    vertices[1].z = 0.0f;
+    vertices[1].w = 1.0f;
+    vertices[1].r = r;
+    vertices[1].g = g;
+    vertices[1].b = b;
+    vertices[1].a = a;
+
+    vertices[2].x = sw;
+    vertices[2].y = sh;
+    vertices[2].z = 0.0f;
+    vertices[2].w = 1.0f;
+    vertices[2].r = r;
+    vertices[2].g = g;
+    vertices[2].b = b;
+    vertices[2].a = a;
+
+    vertices[3].x = sw;
+    vertices[3].y = -sh;
+    vertices[3].z = 0.0f;
+    vertices[3].w = 1.0f;
+    vertices[3].r = r;
+    vertices[3].g = g;
+    vertices[3].b = b;
+    vertices[3].a = a;
 
     bbox->x = -sw; bbox->y = -sh;  bbox->z = sw; bbox->w = sh;
     size->x = 1;
@@ -47,7 +90,7 @@ update_buffer(cquad_t* self)
     status |= SEN_NODE_UPDATE_MODEL;
   }
 
-  int update_model = status & SEN_NODE_UPDATE_MODEL;
+  update_model = status & SEN_NODE_UPDATE_MODEL;
 
   if ( status & (SEN_NODE_UPDATE_MODEL | SEN_NODE_UPDATE_COLOR)) {
 
@@ -56,8 +99,8 @@ update_buffer(cquad_t* self)
     int i;
     for (i=0; i<4; ++i) {
       if (update_model) {
-        vec4* vp =  (vec4*)  (& (self->vertices[i]) );
-        vec4* v =   ( i*sizeof(V4F_C4F )+(self->quad->vertices->items));
+        vec4* vp =  (vec4*) (& (self->vertices[i]) );
+        vec4* v =   (vec4*) ((char*)(self->quad->vertices->items) + i*sizeof(V4F_C4F) );
         v4_transform(model->data, vp->data,v->data);
 
         if ( i ) {
@@ -72,7 +115,9 @@ update_buffer(cquad_t* self)
 
       if (status & SEN_NODE_UPDATE_COLOR) {
         //
-        vec4* c =  (vec4*) ( i*sizeof(V4F_C4F )+sizeof(float)*4+(self->quad->vertices->items));
+        vec4* c =  (vec4*) ( (char*)(self->quad->vertices->items) +
+                             i*sizeof(V4F_C4F )+
+                             sizeof(float)*4 );
         memcpy(c,col,sizeof(vec4));
       }
     }
@@ -107,10 +152,11 @@ sen_quad_new(const char* name)
 void
 sen_quad_delete(void *_self)
 {
-  sen_assert(_self);
   cquad_t *self = (cquad_t *)_self;
+  int status;
+  sen_assert(_self);
   sen_shaders_release(self->program);
-  int status  = ((node_t*)self)->updated;
+  status  = ((node_t*)self)->updated;
   if (status & SEN_NODE_UPDATE_INVALIDATE_BUFFER) {
     vertex_buffer_invalidate(self->quad);
   }
@@ -122,28 +168,33 @@ sen_quad_delete(void *_self)
 void
 sen_quad_render(void* _self)
 {
-  sen_assert(_self);
   cquad_t *self = (cquad_t *)_self;
-  //node_t* node = (node_t*) _self;
-  if ( ((node_t*)self)->color.a < F_EPSILON ) return;
-  update_buffer(self);
-
-  vec4* bbox = & ( ((node_t*) self)->bbox );
-  const vec4* vp = sen_view_get_viewport();
-
+  vec4* bbox;
+  const vec4* vp;
+  vec4* v;
+  int use_cam;
   camera_t* cam =  sen_camera();
   node_t* cam_node = (node_t* ) cam;
   const mat4* mv = &(cam_node->model);
 
-  vec4* v = (vec4*)self->quad->vertices->items;
-  int use_cam = v->z < 0.9 && v->z > -0.9 ;
+  sen_assert(_self);
+
+  //node_t* node = (node_t*) _self;
+  if ( ((node_t*)self)->color.a < F_EPSILON ) return;
+  update_buffer(self);
+
+  bbox = & ( ((node_t*) self)->bbox );
+  vp = sen_view_get_viewport();
+
+  v = (vec4*)self->quad->vertices->items;
+  use_cam = v->z < 0.9 && v->z > -0.9 ;
 
   if (use_cam) {
     float sx =   mv->data[12];
     float sy =  mv->data[13] ;
 
-    float vw = (vp->z - vp->x) / 2.0 ;
-    float vh = (vp->w - vp->y) / 2.0 ;
+    float vw = (vp->z - vp->x) / 2.0f ;
+    float vh = (vp->w - vp->y) / 2.0f ;
 
     if (bbox->z+ sx< -vw  ||
         bbox->x+ sx>  vw  ||
