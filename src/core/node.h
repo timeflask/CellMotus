@@ -60,76 +60,76 @@ typedef struct node_t {
   node_interface_t* vt;
 } node_t;
 
-node_t*
+SEN_DECL node_t*
 sen_node_new();
 
-void
+SEN_DECL void
 sen_node_destroy(void* self);
 
 
-void
+SEN_DECL void
 sen_node_init(void*       _self,
               const char* _name,
               void*       _parent);
 
-void
+SEN_DECL void
 sen_node_clean(void* _self);
 
-const mat4*
+SEN_DECL const mat4*
 sen_node_model(void* _self);
 
 //---------------------------------------------------------------------------------
-void
+SEN_DECL void
 sen_node_move(void* _self,float dx, float dy);
-void
+SEN_DECL void
 sen_node_Z(void* _self,float z);
-void
+SEN_DECL void
 sen_node_moveTo(void* _self,float x, float y);
-void
+SEN_DECL void
 sen_node_scale(void* _self,float sx, float sy);
 
-void
+SEN_DECL void
 sen_node_scaleM(void* _self,float mx, float my);
 
-void
+SEN_DECL void
 sen_node_set_anchor(void* _self, float ax, float ay);
 
-void
+SEN_DECL void
 sen_node_set_rotation(void* _self, float rotation);
 
-void
+SEN_DECL void
 sen_node_set_colorRGBA(void* _self, float r, float g, float b, float a);
 
-void
+SEN_DECL void
 sen_node_set_color(void* _self, vec4* color);
 
-const vec4*
+SEN_DECL const vec4*
 sen_node_bbox(void* _self);
 
 //---------------------------------------------------------------------------------
 
-void
+SEN_DECL void
 sen_node_add_child(void* self, void* node, int setParent);
 
-void
+SEN_DECL void
 sen_node_remove_child(void* self, const char* name, void *child, uint32_t child_id);
 
 //---------------------------------------------------------------------------------
 typedef int (*node_visitor_callback)(void*, node_t*);
 
-int
+SEN_DECL int
 sen_node_visit(void* self, void* node_visitor, node_visitor_callback cb);
 
-void
+SEN_DECL void
 sen_node_sort_children_z(void* self);
 //---------------------------------------------------------------------------------
 
 //void
 //sen_update_node_children(void* self, float dT);
-void
+SEN_DECL void
 sen_render_node_children(void* self);
 
-size_t
+SEN_DECL size_t
 sen_nodes_total();
 
 #endif

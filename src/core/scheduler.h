@@ -11,13 +11,13 @@ typedef struct scheduler_t {
   void     *nodes;
 }scheduler_t;
 
-scheduler_t*
+SEN_DECL scheduler_t*
 sen_scheduler_new(const char* name);
 
-void
+SEN_DECL void
 sen_scheduler_delete(scheduler_t* self);
 
-void
+SEN_DECL void
 sen_scheduler_add(scheduler_t*              self,
                   object_t*                 obj,
                   scheduler_update_callback callback,
@@ -27,28 +27,31 @@ sen_scheduler_add(scheduler_t*              self,
                   double                    delay,
                   int                       pause);
 
-void
+SEN_DECL void
 sen_scheduler_remove(scheduler_t*              self,
                      object_t*                 obj,
                      const char*               key);
 
-void sen_scheduler_pause(scheduler_t* self,
+SEN_DECL void 
+sen_scheduler_pause(scheduler_t* self,
                          object_t* obj,
                          const char* key);
 
-void sen_scheduler_resume(scheduler_t* self,
+SEN_DECL void 
+sen_scheduler_resume(scheduler_t* self,
                           object_t* obj,
                           const char* key);
 
-int sen_scheduler_is_running(scheduler_t* self,
+SEN_DECL int 
+sen_scheduler_is_running(scheduler_t* self,
                               object_t* obj,
                               const char* key
                               );
 
-extern
+SEN_DECL extern
 scheduler_t* sen_scheduler();
 //---------------------------------------------------------------------------
-int
+SEN_DECL int
 sen_scheduler_update(void* self, double dt);
 
 #endif

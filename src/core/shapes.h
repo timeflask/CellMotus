@@ -4,16 +4,16 @@
 #include "lmath.h"
 
 
-void
+SEN_DECL void
 sen_shapes_init();
 
-void
+SEN_DECL void
 sen_shapes_destroy();
 
-void
+SEN_DECL void
 sen_shapes_reload();
 
-void
+SEN_DECL void
 sen_shapes_line(const vec2* start, const vec2* end);
 
 #endif

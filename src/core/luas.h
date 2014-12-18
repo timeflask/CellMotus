@@ -7,17 +7,17 @@
 //#include "luajit.h"
 
 
-int
+SEN_DECL int
 sen_lua_execFile(const char* filename);
 
-int
+SEN_DECL int
 sen_lua_execString(const char* code);
 
 //---------------------------------------------------------------
-void
+SEN_DECL void
 sen_lua_init();
 
-void
+SEN_DECL void
 sen_lua_close();
 
 #endif

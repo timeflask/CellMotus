@@ -30,18 +30,18 @@ typedef struct touch_t {
   input_point prev;
 }touch_t;
 
-touch_t*
+SEN_DECL touch_t*
 sen_touch_new();
 
-void
+SEN_DECL void
 sen_touch_to_world(touch_t* t, touch_t* res);
 
 
-void
+SEN_DECL void
 sen_touch_delete(touch_t* self);
 //--------------------------------------------------------------------
-void
+SEN_DECL void
 sen_input_init();
-void
+SEN_DECL void
 sen_input_destroy();
 #endif

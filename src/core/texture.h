@@ -15,10 +15,10 @@ typedef struct texture_t {
   const void*         _node;
 } texture_t;
 
-void
+SEN_DECL void
 sen_texture_bind(const texture_t* tex);
 
-const char*
+SEN_DECL const char*
 sen_texture_atlas(const texture_t* tex);
 
 #endif

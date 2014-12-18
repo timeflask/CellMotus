@@ -14,6 +14,8 @@
 
 #define SEN_PLATFORM SEN_PLATFORM_0
 
+#define SEN_DECL
+
 #if defined(ANDROID)
   #undef SEN_PLATFORM
   #define SEN_PLATFORM SEN_PLATFORM_ANDROID
@@ -26,6 +28,7 @@
 
 #if defined(WIN32)
   #undef SEN_PLATFORM
+  #define SEN_DECL __declspec(dllexport)
   #define SEN_PLATFORM SEN_PLATFORM_WINDOWS
 #endif
 

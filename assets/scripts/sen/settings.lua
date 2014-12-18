@@ -22,7 +22,7 @@ local function SettingsrClosure(name)
   local m_name = name or 'gameSettingsLua'
 
   local function getString(key, defValue)
-    local p = ffi.gc(C.sen_settings_get_str(key, defValue or ''), ffi.C.free)
+    local p = ffi.gc(C.sen_settings_get_str(key, defValue or ''), ffi.C.__free)
     return ffi.string(p)
   end
   

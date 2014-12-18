@@ -12,18 +12,18 @@ typedef struct camera_t {
   mat4     ident;
 } camera_t;
 
-camera_t*
+SEN_DECL camera_t*
 sen_camera_new(const char* name);
 
-void
+SEN_DECL void
 sen_camera_destroy(camera_t* self);
 
-void
+SEN_DECL void
 sen_camera_update_view(object_t* _self, const vec4* r);
 
 //int
 //_sen_camera_view_change(object_t* _self, void* data, object_t* sender);
 
-extern camera_t*
+SEN_DECL extern camera_t*
 sen_camera();
 #endif

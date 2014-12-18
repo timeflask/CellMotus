@@ -5,20 +5,20 @@
 #include "texture.h"
 #include "font.h"
 
-void
+SEN_DECL void
 sen_textures_load(const char* filename,
                   const char* name,
                   const char* atlas_name,
                   size_t      atlas_size);
 
-void
+SEN_DECL void
 sen_textures_load_fontW(const char*      filename,
                        const float      font_size,
                        const wchar_t*   alphabet,
                        const char*      name,
                        const char*      atlas_name,
                        size_t           atlas_size);
-void
+SEN_DECL void
 sen_textures_load_font(const char*      filename,
                        const float      font_size,
                        const char*      utf8_alphabet,
@@ -26,33 +26,33 @@ sen_textures_load_font(const char*      filename,
                        const char*      atlas_name,
                        size_t           atlas_size);
 
-const texture_t*
+SEN_DECL const texture_t*
 sen_textures_get(const char* name);
 
-void
+SEN_DECL void
 sen_textures_release(const texture_t* tex);
 
-const font_t*
+SEN_DECL const font_t*
 sen_textures_get_font(const char* name);
 
-void
+SEN_DECL void
 sen_textures_release_font(const font_t* font);
 
 
-void
+SEN_DECL void
 sen_textures_reload();
 
-void
+SEN_DECL void
 sen_textures_collect(const char* atlas_name);
 
 //------------------------------------------------------------------------------
-void
+SEN_DECL void
 sen_texture_manager_upload(void* _node);
-void
+SEN_DECL void
 sen_texture_manager_init(size_t default_atlas_size);
-void
+SEN_DECL void
 sen_texture_manager_destroy();
-const texture_atlas_t*
+SEN_DECL const texture_atlas_t*
 sen_texture_manager_current_atlas();
 
 #endif

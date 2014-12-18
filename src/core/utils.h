@@ -11,9 +11,10 @@
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define min(a,b) ((a) < (b) ? (a) : (b))
-char *sen_strdup (const char *s);
-char *sen_strndup (const char *s, size_t n);
-wchar_t *sen_strdupW (const wchar_t *s);
-wchar_t *sen_strdupToW (const char* s);
+SEN_DECL char *sen_strdup (const char *s);
+SEN_DECL char *sen_strndup (const char *s, size_t n);
+SEN_DECL wchar_t *sen_strdupW (const wchar_t *s);
+SEN_DECL wchar_t *sen_strdupToW (const char* s);
+SEN_DECL void __free(void* p);
 
 #endif

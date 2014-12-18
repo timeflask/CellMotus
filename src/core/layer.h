@@ -7,10 +7,10 @@ typedef struct layer_t {
   node_t super;
 } layer_t;
 
-layer_t*
+SEN_DECL layer_t*
 sen_layer_new(const char* name);
 
-void
+SEN_DECL void
 sen_layer_delete(void* self);
 
 

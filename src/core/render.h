@@ -7,25 +7,25 @@
 #include "vertex-buffer.h"
 #include "font.h"
 
-void
+SEN_DECL void
 sen_render_node(node_t* node);
 
-void
+SEN_DECL void
 sen_render_init();
 
-void
+SEN_DECL void
 sen_render_destroy();
 
-void
+SEN_DECL void
 sen_render_clear();
 
-size_t
+SEN_DECL size_t
 sen_render_flush(int clear_buff);
 
-void
+SEN_DECL void
 sen_render_reload();
 
-void
+SEN_DECL void
 sen_render_push_buffer(vertex_buffer_t* buff,
                        const texture_t* tex,
                        const font_t*    font,

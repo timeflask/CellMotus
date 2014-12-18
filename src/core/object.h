@@ -9,13 +9,13 @@ typedef struct object_t {
 } object_t;
 
 
-void
+SEN_DECL void
 sen_object_init(void* _self, const char* _name, void* _parent);
 
-void
+SEN_DECL void
 sen_object_set_name(void* _self, const char* _name);
 
-const char*
+SEN_DECL const char*
 sen_object_get_name(void* _self);
 
 

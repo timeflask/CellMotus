@@ -2,81 +2,81 @@
 #define __audio_H_
 #include "config.h"
 
-void
+SEN_DECL void
 sen_audio_init();
 
-void
+SEN_DECL void
 sen_audio_destroy();
 
-void
+SEN_DECL void
 sen_audio_update();
 //-----------------------------------------------------------------------------------------
-void
+SEN_DECL void
 sen_music_preload(const char* path);
 
-void
+SEN_DECL void
 sen_music_play(const char* path, int loop);
 
-void
+SEN_DECL void
 sen_music_stop(int release);
 
-void
+SEN_DECL void
 sen_music_pause();
 
-void
+SEN_DECL void
 sen_music_resume();
 
-void
+SEN_DECL void
 sen_music_rewind();
 
-int
+SEN_DECL int
 sen_music_is_playing();
 
-float
+SEN_DECL float
 sen_music_get_vol();
 
-void
+SEN_DECL void
 sen_music_set_vol(float volume);
 
 //-----------------------------------------------------------------------------------------
-void
+SEN_DECL void
 sen_sound_preload(const char* path);
 
-void
+SEN_DECL void
 sen_sound_unload(const char* path);
 
-unsigned int
+SEN_DECL unsigned int
 sen_sound_play(const char* path);
 
-unsigned int
+SEN_DECL unsigned int
 sen_sound_play_ex(const char* path,
                   int   bLoop,
                   float pitch,
                   float pan,
                   float gain);
 
-void
+SEN_DECL void
 sen_sound_pause(unsigned int id);
 
-void
+SEN_DECL void
 sen_sound_pause_all();
 
-void
+SEN_DECL void
 sen_sound_resume(unsigned int id);
 
-void
+SEN_DECL void
 sen_sound_resume_all();
 
-void
+SEN_DECL void
 sen_sound_stop(unsigned int id);
 
-void
+SEN_DECL void
 sen_sound_stop_all();
 
-float
+SEN_DECL float
 sen_sound_get_vol();
 
-void
+SEN_DECL void
 sen_sound_set_vol(float volume);
 
 #endif

@@ -8,27 +8,27 @@ typedef struct scene_t {
   const void*  sig_resize;
 } scene_t;
 
-scene_t*
+SEN_DECL scene_t*
 sen_scene_new(const char* name);
 
-void
+SEN_DECL void
 sen_scene_delete(void* self);
 
 
 
-void
+SEN_DECL void
 sen_set_scene(scene_t* scene);
 
-void
+SEN_DECL void
 sen_set_scene_name(const char* name);
 
-void
+SEN_DECL void
 update_scene_bbox(object_t* _self, const vec4* vp);
 
-scene_t*
+SEN_DECL scene_t*
 sen_get_scene();
 
-void
+SEN_DECL void
 sen_scenes_reload();
 
 #endif

@@ -11,19 +11,19 @@ typedef struct {
   void*        handle;
 } asset_t;
 
-asset_t*
+SEN_DECL asset_t*
 asset_new(const char* path);
 
-void
+SEN_DECL void
 asset_delete(asset_t* self);
 
-int
+SEN_DECL int
 asset_exists(const char* path);
 
-void
+SEN_DECL void
 sen_assets_set_root(const char* path);
 
-const char*
+SEN_DECL const char*
 sen_assets_get_root();
 
 

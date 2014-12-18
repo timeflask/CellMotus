@@ -17,24 +17,24 @@ typedef struct label_t {
   vector_t*         verts;
 } label_t;
 
-label_t *
+SEN_DECL label_t *
 sen_label_new(const char* name,
               const char* font_name,
               const char* utf8_text);
 
-label_t *
+SEN_DECL label_t *
 sen_label_newW(const char* name,
               const char* font_name,
               const wchar_t* text);
-void
+SEN_DECL void
 sen_label_delete(void *self);
 
-void
+SEN_DECL void
 sen_label_render(void* self);
 
-void
+SEN_DECL void
 sen_label_set_textW(void* self, const wchar_t* text);
-void
+SEN_DECL void
 sen_label_set_text(void* self, const char* utf8_text);
 
 

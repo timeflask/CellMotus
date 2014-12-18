@@ -10,6 +10,11 @@
 int wctomb(char *s, wchar_t wc) { return wcrtomb(s,wc,NULL); }
 int mbtowc(wchar_t *pwc, const char *s, size_t n) { return mbrtowc(pwc, s, n, NULL); }
 #endif
+void __free(void *p)
+{
+  free(p);
+}
+
 char *sen_strdup (const char *s)
 {
     char *d = malloc (strlen (s) + 1);

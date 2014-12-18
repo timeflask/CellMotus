@@ -9,32 +9,32 @@ struct gl_context_attr
 };
 
 
-void
+SEN_DECL void
 sen_view_set_resolution(float w, float h);
 
-void
+SEN_DECL void
 sen_view_set_screen(float x, float y, float w, float h);
 
-const vec4*
+SEN_DECL const vec4*
 sen_view_get_viewport();
 
-void
+SEN_DECL void
 sen_view_set_screenv4(const vec4* vp);
 
-void
+SEN_DECL void
 sen_view_reset();
 
-const struct gl_context_attr*
+SEN_DECL const struct gl_context_attr*
 sen_view_get_attributes();
 
-void
+SEN_DECL void
 sen_view_set_attributes(const struct gl_context_attr* attrs);
 
 //----------------------------------------------------------------------
-void
+SEN_DECL void
 sen_views_init();
 
-void
+SEN_DECL void
 sen_views_destroy();
 
 #endif

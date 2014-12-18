@@ -33,7 +33,7 @@ asset_init(asset_t* self, const char* path)
     self->path = sen_strdup(path);
   _logfi("Read asset from %s", self->path);
 
-  stream = fopen(self->path, "r");
+  stream = fopen(self->path, "rb");
   sen_assert (stream != NULL);
 
   fseek(stream, 0, SEEK_END);

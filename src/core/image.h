@@ -16,8 +16,8 @@ typedef struct image_t {
   int    alpha;
 } image_t;
 
-image_t* image_new(const char* filename);
-void image_delete(image_t* self);
+SEN_DECL image_t* image_new(const char* filename);
+SEN_DECL void image_delete(image_t* self);
 
 
 #endif

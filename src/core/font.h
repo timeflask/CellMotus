@@ -52,34 +52,34 @@ typedef struct font_t {
 } font_t;
 
 
-void
+SEN_DECL void
 sen_font_bind(const font_t* tex);
 
-const glyph_t *
+SEN_DECL const glyph_t *
 sen_font_get_glyph(const font_t * font, wchar_t charcode );
 
-float
+SEN_DECL float
 sen_glyph_kerning(const glyph_t * glyph, wchar_t charcode );
 //--------------------------------------------------------------------------
 
-font_t*
+SEN_DECL font_t*
 sen_font_new( const char* filename,
                   float size,
                   const wchar_t* alphabet,
                   texture_atlas_t* atlas);
-void
+SEN_DECL void
 sen_font_delete(font_t* self);
 
-void
+SEN_DECL void
 sen_font_init(font_t* self,
                   const char* filename,
                   float size,
                   const wchar_t* alphabet,
                   texture_atlas_t* atlas);
-void
+SEN_DECL void
 sen_font_clean(font_t* self);
 
-const char*
+SEN_DECL const char*
 sen_font_atlas(const font_t* font);
 
 #endif

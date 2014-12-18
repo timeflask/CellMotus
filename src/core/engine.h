@@ -2,12 +2,12 @@
 #define __engine_H_
 #include "config.h"
 
-void         sen_init(float w, float h);
-void         sen_destroy();
-void         sen_process();
-float        sen_fps();
-void         sen_reload();
-void         sen_exit();
+SEN_DECL void  sen_init(float w, float h);
+SEN_DECL void  sen_destroy();
+SEN_DECL void  sen_process();
+SEN_DECL float sen_fps();
+SEN_DECL void  sen_reload();
+SEN_DECL void  sen_exit();
 
 
 #define SEN_STATUS_DEAD        (0)

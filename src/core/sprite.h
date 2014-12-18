@@ -15,14 +15,14 @@ typedef struct sprite_t {
 
 } sprite_t;
 
-sprite_t *
+SEN_DECL sprite_t *
 sen_sprite_new(const char* name,
                const char* texture_name);
 
-void
+SEN_DECL void
 sen_sprite_delete(void *self);
 
-void
+SEN_DECL void
 sen_sprite_render(void* self);
 
 #endif

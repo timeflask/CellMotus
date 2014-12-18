@@ -8,7 +8,7 @@ ffi.cdef[[
   void 
   sen_loge(const char* tag, const char* fmt, ...);
   
-  void free (void* ptr);
+  void __free (void* ptr);
   
   typedef union
   {

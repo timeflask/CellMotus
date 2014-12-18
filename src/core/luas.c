@@ -178,6 +178,7 @@ int lua_loader(lua_State *L)
     lua_load_buffer((char*)script_asset->data,
                     (int)script_asset->size,
                     (char*)fn_buffer );
+      
     asset_delete(script_asset);
   }
   else
@@ -248,5 +249,10 @@ lua_load_buffer(const char* chunk,
                 int chunkSize,
                 const char* chunkName)
 {
-  return luaL_loadbuffer(g_Lua, chunk, chunkSize, chunkName);
+  int ret = luaL_loadbuffer(g_Lua, chunk, chunkSize, chunkName);
+  if (ret)
+  {
+    lua_error_exit("load lua chunk failed");
+  }
+  return ret;
 }

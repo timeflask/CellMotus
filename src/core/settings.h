@@ -3,10 +3,10 @@
 #include "config.h"
 
 
-char*
+SEN_DECL char*
 sen_settings_get_str(const char* name, const char* default_str);
 
-void
+SEN_DECL void
 sen_settings_set_str(const char* name, const char* str);
 
 #endif

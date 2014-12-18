@@ -2,13 +2,13 @@
 #define __platform_H_
 #include "config.h"
 
-int
+SEN_DECL int
 sen_platform_dpi();
 
-const char*
+SEN_DECL const char*
 sen_platform_screen_size_name();
 
-const char*
+SEN_DECL const char*
 sen_platform_name();
 
 #endif

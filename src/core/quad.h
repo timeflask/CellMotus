@@ -13,13 +13,13 @@ typedef struct cquad_t {
 
 } cquad_t ;
 
-cquad_t  *
+SEN_DECL cquad_t  *
 sen_quad_new(const char* name);
 
-void
+SEN_DECL void
 sen_quad_delete(void *self);
 
-void
+SEN_DECL void
 sen_quad_render(void* self);
 
 

@@ -4,6 +4,7 @@
 #include "platform.h"
 #include "view.h"
 #include "engine.h"
+#include "x_glfw_desktop_app.h"
 
 int
 sen_platform_dpi()
@@ -30,6 +31,7 @@ sen_platform_screen_size_name()
 //extern int g_exit_flag;
 void sen_exit()
 {
+  sen_desktop_app_exit();
   //g_exit_flag = 1;
 }
 

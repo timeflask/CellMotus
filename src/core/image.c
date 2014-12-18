@@ -63,7 +63,7 @@ void image_load(image_t* self) {
   sen_assert(png_data != NULL && png_data_size > 8);
   _logfi("%d bytes loaded from  %s", png_data_size,  self->filename);
 
-  sen_assert(png_check_sig((png_const_bytep)png_data, 8));
+//  sen_assert(png_check_sig((png_const_bytep)png_data, 8));
 
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 

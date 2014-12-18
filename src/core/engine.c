@@ -180,7 +180,12 @@ sen_init(float w, float h)
 #endif
 
   if (asset_exists("assets/scripts/boot.lua"))
+  {
+    _logfi("LUA boot found");
     sen_lua_execFile("assets/scripts/boot.lua");
+    _logfi("LUA boot finished");
+  }
+
   g_status |= SEN_STATUS_INITIALIZED;
 }
 
@@ -221,13 +226,13 @@ static void show_stats()
     g_fps = (float) (frames / fps_accumulator);
     frames = 0;
     fps_accumulator = 0;
-/*
+
     _logfi("FPS: %.1f, "
         "updated: %u, "
         "rendered: %u "
         "nodes: %u",
         g_fps, g_updateEntries, g_renderedItems, sen_nodes_total());
-*/
+
 
   }
 }
@@ -248,7 +253,6 @@ void sen_process()
   {
     dt = max(0, now - g_prev_dt);
   }
-
 
 #ifdef SEN_DEBUG
   if (dt > 0.25)
