@@ -13,9 +13,9 @@ void
 sen_camera_update_view(object_t* _self, const vec4* r)
 {
   const vec4* rect = r ? r : sen_view_get_viewport();
+  camera_t* self = (camera_t* )_self;
 
   sen_assert(_self);
-  camera_t* self = (camera_t* )_self;
   mat4_set_orthographic( &self->proj,
                         -rect->width/2, rect->width/2,
                         -rect->height/2, rect->height/2,
@@ -44,8 +44,8 @@ sen_camera_view_change(object_t* _self, void* data, object_t* sender)
 camera_t*
 sen_camera_new(const char* name)
 {
-  _logfi("create camera %s", name ? name : "<none>");
   struct_malloc(camera_t, self);
+  _logfi("create camera %s", name ? name : "<none>");
   sen_node_init( self, name, NULL);
   mat4_set_identity( & (self->proj) );
   mat4_set_identity( & (self->view_proj) );

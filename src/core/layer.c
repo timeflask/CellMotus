@@ -8,8 +8,8 @@
 layer_t*
 sen_layer_new(const char* name)
 {
-  _logfi("-layer new");
   struct_malloc(layer_t, self);
+  _logfi("-layer new");
   sen_node_init((node_t*)self, name, NULL);
   return self;
 }

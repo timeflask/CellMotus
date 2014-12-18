@@ -30,7 +30,7 @@ static scheduler_t*     g_scheduler = NULL;
 extern scene_t*         g_scene;
 //static struct timeval * g_last_dt = NULL;
 static double           g_prev_dt = 0.0f;
-static float            fps_accumulator = 0.0;
+static double           fps_accumulator = 0.0;
 static int              frames = 0;
 static int              g_drop_dt = 1;
 static double           dt = 0;
@@ -218,7 +218,7 @@ static void show_stats()
   ++frames;
   fps_accumulator += dt;
   if (fps_accumulator > FPS_INTERVAL ) {
-    g_fps = frames / fps_accumulator;
+    g_fps = (float) (frames / fps_accumulator);
     frames = 0;
     fps_accumulator = 0;
 /*
@@ -236,6 +236,7 @@ static scene_t* prev = NULL;
 void sen_process()
 {
   double now = sen_timer_now();
+  node_t* cam = (node_t*)sen_camera();
 
   if ((g_status&SEN_STATUS_STOPPED) || g_status == SEN_STATUS_DEAD) return;
 
@@ -259,7 +260,6 @@ void sen_process()
   g_prev_dt = now;
   if (dt < F_EPSILON) return;
 
-  node_t* cam = (node_t*)sen_camera();
   if ((cam->updated & SEN_NODE_UPDATE_MODEL) || ( prev != g_scene)) {
     if ( prev != g_scene && prev)
       update_scene_bbox((object_t*)prev, NULL);
