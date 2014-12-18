@@ -1,21 +1,7 @@
 #ifndef __config_H_
 #define __config_H_
 #include <stdlib.h>
-
-#if defined(__BORLANDC__)
-    typedef unsigned char uint8_t;
-    typedef __int64 int64_t;
-    typedef unsigned long uintptr_t;
-#elif defined(_MSC_VER)
-    typedef unsigned char uint8_t;
-    typedef __int64 int64_t;
-    typedef __int32 int32_t;
-    typedef unsigned __int32 uint32_t;
-    typedef __int64 int64_t;
-    typedef unsigned __int64 uint64_t;
-#else
-    #include <stdint.h>
-#endif
+#include <stdint.h>
 
 
 #define SEN_PLATFORM_0            0
@@ -38,13 +24,16 @@
   #define SEN_PLATFORM SEN_PLATFORM_LINUX
 #endif
 
+#if defined(WIN32)
+  #undef SEN_PLATFORM
+  #define SEN_PLATFORM SEN_PLATFORM_WINDOWS
+#endif
 
 #if (SEN_PLATFORM == SEN_PLATFORM_ANDROID)
   extern struct AAssetManager* g_AssetManager;
 #endif
 
-
-
+#include "platform-config.h"
 
 #define SEN_LOG_TAG "SEN"
 #ifdef SEN_DEBUG
