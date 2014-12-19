@@ -29,25 +29,57 @@
 
 
 static GLFWwindow* mainWindow = NULL;
+#define MAX_BUTTONS 32
+static int buttons[MAX_BUTTONS];
+static float mouseX = 0.0f;
+static float mouseY = 0.0f;
+//static int is_retina_monitor = 0;
+//static int is_retina_on      = 0;
+//static int retina_scale      = 1;
+static int windowPosX = 100;
+static int windowPosY = 100;
 
-static int init_glew();
-static void init_signals();
-static void destroy_signals();
-static void error_callback(int id, const char* err);
-static void 
+static const void* signal_touchesBegin     = NULL;
+static const void* signal_touchesEnd       = NULL;
+static const void* signal_touchesMove      = NULL;
+static const void* signal_reload           = NULL;
+static const void* signal_keyDown          = NULL;
+static const void* signal_resize           = NULL;
+static const void* signal_enterBackground  = NULL;
+static const void* signal_enterForeground  = NULL;
+static const void* signal_scroll           = NULL;
+
+int init_glew();
+void init_signals();
+void destroy_signals();
+void error_callback(int id, const char* err);
+
+void 
 iconify_callback(GLFWwindow* window, int iconified);
-static void key_callback(GLFWwindow* window, 
+
+void key_callback(GLFWwindow* window, 
                          int key, 
                          int scancode, 
                          int action, 
                          int mods);
 
-static void 
+void 
 mouse_callback(GLFWwindow* window, int button, int action, int modify);
-static void 
+
+void 
 mouseMove_callback(GLFWwindow* window, double x, double y);
-static void 
+
+void 
 mouseScroll_callback(GLFWwindow* window, double x, double y);
+
+void 
+size_callback(GLFWwindow *window, int width, int height);
+
+void 
+pos_callback(GLFWwindow *windows, int x, int y);
+
+void 
+scroll_callback(GLFWwindow* window, double x, double y);
 
 static void 
 init()
@@ -65,22 +97,27 @@ init()
   if (! glfwInit() )
     exit(EXIT_FAILURE);
 
-  glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
+  glfwWindowHint(GLFW_RESIZABLE,GL_TRUE);
   glfwWindowHint(GLFW_RED_BITS,attrs->r);
   glfwWindowHint(GLFW_GREEN_BITS,attrs->g);
   glfwWindowHint(GLFW_BLUE_BITS,attrs->b);
   glfwWindowHint(GLFW_ALPHA_BITS,attrs->a);
   glfwWindowHint(GLFW_DEPTH_BITS,attrs->d);
   glfwWindowHint(GLFW_STENCIL_BITS,attrs->s);
-
+  
+  
   mainWindow = glfwCreateWindow(960, 640, "hello", 0, 0);
+
+  glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
 
   glfwSetWindowIconifyCallback(mainWindow, iconify_callback);
   glfwSetKeyCallback(mainWindow, key_callback);
   glfwSetMouseButtonCallback(mainWindow, mouse_callback);
   glfwSetCursorPosCallback(mainWindow, mouseMove_callback);
   glfwSetScrollCallback(mainWindow, mouseScroll_callback);
-
+  glfwSetScrollCallback(mainWindow, mouseScroll_callback);
+  glfwSetWindowSizeCallback(mainWindow, size_callback);
+  glfwSetScrollCallback(mainWindow, scroll_callback);
 
   if (!mainWindow)
   {
@@ -96,6 +133,8 @@ init()
   _logfi("Window Frame buffer size %dx%d", frameBufferW, frameBufferH);
   sen_init(frameBufferW, frameBufferH);
   init_signals();
+
+  glfwSwapInterval(1);
 }
 
 static void 
@@ -240,15 +279,6 @@ static int init_glew()
   return 1;   
 }
 
-static const void* signal_touchesBegin     = NULL;
-static const void* signal_touchesEnd       = NULL;
-static const void* signal_touchesMove      = NULL;
-static const void* signal_reload           = NULL;
-static const void* signal_keyDown          = NULL;
-static const void* signal_resize           = NULL;
-static const void* signal_enterBackground  = NULL;
-static const void* signal_enterForeground  = NULL;
-
 static void 
 init_signals()
 {
@@ -260,6 +290,7 @@ init_signals()
   signal_keyDown      = sen_signal_get_name("keyDown", "platform");
   signal_enterBackground  = sen_signal_get_name("enterBackground", "platform");
   signal_enterForeground  = sen_signal_get_name("enterForeground", "platform");
+  signal_scroll           = sen_signal_get_name("scroll", "input");
 }
 
 static void 
@@ -311,11 +342,6 @@ iconify_callback(GLFWwindow* window, int iconified)
   }
 }
 
-#define MAX_BUTTONS 32
-static int buttons[MAX_BUTTONS];
-static float mouseX = 0.0f;
-static float mouseY = 0.0f;
-
 static void 
 mouse_callback(GLFWwindow* window, int button, int action, int modify)
 {
@@ -352,3 +378,23 @@ mouseScroll_callback(GLFWwindow* window, double x, double y)
 {
 }
 
+static void 
+size_callback(GLFWwindow *window, int width, int height)
+{
+  vec2 size = {{(float)width,(float)height}};
+  sen_signal_emit( signal_resize, &size );
+}
+
+static void 
+pos_callback(GLFWwindow *windows, int x, int y)
+{
+  windowPosX = x;
+  windowPosY = y;
+}
+
+static
+void scroll_callback(GLFWwindow* window, double x, double y)
+{
+  struct scroll_data {double x; double y;} data = {x,y};
+  sen_signal_emit( signal_scroll, &data);
+}

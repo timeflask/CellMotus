@@ -23,6 +23,7 @@ local sen = {
   bbox           = sen_utils.bbox,
   connect        = sen_object.connect,
   input_touch    = sen_utils.input_touch,
+  input_scroll   = sen_utils.input_scroll,
   disconnect     = sen_object.disconnect,
   senReload      = C.sen_reload,
   inspect        = require "sen.inspect",

@@ -100,10 +100,10 @@ ffi.cdef[[
     input_point   point;
     input_point   prev;
   }touch_t;
-    
-  float sen_fps();
-  
 
+  typedef struct scroll_t {double x; double y;} scroll_t;
+  
+  float sen_fps();
          
    void sen_reload();     
    void sen_touch_to_world(touch_t* t, touch_t* res);
@@ -227,6 +227,12 @@ local function to_touchp(voidp)
   --return ffi.cast(touchp, voidp)
 end
 
+local scrollp = ffi.typeof("scroll_t*")
+local scrollt = ffi.typeof("scroll_t")
+local function to_scroll(voidp)
+  return ffi.cast(scrollp, voidp)
+end
+
 local function keyToCode(d)
   local i = ffi.cast("struct{int num;} *",d)
   return i.num
@@ -314,6 +320,7 @@ return
   auto_table = newAutotable,
   bbox = bbox,
   input_touch = to_touchp,
+  input_scroll = to_scroll,
   dpi = C.sen_platform_dpi(),
   screenSizeName = sen_size_name,
   vp_box = vp_box,  

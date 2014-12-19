@@ -1256,6 +1256,23 @@ local function key_down(a,b)
   --]]
 end
 
+local function input_scroll(a,b)
+  if scrLock then return end
+  local board = a.parent
+  local scroll = sen.input_scroll(b)
+  local vb = sen.vp_box()
+  local s = -scroll.y * (vb.t-vb.b) / 14
+  --s = s > scroll_max and scroll_max or s>scroll_min and scroll_min or s
+  camera.move( 0, s)
+  local y = camera.posY()
+  y,t = trim_scroll(y)-- y < -scroll_max and -scroll_max or y>-scroll_min and -scroll_min or y
+  camera.moveTo( 0, y)
+  scroll =  camera.posY()
+  if t>0 then
+    board:show_scroll_blocker(t)
+  end  
+end
+
 function lboard:start()
 
 --  camera.moveTo(0,0)
@@ -1265,6 +1282,7 @@ function lboard:start()
   sen.connect("input", "touchesBegin", touches_begin, self.node)
   sen.connect("input", "touchesMove", touches_move, self.node)
   sen.connect("input", "keyDown", key_down, self.node)
+  sen.connect("input", "scroll", input_scroll, self.node)
   
 end
 
@@ -1273,6 +1291,7 @@ function lboard:stop()
   sen.disconnect(self.node, "touchesEnd", "input")
   sen.disconnect(self.node, "touchesMove", "input")
   sen.disconnect(self.node, "keyDown", "input")
+  sen.disconnect(self.node, "scroll", "input")
   
   self:clear()  
 end

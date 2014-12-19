@@ -3,17 +3,12 @@
 #include <Windows.h>
 #include <tchar.h>
 
-static int runner()
-{
-  sen_assets_set_root("../");
-  return sen_desktop_app_run(); 
-}
-
 #ifdef SEN_DEBUG
 #pragma comment( linker, "/subsystem:console" )
 int main(int argc, TCHAR *argv[])
 {
-  return runner();
+  sen_assets_set_root("../CellMotus/");
+  return sen_desktop_app_run(); 
 }
 #else
 #pragma comment( linker, "/subsystem:windows" )
@@ -24,7 +19,7 @@ int CALLBACK WinMain(
     int         nCmdShow
     )
 {
-  runner();
+  sen_desktop_app_run(); 
   return 0;
 }
 #endif

@@ -96,6 +96,12 @@ asset_exists(const char* _path)
     bFound = 1;
     fclose(fp);
   }
+  else
+  {
+    _logfw("Asset not found: %s", path);
+  }
+
+
   free(path);
   return bFound;
 }
