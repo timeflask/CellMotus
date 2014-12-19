@@ -197,17 +197,18 @@ local function touches_end(node, data)
       board:playClick(3)
       return 1
     end
-
+----[[
     if board:is_swipe_down(td) then
-      board:playClick(4)
+      board:playClick(1)
       return 1
     end
-
+--]]
+--[[
     if board:is_swipe_up(td) then
       board:playClick(1)
       return 1
     end
-
+--]]
   end  
 --  board:runMatrix()
   --        camera.moveTo(0,0)
@@ -272,7 +273,7 @@ function mboard:mboard(scene)
     {LabelTitle=rs.msStart, 
      DescLabelTitle=rs.msStart2,
      pquadColor = conf.cell_colors[2],
-     rico="ico_su",
+     rico="ico_sd",
      sound = "button0.mp3"
     })
 
@@ -299,7 +300,7 @@ function mboard:mboard(scene)
      DescLabelTitle=rs.msQuit2,
      pquadColor = conf.cell_colors[4],
      bottom = true,
-     rico="ico_sd",
+     --rico="ico_sd",
      sound = "button0.mp3"
      
     })
@@ -384,8 +385,8 @@ function mboard:reset()
   
   ts = ts - 24
   self.titleLabel2.moveTo(bbox.l+19, ts)
-  
-  local w  = (bbox.t-bbox.b)/10 
+  local scr = sen.screen()
+  local w  = (bbox.t-bbox.b)/10 * ( scr.baby and 1.5 or 1 ) 
   --local w  = self.hcell/2
   ts = ts - w/2-self.hcell/12
   local bs =  bbox.b + w/2 + 2

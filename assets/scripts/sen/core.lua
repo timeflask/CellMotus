@@ -36,6 +36,7 @@ local sen = {
   CoroWait       = sen_utils.coro_wait,
   platformName   = sen_utils.platform_name,
   rcmp           = sen_utils.rcmp,
+  screen         = sen_utils.screen,
   
   Resmanager      = require "sen.resmanager",
   AudioPlayer     = require "sen.audio",

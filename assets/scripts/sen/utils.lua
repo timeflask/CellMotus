@@ -250,6 +250,16 @@ local function vp_box()
   return bbox(v2)      
 end
 
+local function screen()
+  local v = C.sen_view_get_viewport()
+  local d = C.sen_platform_dpi()
+  local wdp = v.z/d*160 
+  local hdp =v.w/d*160
+  return {width=v.z, height=v.w, name=sen_size_name(), dpi=d,
+    width_dp = wdp, height_dp =hdp, baby = math.min(wdp,hdp) < 360 
+  }      
+end
+
 local yield  = coroutine.yield
 
 local coro_wait = function(dt,secs)
@@ -261,7 +271,14 @@ local coro_wait = function(dt,secs)
 end
 
 local platform_name = function()
-  return ffi.string( C.sen_platform_name() )
+  
+  local ret = ffi.string( C.sen_platform_name() )
+  local scr = screen()
+  if scr.baby then
+    ret = ret..' BABY SCREEN'
+  end
+  
+  return ret 
 end
 
 local level=0
@@ -324,6 +341,7 @@ return
   dpi = C.sen_platform_dpi(),
   screenSizeName = sen_size_name,
   vp_box = vp_box,  
+  screen = screen,  
   keyCode = keyToCode,
   doExit = C.sen_exit,
   coro_wait = coro_wait,

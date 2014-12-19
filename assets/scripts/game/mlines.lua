@@ -64,7 +64,8 @@ local optLineCoro = function (node, dt)
 
   local  lb2 = sen.clsLabel(nil, "mecha_s", cfg.DescLabelTitle or '')
   lb2.setColor({a=0})
-  
+  local lbbox = lb.getBBox()
+  local lb2y = (lbbox.b-lbbox.t)/2 - 4 
   node.lb2 = lb2
   node.addChild(lb2)
  
@@ -81,7 +82,7 @@ local optLineCoro = function (node, dt)
         self.scale(dx*hsz, lh)
         self.setColor({a = cf.amax * pow(dt,cf.rate)})
         lb.moveTo(bbox.r-dx*hsz + 32,  0)
-        lb2.moveTo(bbox.r-dx*hsz + 32, -9 )
+        lb2.moveTo(bbox.r-dx*hsz + 32, lb2y )
         q1.moveTo(bbox.r-dx*hsz + 17, 0 )
         q2.moveTo(bbox.r-dx*hsz + 17, 0 )
         lb.setColor({a=pow(dt,cf.rate)*lba})
@@ -196,7 +197,7 @@ local optLineCloseCoro = function (node, dt)
       self.scale((1-dx)*hsz, lh)
       if not is_left then
         node.lb.moveTo(bbox.r-(1-dx)*hsz + 32,  0)
-        node.lb2.moveTo(bbox.r-(1-dx)*hsz + 32, -9 )
+        node.lb2.moveTo(bbox.r-(1-dx)*hsz + 32, -10 )
         node.q1.moveTo(bbox.r-(1-dx)*hsz + 16, 0 )
         node.q2.moveTo(bbox.r-(1-dx)*hsz + 16, 0 )
       end  
@@ -325,6 +326,9 @@ local buttonLineCoro = function (node, dt)
   local  lb2 = sen.clsLabel(nil, "mecha_s", cfg.DescLabelTitle or '')
   lb2.setColor(cfg.titleColor2 or {1,1,1,0.2})
   lb2.setColor({a=0})
+  local lbbox = lb.getBBox()
+  local lb2y = (lbbox.b-lbbox.t)/2 - 7 
+    
   local lba2 = cfg.titleColor2 and cfg.titleColor2[4] or 0.2
   node.lb2 = lb2
   node.addChild(lb2)
@@ -344,7 +348,7 @@ local buttonLineCoro = function (node, dt)
         node.moveTo(dx*(-hshift), node.posY())
         --self.moveTo(dx*(bbox.r-hshift), 0)
         lb.moveTo(bbox.r-dx*hsz + (cfg.labelLshift or 20)    ,  cfg.labelTshift1 or -2)
-        lb2.moveTo(bbox.r-dx*hsz + (cfg.labelLshift2 or 20) , cfg.labelTshift2 or -10 )
+        lb2.moveTo(bbox.r-dx*hsz + (cfg.labelLshift2 or 20) , cfg.labelTshift2 or lb2y )
         q1.moveTo(bbox.r-dx*hsz, 0 )
        -- q2.moveTo(bbox.r-dx*hsz + 17, 0 )
         lb.setColor({a=pow(dt,cf.rate)*(node.enabled and lba1 or 0.1)})

@@ -1463,8 +1463,8 @@ function gboard:gboard(scene)
   self.bLines[1] = buttonLine(scene, 
   {LabelTitle=rs.bLevels,
    DescLabelTitle='',
-   width_p = 20,
-   shift_p = 80,
+   width_p = 30,
+   shift_p = 70,
    wait_click = true,
    pquadColor = conf.cell_colors[2],
     rico="ico_sr"
@@ -1473,8 +1473,8 @@ function gboard:gboard(scene)
   self.bLines[2] = buttonLine(scene, 
   {LabelTitle=rs.bReset,
    DescLabelTitle='',
-   width_p = 40,
-   shift_p = 40,
+   width_p = 35,
+   shift_p = 35,
    pquadColor = conf.cell_colors[4],
     rico="ico_sd"
   })
@@ -1482,7 +1482,7 @@ function gboard:gboard(scene)
   self.bLines[3] = buttonLine(scene, 
   {LabelTitle=rs.bUndo,
    DescLabelTitle='',
-   width_p = 40,
+   width_p = 35,
    shift_p = 0,
    pquadColor = conf.cell_colors[3],
     rico="ico_su",
@@ -1513,7 +1513,10 @@ end
 
 function gboard:resetButtons()
   local bbox = sen.vp_box()
-  local w  = (bbox.t-bbox.b)/16 ---self.hcell*0.5
+  local scr = sen.screen()
+  local w  = (bbox.t-bbox.b)/16 * ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
+  
+  --local w  = (bbox.t-bbox.b)/16 ---self.hcell*0.5
  --print(vpb,w)
   local bs = bbox.b + w/2 + 2 -- 0-- vpb.b + w
   local i = 0

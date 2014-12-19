@@ -1110,7 +1110,9 @@ end
      
 function lboard:lboard(scene)
   local last_bbox = scene.getBBox()
-  local sf = math.min (last_bbox.r - last_bbox.l, last_bbox.t - last_bbox.b ) / (128*6)
+  local scr = sen.screen()
+    
+  local sf = math.min (last_bbox.r - last_bbox.l, last_bbox.t - last_bbox.b ) / (128*(scr.baby and 4.5 or 6))
   lcell_scale_x = lcell_scale_x * sf
   lcell_scale_y = lcell_scale_y * sf
   self:base_board(scene, "l_board", lcell, conf.image("cellbg"), 0.7655, 1.005, sf)
@@ -1195,7 +1197,10 @@ function lboard:showTitle()
   }
   )
  vpb        = sen.vp_box()
-  local w  = (bbox.t-bbox.b)/16,32 ---self.hcell*0.5
+  local scr = sen.screen()
+  local w  = (bbox.t-bbox.b)/16 * ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
+ 
+  --local w  = (bbox.t-bbox.b)/16,32 ---self.hcell*0.5
  --print(vpb,w)
   local bs = vpb.b + w/2 + 2 -- 0-- vpb.b + w
   local i = 0
@@ -1257,7 +1262,8 @@ local function key_down(a,b)
 end
 
 local function input_scroll(a,b)
-  if scrLock then return end
+  if scrLock or on_click then return end
+  actionManager.stop(camera)
   local board = a.parent
   local scroll = sen.input_scroll(b)
   local vb = sen.vp_box()

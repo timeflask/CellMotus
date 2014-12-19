@@ -153,7 +153,9 @@ end
 
 return
 function()
-
+  local scr = sen.screen()
+  print ("================================================================", 
+  scr.width, scr.height, scr.name, scr.dpi,  scr.width_dp, scr.height_dp, scr.baby)
   
   audioPlayer.setMusicVol(settingsManager.get('music_vol', 0.1))
   audioPlayer.setSoundsVol(settingsManager.get('sounds_vol', 0.3))

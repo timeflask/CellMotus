@@ -369,8 +369,8 @@ function oboard:reset()
     labelColorT = {1,1,1,0.5},
     pointerColorT = conf.cell_colors[1],    
   })                           
-
-  local w  = (bbox.t-bbox.b)/10  --self.hcell*0.7
+local scr = sen.screen()
+  local w  = (bbox.t-bbox.b)/10  * ( scr.baby and 1.5 or 1 )  --self.hcell*0.7
    ts = ts-24-w/2 --bbox.t - self.hcell
   local i = 0
   for _,v in pairs(self.oLines) do
@@ -410,8 +410,8 @@ function oboard:reset()
   lb.moveTo(self.scene_bbox.l+10, ts-55)
   lb.setColor({a=0})
   actionManager.run(lb, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
-  
-  local w  = (bbox.t-bbox.b)/16 --self.hcell*0.6
+   
+  local w  = (bbox.t-bbox.b)/16 * ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
   local bs = bbox.b + w/2+2
   local i = 0
   for _,v in ipairs(self.bLines) do
