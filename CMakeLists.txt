@@ -313,6 +313,12 @@ set(APP_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
 set_target_properties(${APP_NAME} PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY  "${APP_BIN_DIR}"
       )
+      
+if(MSVC)
+  if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
+  endif() 
+endif()
      
 target_link_libraries(${APP_NAME} ${CORE_LIBS} ${PLATFORM_LIBS})
 
