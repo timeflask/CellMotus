@@ -185,6 +185,11 @@ sen_init(float w, float h)
     sen_lua_execFile("assets/scripts/boot.lua");
     _logfi("LUA boot finished");
   }
+  else
+  {
+    _logfw("LUA BOOT NOT FOUND, Enjoy ANSI C");
+  }
+
 
   g_status |= SEN_STATUS_INITIALIZED;
 }

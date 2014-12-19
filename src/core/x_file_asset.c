@@ -11,6 +11,22 @@
 #define SEN_LOG_TAG "SEN:Asset"
  char* g_assetsRoot = NULL;
 
+static char* get_path(const char* path)
+{
+  char* ret;
+  if (g_assetsRoot) {
+    int asz = strlen(g_assetsRoot);
+    int sz = asz + strlen(path) + 1;
+    ret = (char*) malloc( sz);
+    strcpy(ret, g_assetsRoot);
+    ret+=asz ;
+    strcpy(ret, path);
+    ret-=asz;
+  }
+  else
+    ret = sen_strdup(path);
+  return ret;
+}
 
 void
 asset_init(asset_t* self, const char* path)
@@ -20,17 +36,8 @@ asset_init(asset_t* self, const char* path)
   sen_assert(self);
   sen_assert(path);
 
-  if (g_assetsRoot) {
-    int asz = strlen(g_assetsRoot);
-    int sz = asz + strlen(path) + 1;
-    self->path = (char*) malloc( sz);
-    strcpy(self->path, g_assetsRoot);
-    self->path+=asz ;
-    strcpy(self->path, path);
-    self->path-=asz;
-  }
-  else
-    self->path = sen_strdup(path);
+  self->path = get_path(path);
+
   _logfi("Read asset from %s", self->path);
 
   stream = fopen(self->path, "rb");
@@ -78,7 +85,7 @@ asset_delete(asset_t* self)
 int
 asset_exists(const char* _path)
 {
-  char* path = (char*)_path;
+  char* path =  get_path(_path);
   int bFound = 0;
   FILE *fp;
 
@@ -89,6 +96,7 @@ asset_exists(const char* _path)
     bFound = 1;
     fclose(fp);
   }
+  free(path);
   return bFound;
 }
 
