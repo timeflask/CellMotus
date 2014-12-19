@@ -2,6 +2,7 @@
 #include "x_glfw_desktop_app.h"
 #include "opengl.h"
 #include "glfw3.h"
+#include "math.h"
 
 
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
@@ -33,9 +34,10 @@ static GLFWwindow* mainWindow = NULL;
 static int buttons[MAX_BUTTONS];
 static float mouseX = 0.0f;
 static float mouseY = 0.0f;
-//static int is_retina_monitor = 0;
-//static int is_retina_on      = 0;
-//static int retina_scale      = 1;
+static int is_retina_monitor = 0;
+static int is_retina_on      = 0;
+static int retina_scale      = 1;
+static float zoom            = 1.0f;
 static int windowPosX = 100;
 static int windowPosY = 100;
 
@@ -49,39 +51,39 @@ static const void* signal_enterBackground  = NULL;
 static const void* signal_enterForeground  = NULL;
 static const void* signal_scroll           = NULL;
 
-int init_glew();
-void init_signals();
-void destroy_signals();
-void error_callback(int id, const char* err);
+static int init_glew();
+static void init_signals();
+static void destroy_signals();
+static void error_callback(int id, const char* err);
 
-void 
+static void
 iconify_callback(GLFWwindow* window, int iconified);
 
-void key_callback(GLFWwindow* window, 
+static void key_callback(GLFWwindow* window,
                          int key, 
                          int scancode, 
                          int action, 
                          int mods);
 
-void 
+static void
 mouse_callback(GLFWwindow* window, int button, int action, int modify);
 
-void 
+static void
 mouseMove_callback(GLFWwindow* window, double x, double y);
 
-void 
-mouseScroll_callback(GLFWwindow* window, double x, double y);
-
-void 
+static void
 size_callback(GLFWwindow *window, int width, int height);
 
-void 
+static void
 pos_callback(GLFWwindow *windows, int x, int y);
 
-void 
+static void
 scroll_callback(GLFWwindow* window, double x, double y);
 
 static void 
+frame_size_callback(GLFWwindow *window, int width, int height);
+
+static void
 init()
 {
 
@@ -106,24 +108,23 @@ init()
   glfwWindowHint(GLFW_STENCIL_BITS,attrs->s);
   
   
-  mainWindow = glfwCreateWindow(960, 640, "hello", 0, 0);
-
-  glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
-
-  glfwSetWindowIconifyCallback(mainWindow, iconify_callback);
-  glfwSetKeyCallback(mainWindow, key_callback);
-  glfwSetMouseButtonCallback(mainWindow, mouse_callback);
-  glfwSetCursorPosCallback(mainWindow, mouseMove_callback);
-  glfwSetScrollCallback(mainWindow, mouseScroll_callback);
-  glfwSetScrollCallback(mainWindow, mouseScroll_callback);
-  glfwSetWindowSizeCallback(mainWindow, size_callback);
-  glfwSetScrollCallback(mainWindow, scroll_callback);
+  mainWindow = glfwCreateWindow(960, 640, "Cell Motus", 0, 0);
 
   if (!mainWindow)
   {
       glfwTerminate();
       exit(EXIT_FAILURE);
   }
+  glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
+
+  glfwSetWindowIconifyCallback(mainWindow, iconify_callback);
+  glfwSetKeyCallback(mainWindow, key_callback);
+  glfwSetMouseButtonCallback(mainWindow, mouse_callback);
+  glfwSetCursorPosCallback(mainWindow, mouseMove_callback);
+  glfwSetWindowSizeCallback(mainWindow, size_callback);
+  glfwSetFramebufferSizeCallback(mainWindow, frame_size_callback);
+  glfwSetScrollCallback(mainWindow, scroll_callback);
+  glfwSetWindowPosCallback(mainWindow, pos_callback);
 
   glfwMakeContextCurrent(mainWindow);
 
@@ -374,11 +375,6 @@ mouseMove_callback(GLFWwindow* window, double x, double y)
 }
 
 static void 
-mouseScroll_callback(GLFWwindow* window, double x, double y)
-{
-}
-
-static void 
 size_callback(GLFWwindow *window, int width, int height)
 {
   vec2 size = {{(float)width,(float)height}};
@@ -386,6 +382,41 @@ size_callback(GLFWwindow *window, int width, int height)
 }
 
 static void 
+frame_size_callback(GLFWwindow *window, int width, int height)
+{
+
+  const vec4* vp = sen_view_get_viewport();
+  float frameW = vp->z;
+  float frameH = vp->w;
+  float fX = frameW/width*retina_scale*zoom;
+  float fY = frameH/height*retina_scale*zoom;
+
+  if (frameW<=0 || frameH<=0) return;
+
+  if (fabs(fX - 0.5f) < F_EPSILON &&
+      fabs(fY - 0.5f) < F_EPSILON )
+  {
+      is_retina_monitor = 1;
+      retina_scale = is_retina_on ? 1 : 2;
+      glfwSetWindowSize(mainWindow,
+                        (int)(frameW * 0.5f * retina_scale * zoom) ,
+                        (int)(frameH * 0.5f * retina_scale * zoom));
+  }
+  else if(fabs(fX - 2.0f) < F_EPSILON &&
+          fabs(fY - 2.0f) < F_EPSILON)
+  {
+      is_retina_monitor = 0;
+      retina_scale = 1;
+      glfwSetWindowSize(mainWindow,
+          (int)(frameW * retina_scale * zoom),
+          (int)(frameH * retina_scale * zoom));
+  }
+
+  //vec2 size = {{(float)width,(float)height}};
+  //sen_signal_emit( signal_resize, &size );
+}
+
+static void
 pos_callback(GLFWwindow *windows, int x, int y)
 {
   windowPosX = x;
