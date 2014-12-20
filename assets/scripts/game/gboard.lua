@@ -517,10 +517,12 @@ function gcell:is_outscreen()
     print(self.y - board.hcell*0.5 , board.scene_bbox.b+board.bLines[1].height)
   end 
   --]] 
-  
+  local scr = sen.screen()
   return 
      not board:cell_full_visible(self, 0.1) or
-         self.y - board.hcell*0.5 < board.scene_bbox.b+board.bLines[1].height
+         self.y - board.hcell*0.5 < board.scene_bbox.b+
+         
+         (scr.baby and board.bLines[1].height/1.3 or board.bLines[1].height)
 end
 
 function gcell:is_screen_blocked(to)
