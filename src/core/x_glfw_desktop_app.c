@@ -258,6 +258,7 @@ static int init_glew()
     GLenum GlewInitResult;
     glewExperimental = GL_TRUE;
     GlewInitResult = glewInit();
+    _logfi("Init GLEW...");
     if (GLEW_OK != GlewInitResult)
     {
         _logfe((char *)glewGetErrorString(GlewInitResult));

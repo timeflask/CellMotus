@@ -30,12 +30,12 @@ sen_render_clear()
     glClearColor( color->x, color->y, color->z, color->w );
   }
   else
-    glClearColor( 0.1f, 0.1f, 0.1f, 1.0f );
-  //glClear( GL_COLOR_BUFFER_BIT ); //| GL_DEPTH_BUFFER_BIT
-  glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glClearColor( 1, 0.1f, 0.1f, 1.0f );
+  glClear( GL_COLOR_BUFFER_BIT ); //| GL_DEPTH_BUFFER_BIT
+  //glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-//  glEnable( GL_BLEND );
-  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
   //sen_texture_bind(NULL);
   //sen_font_bind(NULL);

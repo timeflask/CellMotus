@@ -7,7 +7,9 @@
 #pragma comment( linker, "/subsystem:console" )
 int main(int argc, TCHAR *argv[])
 {
-  sen_assets_set_root("../CellMotus/");
+  sen_assets_set_root("../");
+  if (!asset_exists("assets/scripts/boot.lua"))
+    sen_assets_set_root("../CellMotus/");
   return sen_desktop_app_run(); 
 }
 #else
