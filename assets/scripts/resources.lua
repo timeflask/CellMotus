@@ -1,3 +1,4 @@
+-- Hello julia test
 local sen    = require "sen.core"
 local src = sen.screen()
 return {
