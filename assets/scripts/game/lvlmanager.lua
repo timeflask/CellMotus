@@ -37,7 +37,7 @@ function lvlmanager:count()
 end
 
 function lvlmanager:dev()
-  return level ( dofile('assets/scripts/dev.lua') )
+  return level ( dofile('../CellMotus/assets/scripts/dev.lua') )
 end
 
 function lvlmanager:next(step)

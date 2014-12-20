@@ -19,6 +19,7 @@ int CALLBACK WinMain(
     int         nCmdShow
     )
 {
+  sen_assets_set_root("../");
   sen_desktop_app_run(); 
   return 0;
 }

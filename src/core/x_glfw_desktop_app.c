@@ -98,7 +98,7 @@ init()
   glfwSetErrorCallback( error_callback );
   if (! glfwInit() )
     exit(EXIT_FAILURE);
-
+  
   glfwWindowHint(GLFW_RESIZABLE,GL_TRUE);
   glfwWindowHint(GLFW_RED_BITS,attrs->r);
   glfwWindowHint(GLFW_GREEN_BITS,attrs->g);
@@ -135,17 +135,29 @@ init()
   sen_init(frameBufferW, frameBufferH);
   init_signals();
 
-  glfwSwapInterval(1);
+  //glfwSwapInterval(1);
 }
 
+static double max_fps_t = 1/60.0;
 static void 
 loop()
 {
+  double ldt = 0.0f;
+  double sdt = 0.0f;
   while (!glfwWindowShouldClose(mainWindow))
   {
+    glfwSetTime(0.0f);
     sen_process();
     glfwSwapBuffers(mainWindow);
     glfwPollEvents();
+    ldt = glfwGetTime();
+    sdt = max_fps_t - ldt;
+    if (sdt > 0) {
+      //_logfi("%f", (sdt * 1000));
+#if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
+      Sleep( (DWORD)(sdt * 1000) );
+#endif
+    }
   }
 }
 
@@ -243,7 +255,9 @@ static int glew_bind()
 static int init_glew()
 {
 #if (SEN_PLATFORM != SEN_PLATFORM_MACOS)
-    GLenum GlewInitResult = glewInit();
+    GLenum GlewInitResult;
+    glewExperimental = GL_TRUE;
+    GlewInitResult = glewInit();
     if (GLEW_OK != GlewInitResult)
     {
         _logfe((char *)glewGetErrorString(GlewInitResult));
@@ -268,7 +282,7 @@ static int init_glew()
         _logfe("OpenGL 2.0 support required");
     }
 
-  #if (SEN_PLATFORM == SEN_PLATFORM_WINDOWS)
+  #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
     if(! glew_bind())
     {
         _logfe("GL Framebuffer support required");
@@ -378,6 +392,8 @@ static void
 size_callback(GLFWwindow *window, int width, int height)
 {
   vec2 size = {{(float)width,(float)height}};
+  _logfi("resize %dx%d", width, height);
+  if (!width || !height) return;
   sen_signal_emit( signal_resize, &size );
 }
 

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 
-#find_library(GL_LIB GL)
+message(${CMAKE_SOURCE_DIR})
 
+       
 set(APP_NAME CellMotus)
 set(SRC_ROOT ${CMAKE_SOURCE_DIR}/src)
 set(CORE_ROOT ${CMAKE_SOURCE_DIR}/src/core)
@@ -210,7 +211,7 @@ find_library(WIN32Z_LIB zlib
    ${EXT_ROOT}/zlib/libs
 )
 
-find_library(WIN32GLFW_LIB glfw3
+find_library(WIN32GLFW_LIB glfw3dll
  PATHS
    ${EXT_ROOT}/glfw3/libs/${PLATFORM_FOLDER}
 )
@@ -309,17 +310,40 @@ add_executable(${APP_NAME}
  ${GAME_SOURCES}
  ${PLATFORM_SOURCES}
 )
+
+
 set(APP_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
+
 set_target_properties(${APP_NAME} PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY  "${APP_BIN_DIR}"
-      )
-      
-if(MSVC)
-  if (CMAKE_BUILD_TYPE STREQUAL "Release")
+                         RUNTIME_OUTPUT_DIRECTORY  "${APP_BIN_DIR}")
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+  if(MSVC)
     set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
   endif() 
 endif()
-     
+
+
+if (WIN32)
+add_custom_command(TARGET ${APP_NAME} POST_BUILD        
+     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
+        "${CMAKE_SOURCE_DIR}/bin/lua51.dll"
+         $<TARGET_FILE_DIR:${APP_NAME}>) 
+add_custom_command(TARGET ${APP_NAME} POST_BUILD        
+     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
+        "${CMAKE_SOURCE_DIR}/bin/glew32.dll"
+         $<TARGET_FILE_DIR:${APP_NAME}>) 
+add_custom_command(TARGET ${APP_NAME} POST_BUILD        
+     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
+        "${CMAKE_SOURCE_DIR}/bin/glfw3.dll"
+         $<TARGET_FILE_DIR:${APP_NAME}>) 
+endif()
+   
+add_custom_command(TARGET ${APP_NAME} POST_BUILD        
+     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
+         "$<TARGET_FILE_DIR:${APP_NAME}>/$<TARGET_FILE_NAME:${APP_NAME}>"
+         "${CMAKE_SOURCE_DIR}/bin/$<TARGET_FILE_NAME:${APP_NAME}>") 
+         
 target_link_libraries(${APP_NAME} ${CORE_LIBS} ${PLATFORM_LIBS})
 
 # set(APP_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
