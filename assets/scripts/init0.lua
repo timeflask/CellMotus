@@ -1,6 +1,9 @@
-#ifndef __X_glfw_desktop_app_H_
-#define __X_glfw_desktop_app_H_
-#include "config.h"
+local ffi = require "ffi"
+local C   = ffi.C
+
+ffi.cdef[[
+char* sen_settings_get_str(const char* name, const char* default_str);
+void __free(void* p);    
 
 typedef struct desktop_app_config_t {
   int resizable;
@@ -20,21 +23,25 @@ typedef struct desktop_app_config_t {
   int alphaBits;
   int depthBits;
   int stencilBits;
-
   int gl_ver_major;
   int gl_ver_minor;
   int gl_profile;
-  int gl_forward_compat;
+  int gl_forward_compat;  
 } desktop_app_config_t;
 
-SEN_DECL
-void sen_desktop_app_default_config(desktop_app_config_t* config);
-
-SEN_DECL
 desktop_app_config_t* sen_desktop_app_get_config();
+]]
 
-int sen_desktop_app_run(const desktop_app_config_t* config);
-void sen_desktop_app_exit();
+local  cfg = loadstring( "return  "..
+             ffi.string( 
+               ffi.gc(C.sen_settings_get_str('.desktop', '{}'), C.__free) ) 
+           )()
+
+local out = C.sen_desktop_app_get_config()
+
+for k,v in pairs(cfg) do
+  if out[k] then out[k]=v end
+end  
 
 
-#endif
+           

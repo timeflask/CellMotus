@@ -3,14 +3,13 @@
 #include <Windows.h>
 #include <tchar.h>
 
+
 #ifdef SEN_DEBUG
 #pragma comment( linker, "/subsystem:console" )
 int main(int argc, TCHAR *argv[])
 {
-  sen_assets_set_root("../");
-  if (!asset_exists("assets/scripts/boot.lua"))
-    sen_assets_set_root("../CellMotus/");
-  return sen_desktop_app_run(); 
+  sen_platform_locate_assets("CellMotus");
+  return sen_desktop_app_run(NULL); 
 }
 #else
 #pragma comment( linker, "/subsystem:windows" )
@@ -21,8 +20,8 @@ int CALLBACK WinMain(
     int         nCmdShow
     )
 {
-  sen_assets_set_root("../");
-  sen_desktop_app_run(); 
+  sen_platform_locate_assets("CellMotus");
+  sen_desktop_app_run(NULL); 
   return 0;
 }
 #endif

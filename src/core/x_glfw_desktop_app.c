@@ -1,6 +1,11 @@
 #include "sen.h"
 #include "x_glfw_desktop_app.h"
 #include "opengl.h"
+
+#if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
+  #define GLFW_DLL
+#endif
+
 #include "glfw3.h"
 #include "math.h"
 
@@ -34,12 +39,8 @@ static GLFWwindow* mainWindow = NULL;
 static int buttons[MAX_BUTTONS];
 static float mouseX = 0.0f;
 static float mouseY = 0.0f;
-static int is_retina_monitor = 0;
-static int is_retina_on      = 0;
-static int retina_scale      = 1;
-static float zoom            = 1.0f;
-static int windowPosX = 100;
-static int windowPosY = 100;
+
+static desktop_app_config_t g_cfg;
 
 static const void* signal_touchesBegin     = NULL;
 static const void* signal_touchesEnd       = NULL;
@@ -56,6 +57,7 @@ static void init_signals();
 static void destroy_signals();
 static void error_callback(int id, const char* err);
 
+static void set_default_config();
 static void
 iconify_callback(GLFWwindow* window, int iconified);
 
@@ -86,39 +88,58 @@ frame_size_callback(GLFWwindow *window, int width, int height);
 static void 
 destroy();
 
+static const char init_script[] = "assets/scripts/init0.lua";
+static const char deinit_script[] = "assets/scripts/deinit0.lua";
+
 static int 
-init()
+init(const desktop_app_config_t* config)
 {
 
   int frameBufferW, frameBufferH;
-  const struct gl_context_attr* attrs =
-  sen_view_get_attributes();
 
   if (mainWindow) return 0;
 
   _logfi("Desktop app initialization");
 
+  sen_desktop_app_default_config(&g_cfg);
+  if (config) 
+    memcpy( &g_cfg,config,sizeof(desktop_app_config_t));
+  else
+  {
+    sen_lua_init();
+    if (asset_exists(init_script))
+      sen_lua_execFile(init_script);
+  }
+
   glfwSetErrorCallback( error_callback );
   if (! glfwInit() )
     return 0;
   
-  glfwWindowHint(GLFW_RESIZABLE,GL_TRUE);
-  glfwWindowHint(GLFW_RED_BITS,attrs->r);
-  glfwWindowHint(GLFW_GREEN_BITS,attrs->g);
-  glfwWindowHint(GLFW_BLUE_BITS,attrs->b);
-  glfwWindowHint(GLFW_ALPHA_BITS,attrs->a);
-  glfwWindowHint(GLFW_DEPTH_BITS,attrs->d);
-  glfwWindowHint(GLFW_STENCIL_BITS,attrs->s);
+  glfwWindowHint(GLFW_RESIZABLE,g_cfg.resizable);
+  glfwWindowHint(GLFW_RED_BITS, g_cfg.redBits);
+  glfwWindowHint(GLFW_GREEN_BITS,g_cfg.greenBits);
+  glfwWindowHint(GLFW_BLUE_BITS,g_cfg.blueBits);
+  glfwWindowHint(GLFW_ALPHA_BITS,g_cfg.alphaBits);
+  glfwWindowHint(GLFW_DEPTH_BITS,g_cfg.depthBits);
+  glfwWindowHint(GLFW_STENCIL_BITS,g_cfg.stencilBits);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,g_cfg.gl_ver_major);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,g_cfg.gl_ver_minor);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,g_cfg.gl_forward_compat);
+  if (g_cfg.gl_profile == 1)
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+  else if (g_cfg.gl_profile == 2)
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  else
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
   
-  
-  mainWindow = glfwCreateWindow(960, 640, "Cell Motus", 0, 0);
+  mainWindow = glfwCreateWindow(g_cfg.width, g_cfg.height, g_cfg.title, 0, 0);
 
   if (!mainWindow)
   {
       glfwTerminate();
       return 0;
   }
-  glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
+  glfwSetWindowPos(mainWindow, g_cfg.windowPosX, g_cfg.windowPosY);
 
   glfwSetWindowIconifyCallback(mainWindow, iconify_callback);
   glfwSetKeyCallback(mainWindow, key_callback);
@@ -131,7 +152,7 @@ init()
 
   glfwMakeContextCurrent(mainWindow);
 
-
+  
   if (!init_gl())
   {
     destroy();
@@ -173,6 +194,9 @@ loop()
 static void 
 destroy()
 {
+  if (asset_exists(deinit_script))
+    sen_lua_execFile(deinit_script);
+
   _logfi("Desktop app terminating");
   destroy_signals();
   sen_destroy();
@@ -184,9 +208,10 @@ destroy()
   mainWindow = NULL;
 }
 
-int sen_desktop_app_run()
+int sen_desktop_app_run(const desktop_app_config_t* config)
 {
-  if (!init()) return EXIT_FAILURE;
+
+  if (!init(config)) return EXIT_FAILURE;
   loop();
   destroy();
   return EXIT_SUCCESS;
@@ -270,6 +295,7 @@ static int init_gl()
   _logfi("Init OpenGL...");
   ver = atof( (const char*)glGetString(GL_VERSION) );
   _logfi("OpenGL v.%.1f", ver);
+  _logfi("OpenGL vendor: %s", (const char*)glGetString(GL_VENDOR));
 
   if ( ver < 2.0 )
   {
@@ -429,28 +455,31 @@ frame_size_callback(GLFWwindow *window, int width, int height)
   const vec4* vp = sen_view_get_viewport();
   float frameW = vp->z;
   float frameH = vp->w;
-  float fX = frameW/width*retina_scale*zoom;
-  float fY = frameH/height*retina_scale*zoom;
+  float fX = frameW/width*g_cfg.retina_scale*g_cfg.zoom;
+  float fY = frameH/height*g_cfg.retina_scale*g_cfg.zoom;
 
   if (frameW<=0 || frameH<=0) return;
+  
+  g_cfg.width = width;
+  g_cfg.height = height;
 
   if (fabs(fX - 0.5f) < F_EPSILON &&
       fabs(fY - 0.5f) < F_EPSILON )
   {
-      is_retina_monitor = 1;
-      retina_scale = is_retina_on ? 1 : 2;
+      g_cfg.is_retina_monitor = 1;
+      g_cfg.retina_scale = g_cfg.is_retina_on ? 1 : 2;
       glfwSetWindowSize(mainWindow,
-                        (int)(frameW * 0.5f * retina_scale * zoom) ,
-                        (int)(frameH * 0.5f * retina_scale * zoom));
+                        (int)(frameW * 0.5f * g_cfg.retina_scale * g_cfg.zoom) ,
+                        (int)(frameH * 0.5f * g_cfg.retina_scale * g_cfg.zoom));
   }
   else if(fabs(fX - 2.0f) < F_EPSILON &&
           fabs(fY - 2.0f) < F_EPSILON)
   {
-      is_retina_monitor = 0;
-      retina_scale = 1;
+      g_cfg.is_retina_monitor = 0;
+      g_cfg.retina_scale = 1;
       glfwSetWindowSize(mainWindow,
-          (int)(frameW * retina_scale * zoom),
-          (int)(frameH * retina_scale * zoom));
+          (int)(frameW * g_cfg.retina_scale * g_cfg.zoom),
+          (int)(frameH * g_cfg.retina_scale * g_cfg.zoom));
   }
 
   //vec2 size = {{(float)width,(float)height}};
@@ -460,8 +489,8 @@ frame_size_callback(GLFWwindow *window, int width, int height)
 static void
 pos_callback(GLFWwindow *windows, int x, int y)
 {
-  windowPosX = x;
-  windowPosY = y;
+  g_cfg.windowPosX = x;
+  g_cfg.windowPosY = y;
 }
 
 static
@@ -469,4 +498,36 @@ void scroll_callback(GLFWwindow* window, double x, double y)
 {
   struct scroll_data {double x; double y;} data = {x,y};
   sen_signal_emit( signal_scroll, &data);
+}
+
+void sen_desktop_app_default_config(desktop_app_config_t* cfg)
+{
+  cfg->resizable = 1;
+  cfg->is_retina_monitor = 0;
+  cfg->is_retina_on      = 0;
+  cfg->retina_scale = 1;
+  cfg->zoom = 1.0f;
+  cfg->windowPosX = 100;
+  cfg->windowPosY = 100;
+  cfg->width = 800;
+  cfg->height = 600;
+  sprintf(cfg->title, "SEN Engine game");
+
+  cfg->redBits = 8;
+  cfg->blueBits = 8;
+  cfg->greenBits = 8;
+  cfg->alphaBits = 8;
+  cfg->depthBits = 24;
+  cfg->stencilBits = 8;
+
+  cfg->gl_ver_major = 2;
+  cfg->gl_ver_minor = 0;
+  cfg->gl_profile = 0;
+  cfg->gl_forward_compat = 0;
+
+}
+
+desktop_app_config_t* sen_desktop_app_get_config()
+{
+  return &g_cfg;
 }

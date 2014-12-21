@@ -170,6 +170,7 @@ set(CORE_SOURCES
   ${CORE_ROOT}/quad.h
   ${CORE_ROOT}/quad.c
   ${CORE_ROOT}/platform.h
+  ${CORE_ROOT}/platform-config.h
   ${CORE_ROOT}/audio.h
   ${CORE_ROOT}/settings.h
   ${CORE_ROOT}/x_file_settings.c
@@ -383,22 +384,22 @@ endif()
 if (WIN32)
 add_custom_command(TARGET ${APP_NAME} POST_BUILD        
      COMMAND ${CMAKE_COMMAND} -E copy_if_different  
-        "${CMAKE_SOURCE_DIR}/bin/lua51.dll"
+        "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/lua51.dll"
          $<TARGET_FILE_DIR:${APP_NAME}>) 
 add_custom_command(TARGET ${APP_NAME} POST_BUILD        
      COMMAND ${CMAKE_COMMAND} -E copy_if_different  
-        "${CMAKE_SOURCE_DIR}/bin/glew32.dll"
+        "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/glew32.dll"
          $<TARGET_FILE_DIR:${APP_NAME}>) 
 add_custom_command(TARGET ${APP_NAME} POST_BUILD        
      COMMAND ${CMAKE_COMMAND} -E copy_if_different  
-        "${CMAKE_SOURCE_DIR}/bin/glfw3.dll"
+        "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/glfw3.dll"
          $<TARGET_FILE_DIR:${APP_NAME}>) 
 endif()
    
 add_custom_command(TARGET ${APP_NAME} POST_BUILD        
      COMMAND ${CMAKE_COMMAND} -E copy_if_different  
          "$<TARGET_FILE_DIR:${APP_NAME}>/$<TARGET_FILE_NAME:${APP_NAME}>"
-         "${CMAKE_SOURCE_DIR}/bin/$<TARGET_FILE_NAME:${APP_NAME}>") 
+         "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/$<TARGET_FILE_NAME:${APP_NAME}>") 
          
 target_link_libraries(${APP_NAME} ${CORE_LIBS} ${PLATFORM_LIBS})
 

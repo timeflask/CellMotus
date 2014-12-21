@@ -426,12 +426,12 @@ shader_data_compile( const char* src, const GLenum type )
       //  (type == GL_VERTEX_SHADER ? "precision highp float;\n precision highp int;\n" : "precision mediump float;\n precision mediump int;\n"),
 //#endif
 
-#ifdef GL_ES_VERSION_2_0
-    "#version 100\n"
-#else
-    "#version 120\n"
-#endif
-    ,
+//#ifdef GL_ES_VERSION_2_0
+//    "#version 100\n"
+//#else
+//    "#version 150\n"
+//#endif
+//    ,
 #ifdef GL_ES_VERSION_2_0
     (type == GL_FRAGMENT_SHADER) ?
     "#ifdef GL_FRAGMENT_PRECISION_HIGH\n"

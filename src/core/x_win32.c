@@ -5,6 +5,8 @@
 #include "view.h"
 #include "engine.h"
 #include "x_glfw_desktop_app.h"
+#include "asset.h"
+#include <stdio.h>
 
 int
 sen_platform_dpi()
@@ -42,3 +44,33 @@ sen_platform_name()
   return PLATFORM_NAME;
 }
 
+
+int
+sen_platform_locate_assets(const char* alias)
+{
+  // read registry
+
+
+  // find in file sys
+  char buffer[128];
+
+#define _assets_found (asset_exists("assets/scripts/boot.lua"))
+#define _assets_check(s) \
+  do { sen_assets_set_root(s); if (_assets_found) { \
+    const char* ar = sen_assets_get_root(); \
+    _logfi("Found assets at [%s]", ((ar && *ar) ? ar : "current folder"));\
+    return 1;\
+  }} while(0)\
+
+  _assets_check("");
+  _assets_check("../");
+  _assets_check("../../");
+  if (alias && *alias) {
+    sprintf(buffer, "../%s/", alias);
+    _assets_check(buffer);
+    sprintf(buffer, "../../%s/", alias);
+    _assets_check(buffer);
+  }
+
+  return 0;
+}

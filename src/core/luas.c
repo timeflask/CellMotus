@@ -18,6 +18,7 @@ static int  lua_load_buffer(const char* chunk, int chunkSize, const char* chunkN
 void
 sen_lua_init()
 {
+  if (g_Lua) return;
   _logfi("+New lua state");
   g_Lua = luaL_newstate();
   sen_assert_msg(g_Lua, "Failed to create lua state");
@@ -28,7 +29,10 @@ sen_lua_init()
 void
 sen_lua_close()
 {
-  lua_close(g_Lua);
+  if (g_Lua) {
+    lua_close(g_Lua);
+    g_Lua = 0;
+  }
 }
 
 void lua_error_exit(const char *msg)

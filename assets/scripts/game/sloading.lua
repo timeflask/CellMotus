@@ -81,17 +81,6 @@ local loading_func = function (ref, dt)
                 fieldsNum(sounds) + 
                 fieldsNum(scenes)  + 2
 
-  for k,v in pairs(music) do
-    audioPlayer.preloadMusic(v)
-    incProgress()                 
-  end
-  --audioPlayer.playMusic("loop1.wav", 1)
-
-  for k,v in pairs(sounds) do
-    audioPlayer.preloadSound(v)
-    incProgress()                 
-  end
-
                 
   for k,v in pairs(fonts) do
     resManager.loadFont(k, v[1], v[2])
@@ -107,6 +96,17 @@ local loading_func = function (ref, dt)
   incProgress()     
   resManager.loadSpriteShaders()
   incProgress()     
+
+  for k,v in pairs(music) do
+    audioPlayer.preloadMusic(v)
+    incProgress()                 
+  end
+  --audioPlayer.playMusic("loop1.wav", 1)
+
+  for k,v in pairs(sounds) do
+    audioPlayer.preloadSound(v)
+    incProgress()                 
+  end
 
   scenes.menuScene = newMenuScene()
   incProgress()
