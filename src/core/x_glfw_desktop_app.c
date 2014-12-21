@@ -1,6 +1,7 @@
 #include "sen.h"
 #include "x_glfw_desktop_app.h"
 #include "opengl.h"
+#include <string.h>
 
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
   #define GLFW_DLL
@@ -57,7 +58,6 @@ static void init_signals();
 static void destroy_signals();
 static void error_callback(int id, const char* err);
 
-static void set_default_config();
 static void
 iconify_callback(GLFWwindow* window, int iconified);
 
@@ -131,6 +131,7 @@ init(const desktop_app_config_t* config)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   else
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
+  glfwWindowHint(GLFW_AUX_BUFFERS, g_cfg.aux_buffers);
   
   mainWindow = glfwCreateWindow(g_cfg.width, g_cfg.height, g_cfg.title, 0, 0);
 
@@ -224,9 +225,9 @@ void sen_desktop_app_exit()
   }
 }
 
+#if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
 static int glew_bind()
 {
-#if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
     const char *gl_extensions = (const char*)glGetString(GL_EXTENSIONS);
 
     if (!glGenFramebuffers)
@@ -282,9 +283,9 @@ static int glew_bind()
             return 0;
         }
     }
-#endif
     return 1;
 }
+#endif
 
 static int init_gl()
 {
@@ -524,7 +525,7 @@ void sen_desktop_app_default_config(desktop_app_config_t* cfg)
   cfg->gl_ver_minor = 0;
   cfg->gl_profile = 0;
   cfg->gl_forward_compat = 0;
-
+  cfg->aux_buffers = 0;
 }
 
 desktop_app_config_t* sen_desktop_app_get_config()

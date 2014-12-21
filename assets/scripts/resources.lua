@@ -88,7 +88,7 @@ return {
     
     osAboutTitle       = "ABOUT",
     
-    osAboutL1          = "CELL MOTUS GAME v.".."0.9.132", 
+    osAboutL1          = "CELL MOTUS GAME v.".."0.9", 
     osAboutL2          = "COPYRIGHT [c] TIME FLASK 2014",
     osAboutL3          = "PLATFORM: ",
     

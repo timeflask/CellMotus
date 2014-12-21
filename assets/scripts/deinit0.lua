@@ -29,6 +29,7 @@ typedef struct desktop_app_config_t_2 {
   int gl_ver_minor;
   int gl_profile;
   int gl_forward_compat;  
+  int aux_buffers;  
 } desktop_app_config_t_2;
 
 desktop_app_config_t_2* sen_desktop_app_get_config();
@@ -59,6 +60,7 @@ out.gl_ver_major=p.gl_ver_major
 out.gl_ver_minor=p.gl_ver_minor
 out.gl_profile=p.gl_profile
 out.gl_forward_compat=p.gl_forward_compat
+out.aux_buffers = p.aux_buffers
 
 C.sen_settings_set_str('.desktop', inspect(out))
 --print (inspect(out))

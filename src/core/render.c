@@ -31,19 +31,15 @@ sen_render_clear()
   }
   else
     glClearColor( 1, 0.1f, 0.1f, 1.0f );
-  glClear( GL_COLOR_BUFFER_BIT ); //| GL_DEPTH_BUFFER_BIT
+  glClear( GL_COLOR_BUFFER_BIT );
   //glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-  //sen_texture_bind(NULL);
-  //sen_font_bind(NULL);
- // sen_shader_use(NULL);
 
-  //glEnable( GL_DEPTH_TEST );
-  //glDepthFunc( GL_LEQUAL );
-  //glDepthMask( 1 );
+  glDisable( GL_DEPTH_TEST );
+  glDepthMask( 0 );
 
 }
 

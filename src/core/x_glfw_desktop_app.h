@@ -25,6 +25,8 @@ typedef struct desktop_app_config_t {
   int gl_ver_minor;
   int gl_profile;
   int gl_forward_compat;
+
+  int aux_buffers;
 } desktop_app_config_t;
 
 SEN_DECL
