@@ -728,7 +728,7 @@ local function touches_begin(node, data)
 
   local cell = board:touchToCell( td )
   if (cell) then
-    print(cell.col, cell.row)
+    --print(cell.col, cell.row)
     cell:on_touch_begin()
   end  
   

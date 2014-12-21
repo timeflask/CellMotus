@@ -1351,7 +1351,7 @@ function ()
   scene.board = lboard(scene)
   
   scene.onFG = function ()
-    print("LEVELS FG")
+--    print("LEVELS FG")
     sen.connect("view", "view_change", onResize, scene.board.node)
     local bbox = scene.getBBox()
     scene.board:_resize(bbox)
@@ -1360,7 +1360,7 @@ function ()
   end
   
   scene.onBG = function ()
-    print("LEVELS BG")
+--    print("LEVELS BG")
     sen.disconnect(scene.board.node, "view_change", "view")
     scene.board:stop()
   end

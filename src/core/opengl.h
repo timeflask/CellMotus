@@ -32,6 +32,8 @@
 
   #include <GLES2/gl2.h>
   #include <GLES2/gl2ext.h>
+  #include <EGL/egl.h>
+
   typedef char GLchar;
   #ifndef GL_BGRA
     #define GL_BGRA  0x80E1

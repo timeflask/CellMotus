@@ -6,7 +6,7 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.content.res.Configuration;
 import android.content.SharedPreferences;
-import android.util.Log;
+//import android.util.Log;
 public class SENHandler {
 
   private static SENActivity s_activity = null;
@@ -175,12 +175,12 @@ public class SENHandler {
       SharedPreferences settings = s_activity.getSharedPreferences(SENPREFS, 0);
       SharedPreferences.Editor editor = settings.edit();
       editor.putString(key, value);
-	  Log.d("SEN:Android:Settings", "--->  "+ value); 
+	 // Log.d("SEN:Android:Settings", "--->  "+ value); 
       editor.commit();
   }
   public static String getKeyString(String key, String defaultValue) {
       SharedPreferences settings = s_activity.getSharedPreferences(SENPREFS, 0);
-	  Log.d("SEN:Android:Settings", "<---  "+ settings.getString(key, defaultValue)); 
+	 // Log.d("SEN:Android:Settings", "<---  "+ settings.getString(key, defaultValue)); 
       return settings.getString(key, defaultValue);
   }
   

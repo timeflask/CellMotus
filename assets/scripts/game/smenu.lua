@@ -558,7 +558,6 @@ function ()
   
   
   scene.onFG = function ()
-    print("MENU FG")
     sen.connect("view", "view_change", onResize, scene.board.node)
     bbox = scene.getBBox()
     scene.board:_resize(bbox)
@@ -567,7 +566,6 @@ function ()
   end
   
   scene.onBG = function ()
-    print("MENU BG")
     sen.disconnect(scene.board.node, "view_change", "view")
     scene.board:stop()
   end
