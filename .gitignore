@@ -9,3 +9,5 @@ cmake_install.cmake
 src/core/test
 vs.proj
 assets/scripts/dev.lua
+.game
+.desktop

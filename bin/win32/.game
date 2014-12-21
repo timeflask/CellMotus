@@ -1,7 +1,0 @@
-{
-  curr = 8,
-  music_vol = 0.1,
-  progress = 8,
-  skip_menu = true,
-  sounds_vol = 0.3
-}
