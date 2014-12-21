@@ -250,7 +250,7 @@ set(PLATFORM_SOURCES
   ${CORE_ROOT}/x_glfw_desktop_app.c
   ${CORE_ROOT}/x_mac_audio.c
   ${CORE_ROOT}/x_posix_timer.c
-  ${CORE_ROOT}/x_posix.c
+  ${CORE_ROOT}/x_mac.c
 )
  
 SET(CMAKE_C_LINK_FLAGS "-pagezero_size 10000, -image_base 100000000") 
@@ -531,5 +531,7 @@ target_link_libraries(${APP_NAME} ${CORE_LIBS} ${PLATFORM_LIBS})
      # RUNTIME_OUTPUT_DIRECTORY  "${APP_BIN_DIR}")
 
 # target_link_libraries(${APP_NAME} ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${ZLIB_LIBRARY} ${LUAJIT_LIB} ${FMOD_LIB}  m glut GL GLU GLEW)
+
+
 
 

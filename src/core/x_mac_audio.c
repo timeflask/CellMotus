@@ -93,6 +93,7 @@ sen_sound_unload(const char* path)
 unsigned int
 sen_sound_play(const char* path)
 {
+    return 0;
 }
 
 unsigned int

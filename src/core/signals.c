@@ -46,7 +46,7 @@ slot_destroy(slot_t* self)
   free(self);
 }
 //---------------------------------------------------------------------------------
-
+#define sig_t sen_signal_t
 typedef struct sig_t {
   char*          name;
   khash_t(hmsp) *slots;
