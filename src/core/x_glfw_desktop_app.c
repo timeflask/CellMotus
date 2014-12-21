@@ -51,7 +51,7 @@ static const void* signal_enterBackground  = NULL;
 static const void* signal_enterForeground  = NULL;
 static const void* signal_scroll           = NULL;
 
-static int init_glew();
+static int init_gl();
 static void init_signals();
 static void destroy_signals();
 static void error_callback(int id, const char* err);
@@ -83,7 +83,10 @@ scroll_callback(GLFWwindow* window, double x, double y);
 static void 
 frame_size_callback(GLFWwindow *window, int width, int height);
 
-static void
+static void 
+destroy();
+
+static int 
 init()
 {
 
@@ -91,13 +94,13 @@ init()
   const struct gl_context_attr* attrs =
   sen_view_get_attributes();
 
-  if (mainWindow) return;
+  if (mainWindow) return 0;
 
   _logfi("Desktop app initialization");
 
   glfwSetErrorCallback( error_callback );
   if (! glfwInit() )
-    exit(EXIT_FAILURE);
+    return 0;
   
   glfwWindowHint(GLFW_RESIZABLE,GL_TRUE);
   glfwWindowHint(GLFW_RED_BITS,attrs->r);
@@ -113,7 +116,7 @@ init()
   if (!mainWindow)
   {
       glfwTerminate();
-      exit(EXIT_FAILURE);
+      return 0;
   }
   glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
 
@@ -128,13 +131,19 @@ init()
 
   glfwMakeContextCurrent(mainWindow);
 
-  init_glew();
+
+  if (!init_gl())
+  {
+    destroy();
+    return 0;
+  }
   
   glfwGetFramebufferSize(mainWindow, &frameBufferW, &frameBufferH);
   _logfi("Window Frame buffer size %dx%d", frameBufferW, frameBufferH);
   sen_init(frameBufferW, frameBufferH);
   init_signals();
 
+  return 1;
   //glfwSwapInterval(1);
 }
 
@@ -177,7 +186,7 @@ destroy()
 
 int sen_desktop_app_run()
 {
-  init();
+  if (!init()) return EXIT_FAILURE;
   loop();
   destroy();
   return EXIT_SUCCESS;
@@ -252,10 +261,24 @@ static int glew_bind()
     return 1;
 }
 
-static int init_glew()
+static int init_gl()
 {
+  float ver;
 #if (SEN_PLATFORM != SEN_PLATFORM_MAC)
-    GLenum GlewInitResult;
+  GLenum GlewInitResult;
+#endif
+  _logfi("Init OpenGL...");
+  ver = atof( (const char*)glGetString(GL_VERSION) );
+  _logfi("OpenGL v.%.1f", ver);
+
+  if ( ver < 2.0 )
+  {
+    _logfe("OpenGL 2.0 or higher is required, update your drivers.");
+    return 0;
+  }
+
+
+#if (SEN_PLATFORM != SEN_PLATFORM_MAC)
     glewExperimental = GL_TRUE;
     GlewInitResult = glewInit();
     _logfi("Init GLEW...");
@@ -272,6 +295,7 @@ static int init_glew()
     else
     {
         _logfe("GLSL support required");
+        return 0;
     }
 
     if (glewIsSupported("GL_VERSION_2_0"))
@@ -281,6 +305,7 @@ static int init_glew()
     else
     {
         _logfe("OpenGL 2.0 support required");
+        return 0;
     }
 
   #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
@@ -291,7 +316,6 @@ static int init_glew()
     }
   #endif
 #endif 
-
   return 1;   
 }
 
