@@ -219,17 +219,51 @@ find_library(WIN32GLFW_LIB glfw3dll
  set(PLATFORM_LIBS 
    ${WIN32Z_LIB}
    ${WIN32GLFW_LIB}
-)
+ )
 
 elseif(APPLE)
+  include_directories(
+    ${EXT_ROOT}/glfw3/include/${PLATFORM_FOLDER}
+  )
+  link_directories(
+    ${EXT_ROOT}/glfw3/libs/${PLATFORM_FOLDER}
+  )
+  find_library(MGLFW_LIB glfw3
+   PATHS
+     ${EXT_ROOT}/glfw3/libs/${PLATFORM_FOLDER}
+  )
 
+ FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+ FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+ FIND_LIBRARY(CV_LIBRARY CoreVideo)
+  
+ set(PLATFORM_LIBS 
+   ${MGLFW_LIB} 
+   ${COCOA_LIBRARY}
+   ${IOKIT_LIBRARY}
+   ${CV_LIBRARY}
+ )
+
+set(PLATFORM_SOURCES 
+  ${CORE_ROOT}/x_glfw_desktop_app.h
+  ${CORE_ROOT}/x_glfw_desktop_app.c
+  ${CORE_ROOT}/x_mac_audio.c
+  ${CORE_ROOT}/x_posix_timer.c
+  ${CORE_ROOT}/x_posix.c
+)
+ 
+SET(CMAKE_C_LINK_FLAGS "-pagezero_size 10000, -image_base 100000000") 
+SET(CMAKE_CXX_LINK_FLAGS "-pagezero_size 10000, -image_base 100000000") 
+ 
+set(GAME_SOURCES 
+  ${SRC_ROOT}/mac/main.c)
 else() 
+
 include_directories(
   ${EXT_ROOT}/glfw3/include/${PLATFORM_FOLDER}
   ${EXT_ROOT}/fmod/include/${ARCH_DIR}
 )
 link_directories(
-#  /usr/local/lib
   ${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}/${ARCH_DIR}
   ${EXT_ROOT}/fmod/libs/${ARCH_DIR}
 )
@@ -273,6 +307,24 @@ if(WINDOWS)
   )
    
   set(CORE_LIBS ${PNG_LIB} ${FT2_LIB} ${LUA_LIB})
+elseif(APPLE)
+  find_library(PNG_LIB png
+  PATHS
+   ${EXT_ROOT}/png/libs/${PLATFORM_FOLDER}
+  )
+  find_library(FT2_LIB freetype freetype250
+  PATHS
+   ${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}
+   ${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}/${ARCH_DIR}
+  )
+
+  find_library(LUA_LIB luajit
+  PATHS
+   ${EXT_ROOT}/luajit/libs/${PLATFORM_FOLDER}
+  )
+  find_package(ZLIB REQUIRED)
+  set(CORE_LIBS ${PNG_LIB} ${FT2_LIB} ${ZLIB_LIBRARY} ${LUA_LIB})
+
 else()
   find_library(LUAJIT_LIB luajit-5.1)
   find_package(PNG REQUIRED)
@@ -299,6 +351,10 @@ if(LINUX OR MACOSX OR WINDOWS)
     set(GLEW_LIB ${EXT_ROOT}/glew/libs/glew32.lib )
     message(${GLEW_LIB})
     set(PLATFORM_LIBS ${PLATFORM_LIBS} ${GLEW_LIB})
+  else()
+    # find_package(GLEW REQUIRED)
+    # include_directories(${GLEW_INCLUDES} )
+    # set(PLATFORM_LIBS ${PLATFORM_LIBS} ${GLEW_LIBRARIES})
   endif()
 endif()
 

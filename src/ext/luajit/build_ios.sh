@@ -4,7 +4,7 @@ LIPO="xcrun -sdk iphoneos lipo"
 STRIP="xcrun -sdk iphoneos strip"
 
 SRCDIR=$DIR/src
-DESTDIR=$DIR/prebuilt/ios
+DESTDIR=$DIR/libs/ios
 IXCODE=`xcode-select -print-path`
 ISDK=$IXCODE/Platforms/iPhoneOS.platform/Developer
 ISDKVER=iPhoneOS6.1.sdk
@@ -34,3 +34,4 @@ $LIPO -info "$DESTDIR"/libluajit.a
 rm "$DESTDIR"/libluajit-*.a
 
 make clean
+ean

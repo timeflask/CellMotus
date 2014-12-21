@@ -9,7 +9,7 @@
 #define SEN_PLATFORM_ANDROID      2
 #define SEN_PLATFORM_WIN32        3
 #define SEN_PLATFORM_LINUX        4
-#define SEN_PLATFORM_MACOS        5
+#define SEN_PLATFORM_MAC          5
 #define SEN_PLATFORM_WINPHONE8    6
 
 #define SEN_PLATFORM SEN_PLATFORM_0
@@ -21,7 +21,7 @@
   #define SEN_PLATFORM SEN_PLATFORM_ANDROID
 #endif
 
-#if defined(LINUX)
+#if defined(LINUX) && !defined(__APPLE__)
   #undef SEN_PLATFORM
   #define SEN_PLATFORM SEN_PLATFORM_LINUX
 #endif
@@ -31,6 +31,12 @@
   #define SEN_DECL __declspec(dllexport)
   #define SEN_PLATFORM SEN_PLATFORM_WIN32
 #endif
+
+#if defined(__APPLE__)
+  #undef SEN_PLATFORM
+  #define SEN_PLATFORM SEN_PLATFORM_MAC
+#endif
+
 
 #if (SEN_PLATFORM == SEN_PLATFORM_ANDROID)
   extern struct AAssetManager* g_AssetManager;

@@ -254,7 +254,7 @@ static int glew_bind()
 
 static int init_glew()
 {
-#if (SEN_PLATFORM != SEN_PLATFORM_MACOS)
+#if (SEN_PLATFORM != SEN_PLATFORM_MAC)
     GLenum GlewInitResult;
     glewExperimental = GL_TRUE;
     GlewInitResult = glewInit();
