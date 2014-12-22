@@ -1,0 +1,99 @@
+cmake_minimum_required(VERSION 2.6)
+
+set(CORE_SOURCES
+  ${CORE_ROOT}/config.h
+  ${CORE_ROOT}/macro.h
+  ${CORE_ROOT}/opengl.h
+  ${CORE_ROOT}/logger.h
+  ${CORE_ROOT}/object.h
+  ${CORE_ROOT}/object.c
+  ${CORE_ROOT}/utils.h
+  ${CORE_ROOT}/utils.c
+  ${CORE_ROOT}/vector.h
+  ${CORE_ROOT}/vector.c
+  ${CORE_ROOT}/engine.h
+  ${CORE_ROOT}/engine.c
+  ${CORE_ROOT}/hrtimer.h
+  ${CORE_ROOT}/lmath.h
+  ${CORE_ROOT}/lmath.c
+  ${CORE_ROOT}/asset.h
+  ${CORE_ROOT}/x_file_asset.c
+  ${CORE_ROOT}/vertex-attribute.h
+  ${CORE_ROOT}/vertex-attribute.c
+  ${CORE_ROOT}/vertex-buffer.h
+  ${CORE_ROOT}/vertex-buffer.c
+  ${CORE_ROOT}/shader.h
+  ${CORE_ROOT}/shader.c
+  ${CORE_ROOT}/texture-atlas.h
+  ${CORE_ROOT}/texture-atlas.c
+  ${CORE_ROOT}/image.h
+  ${CORE_ROOT}/image.c
+  ${CORE_ROOT}/texture.h
+  ${CORE_ROOT}/texture.c
+  ${CORE_ROOT}/texture-manager.h
+  ${CORE_ROOT}/texture-manager.c
+  ${CORE_ROOT}/edtaa3func.h
+  ${CORE_ROOT}/edtaa3func.c
+  ${CORE_ROOT}/node.h
+  ${CORE_ROOT}/node.c
+  ${CORE_ROOT}/sprite.h
+  ${CORE_ROOT}/sprite.c
+  ${CORE_ROOT}/view.h
+  ${CORE_ROOT}/view.c
+  ${CORE_ROOT}/camera.h
+  ${CORE_ROOT}/camera.c
+  ${CORE_ROOT}/signals.h
+  ${CORE_ROOT}/signals.c
+  ${CORE_ROOT}/font.h
+  ${CORE_ROOT}/font.c
+  ${CORE_ROOT}/label.h
+  ${CORE_ROOT}/label.c
+  ${CORE_ROOT}/scheduler.h
+  ${CORE_ROOT}/scheduler.c
+  ${CORE_ROOT}/luas.h
+  ${CORE_ROOT}/luas.c
+  ${CORE_ROOT}/scene.h
+  ${CORE_ROOT}/scene.c
+  ${CORE_ROOT}/layer.h
+  ${CORE_ROOT}/layer.c
+  ${CORE_ROOT}/render.h
+  ${CORE_ROOT}/render.c
+  ${CORE_ROOT}/input.h
+  ${CORE_ROOT}/input.c
+  ${CORE_ROOT}/shapes.h
+  ${CORE_ROOT}/shapes.c
+  ${CORE_ROOT}/quad.h
+  ${CORE_ROOT}/quad.c
+  ${CORE_ROOT}/platform.h
+  ${CORE_ROOT}/platform-config.h
+  ${CORE_ROOT}/audio.h
+  ${CORE_ROOT}/settings.h
+  ${CORE_ROOT}/x_file_settings.c
+  ${CORE_ROOT}/shaders/vs_pos4f_tex2f.h
+  ${CORE_ROOT}/shaders/fs_tex2f.h
+  ${CORE_ROOT}/shaders/vs_pos4f_tex2f_col4f.h
+  ${CORE_ROOT}/shaders/fs_tex2f_col4f.h
+  ${CORE_ROOT}/shaders/fs_text_tex2f_col4f.h
+  ${CORE_ROOT}/x_stdio_logger.c
+
+  PARENT_SCOPE)
+
+if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set(ARCH_DIR "64-bit")
+else()
+  set(ARCH_DIR "32-bit")
+endif()
+
+include_directories(
+  ${CORE_ROOT}
+  ${EXT_ROOT}/ft2/include/${PLATFORM_FOLDER}
+  ${EXT_ROOT}/png/include/${PLATFORM_FOLDER}
+  ${EXT_ROOT}/luajit/include
+)
+
+link_directories(
+  ${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}
+  ${EXT_ROOT}/png/libs/${PLATFORM_FOLDER}
+  ${EXT_ROOT}/luajit/libs/${PLATFORM_FOLDER}
+)
+

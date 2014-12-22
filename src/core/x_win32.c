@@ -7,6 +7,7 @@
 #include "x_glfw_desktop_app.h"
 #include "asset.h"
 #include <stdio.h>
+#include <windows.h>
 
 int
 sen_platform_dpi()
@@ -52,11 +53,18 @@ sen_platform_locate_assets(const char* alias)
 
 
   // find in file sys
+  char buff2[ MAX_PATH ];
+  char res[ MAX_PATH ];
+  char* p = NULL;
   char buffer[128];
+  GetModuleFileName( NULL, buff2, MAX_PATH );
+  p = strrchr ( buff2, '\\' );
+  if (p) *(p+1) = '\0';
+  
 
 #define _assets_found (asset_exists("assets/scripts/boot.lua"))
 #define _assets_check(s) \
-  do { sen_assets_set_root(s); if (_assets_found) { \
+  do { sprintf(res, "%s%s", buff2, s); sen_assets_set_root(res); if (_assets_found) { \
     const char* ar = sen_assets_get_root(); \
     _logfi("Found assets at [%s]", ((ar && *ar) ? ar : "current folder"));\
     return 1;\
