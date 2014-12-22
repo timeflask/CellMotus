@@ -14,6 +14,13 @@ else()
    set(PLATFORM_FOLDER linux)
 endif()
 
+if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set(ARCH_DIR "64-bit")
+else()
+  set(ARCH_DIR "32-bit")
+endif()
+
+
 include_directories(
   ${CORE_ROOT}
   ${EXT_ROOT}/ft2/include/${PLATFORM_FOLDER}

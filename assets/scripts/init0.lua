@@ -28,6 +28,8 @@ typedef struct desktop_app_config_t {
   int gl_profile;
   int gl_forward_compat;  
   int aux_buffers;  
+    int max_fps;
+  
 } desktop_app_config_t;
 
 desktop_app_config_t* sen_desktop_app_get_config();

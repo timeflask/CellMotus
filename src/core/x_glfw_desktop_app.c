@@ -21,7 +21,7 @@
 #include "glfw3native.h"
 #endif
 
-#if (SEN_PLATFORM == SEN_PLATFORM_MACOS)
+#if (SEN_PLATFORM == SEN_PLATFORM_MAC)
 #ifndef GLFW_EXPOSE_NATIVE_NSGL
 #define GLFW_EXPOSE_NATIVE_NSGL
 #endif
@@ -30,6 +30,10 @@
 #endif
 #include "glfw3native.h"
 #endif 
+
+#if (SEN_PLATFORM == SEN_PLATFORM_LINUX)
+#include <time.h>
+#endif
 
 #undef SEN_LOG_TAG
 #define SEN_LOG_TAG "SEN:GLFW"
@@ -172,12 +176,19 @@ init(const desktop_app_config_t* config)
   //glfwSwapInterval(1);
 }
 
-static double max_fps_t = 1/60.0;
 static void 
 loop()
 {
   double ldt = 0.0f;
   double sdt = 0.0f;
+  double max_fps_t = g_cfg.max_fps > 0 ?  1/(double)(g_cfg.max_fps) : 10000;
+
+#if (SEN_PLATFORM == SEN_PLATFORM_LINUX)
+  struct timespec tw;
+  struct timespec tr;
+
+#endif
+
   while (!glfwWindowShouldClose(mainWindow))
   {
     glfwSetTime(0.0f);
@@ -189,6 +200,10 @@ loop()
     if (sdt > 0) {
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
       Sleep( (DWORD)(sdt * 1000) );
+#elif (SEN_PLATFORM == SEN_PLATFORM_LINUX)
+      tw.tv_sec = 0;
+      tw.tv_nsec = sdt * 1000000000;
+      nanosleep (&tw, &tr);
 #endif
     }
   }
@@ -530,6 +545,8 @@ void sen_desktop_app_default_config(desktop_app_config_t* cfg)
   cfg->gl_profile = 0;
   cfg->gl_forward_compat = 0;
   cfg->aux_buffers = 0;
+  cfg->max_fps = 60;
+
 }
 
 desktop_app_config_t* sen_desktop_app_get_config()
