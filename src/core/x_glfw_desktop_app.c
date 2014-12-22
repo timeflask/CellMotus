@@ -177,16 +177,16 @@ loop()
   double sdt = 0.0f;
   while (!glfwWindowShouldClose(mainWindow))
   {
-    glfwSetTime(0.0f);
+    //glfwSetTime(0.0f);
     sen_process();
     glfwSwapBuffers(mainWindow);
     glfwPollEvents();
-    ldt = glfwGetTime();
+    //ldt = glfwGetTime();
     sdt = max_fps_t - ldt;
     if (sdt > 0) {
       //_logfi("%f", (sdt * 1000));
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
-      Sleep( (DWORD)(sdt * 1000) );
+      //Sleep( (DWORD)(sdt * 1000) );
 #endif
     }
   }
