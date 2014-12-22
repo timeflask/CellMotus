@@ -51,7 +51,7 @@ return {
   str = {
     bOk = "OK",
     bCancel = "CANCEL",
-    bDefault = "SET DEFAULT",
+    bDefault = src.baby and "DEFAULT" or "SET DEFAULT",
     bUndo = "UNDO",
     bReset = "RESET",
     bBack = "BACK",
