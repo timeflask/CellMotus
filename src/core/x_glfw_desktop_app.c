@@ -91,6 +91,9 @@ destroy();
 static const char init_script[] = "assets/scripts/init0.lua";
 static const char deinit_script[] = "assets/scripts/deinit0.lua";
 
+
+
+
 static int 
 init(const desktop_app_config_t* config)
 {
@@ -177,16 +180,15 @@ loop()
   double sdt = 0.0f;
   while (!glfwWindowShouldClose(mainWindow))
   {
-    //glfwSetTime(0.0f);
+    glfwSetTime(0.0f);
     sen_process();
     glfwSwapBuffers(mainWindow);
     glfwPollEvents();
-    //ldt = glfwGetTime();
+    ldt = glfwGetTime();
     sdt = max_fps_t - ldt;
     if (sdt > 0) {
-      //_logfi("%f", (sdt * 1000));
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
-      //Sleep( (DWORD)(sdt * 1000) );
+      Sleep( (DWORD)(sdt * 1000) );
 #endif
     }
   }
@@ -224,6 +226,7 @@ void sen_desktop_app_exit()
     glfwSetWindowShouldClose(mainWindow,1);
   }
 }
+
 
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
 static int glew_bind()
@@ -298,6 +301,7 @@ static int init_gl()
   _logfi("OpenGL v.%.1f", ver);
   _logfi("OpenGL vendor: %s", (const char*)glGetString(GL_VENDOR));
 
+
   if ( ver < 2.0 )
   {
     _logfe("OpenGL 2.0 or higher is required, update your drivers.");
@@ -306,7 +310,7 @@ static int init_gl()
 
 
 #if (SEN_PLATFORM != SEN_PLATFORM_MAC)
-    glewExperimental = GL_TRUE;
+   // glewExperimental = GL_TRUE;
     GlewInitResult = glewInit();
     _logfi("Init GLEW...");
     if (GLEW_OK != GlewInitResult)

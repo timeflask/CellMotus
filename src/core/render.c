@@ -34,8 +34,8 @@ sen_render_clear()
   glClear( GL_COLOR_BUFFER_BIT );
   //glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  //glEnable( GL_BLEND );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 
   glDisable( GL_DEPTH_TEST );
@@ -207,7 +207,7 @@ get_group_buffer(vertex_buffer_t* buff,
 }
 
 //---------------------------------------------------------------------------------------------
-static const GLushort  indices[6] = {0,1,2, 0,2,3};
+static const vb_index_t  indices[6] = {0,1,2, 0,2,3};
 void
 sen_render_push_buffer(vertex_buffer_t* buff,
                        const texture_t* tex,

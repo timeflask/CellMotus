@@ -38,7 +38,7 @@ update_quad(sprite_t* self)
 }
 */
 
-static const GLushort  indices[6] = {0,1,2, 0,2,3};
+static const vb_index_t  indices[6] = {0,1,2, 0,2,3};
 static void
 update_buffer(sprite_t* self)
 {

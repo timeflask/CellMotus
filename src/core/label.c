@@ -15,7 +15,7 @@
 #undef SEN_LOG_TAG
 #define SEN_LOG_TAG "SEN:Label"
 
-static const GLushort indices[6] = {0,1,2, 0,2,3};
+static const vb_index_t indices[6] = {0,1,2, 0,2,3};
 
 void update_text( label_t* self )
 {

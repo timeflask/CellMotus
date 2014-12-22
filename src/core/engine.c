@@ -133,8 +133,8 @@ void test_destroy()
 }
 void test_draw()
 {
-  glBindTexture( GL_TEXTURE_2D, tex_id );
   camera_t* cam = sen_camera();
+  glBindTexture( GL_TEXTURE_2D, tex_id );
   sen_shader_use(prog);
   sen_uniform_1iN(prog, "u_tex0", 0);
   sen_uniform_m4fN(prog, "u_mvp", cam->proj.data  );
@@ -245,6 +245,15 @@ static void show_stats()
 static scene_t* prev = NULL;
 void sen_process()
 {
+  /* 
+  //axis
+  vec2 start = {{ -1, 0}};
+  vec2 end = {{ 1, 0}};
+  vec2 start2 = {{ 0, 1}};
+  vec2 end2 = {{ 0, -1}};
+  */
+
+  
   double now = sen_timer_now();
   node_t* cam = (node_t*)sen_camera();
 
@@ -279,8 +288,6 @@ void sen_process()
   g_updateEntries = sen_scheduler_update(g_scheduler, dt);
 
   sen_render_clear();
-/*
-*/
 #ifdef TEST
   test_draw();
 #else
@@ -290,7 +297,10 @@ void sen_process()
 
   g_renderedItems= sen_render_flush(1);
 #endif
-
+  
+  //sen_render_clear();
+  //sen_shapes_line(&start, &end);
+  //sen_shapes_line(&start2, &end2);
 
   show_stats();
 

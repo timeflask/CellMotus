@@ -1,3 +1,5 @@
+if not scenes then return end
+
 local ffi = require "ffi"
 local C   = ffi.C
 

@@ -11,7 +11,7 @@
 #undef SEN_LOG_TAG
 #define SEN_LOG_TAG "SEN:Quad"
 
-static const GLushort  indices[6] = {0,1,2, 0,2,3};
+static const vb_index_t  indices[6] = {0,1,2, 0,2,3};
 static void
 update_buffer(cquad_t* self)
 {

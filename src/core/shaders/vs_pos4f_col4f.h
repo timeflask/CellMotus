@@ -7,7 +7,7 @@ varying vec4 v_frag_color;
 
 void main()
 {
-    gl_Position = u_mvp * a_pos;
+    gl_Position = u_mvp*a_pos;
     v_frag_color = a_color;
 }
 );

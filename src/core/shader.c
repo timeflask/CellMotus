@@ -41,12 +41,35 @@ static const int g_preloaded_shaders_N = sizeof g_preloaded_shaders / sizeof g_p
 //-------------------------------------------------------------------------------------
 
 
-typedef struct uniform_datamap_t {
+typedef struct uniform_stash_t {
   void* data;
   int   size;
-} uniform_datamap_t;
+} uniform_stash_t;
 
-#define DATAMAP_MAX 32
+static uniform_stash_t*
+uniform_stash_new(const void *data, int size)
+{
+  struct_malloc(uniform_stash_t, self);
+  self->size = size;
+  self->data = malloc(size);
+  memcpy(self->data, data, size);
+  return self;
+}
+
+static void
+uniform_stash_delete(uniform_stash_t* self)
+{
+  free(self->data);
+  free(self);
+}
+
+static int
+uniform_stash_up_to_date(uniform_stash_t* self, const void *data, int size)
+{
+  return memcmp(self->data, data, size) == 0;
+}
+
+//#define DATAMAP_MAX 32
 typedef struct shader_data_t {
   char*              name;
   int                refcount;
@@ -55,7 +78,8 @@ typedef struct shader_data_t {
   GLuint             program_id;
   shader_t           shader;
   khash_t(hmsp)*     uniforms;
-  uniform_datamap_t  datamap[DATAMAP_MAX];
+  khash_t(hmip)*     datamap;
+  //uniform_datamap_t  datamap[DATAMAP_MAX];
 } shader_data_t;
 
 static GLuint shader_data_compile( const char* src, const GLenum type );
@@ -85,13 +109,19 @@ static void
 shader_data_clear_uniforms(shader_data_t* self)
 {
   uniform_t* data;
-  int i;
-  kh_foreach_value(self->uniforms, data, uniform_data_delete(data) );
+  uniform_stash_t* st;
+  kh_foreach_value(self->uniforms, data, uniform_data_delete(data);data=0; );
   kh_clear(hmsp, self->uniforms);
+  kh_foreach_value(self->datamap, st, uniform_stash_delete(st);st=0; );
+  kh_clear(hmip, self->datamap);
+/*
   for (i = 0; i < DATAMAP_MAX; ++i)
-    if (self->datamap[i].data)
+    if (self->datamap[i].data) {
       free(self->datamap[i].data);
-  memset( self->datamap, 0x00, sizeof(self->datamap));
+      self->datamap[i].data = 0;
+    }
+  memset( self->datamap,0, sizeof(self->datamap));
+  */
 }
 
 static void
@@ -140,21 +170,25 @@ shader_data_reload(shader_data_t* self)
 
 static int uniform_datamap_update(const uniform_t* uni, const GLvoid* p, int size)
 {
-  uniform_datamap_t* ud;
+//  uniform_datamap_t* ud;
+  shader_data_t* sd; khint_t k;
+  uniform_stash_t* stash;
   sen_assert(uni);
-  if (uni->location < 0 || uni->location >= DATAMAP_MAX) return 0;
-  ud = &(((shader_data_t*) uni->shader->handle)->datamap[uni->location]);
-  if ( ud->data == 0 ) {
-    ud->data = malloc(size);
-    ud->size = size;
-    memcpy(ud->data, p, size);
+  sd = (shader_data_t*) (uni->shader->handle);
+  k = kh_get(hmip, sd->datamap, uni->location);
+  if ( k == kh_end(sd->datamap) ) {
+    _logfi("Create uniform data stash for [%s]:[%d]", uni->name, uni->location);
+    stash = uniform_stash_new( (const void *) p, size );
+    kh_insert(hmip, sd->datamap, uni->location, stash);
     return 1;
   }
 
-  if (memcmp(ud->data, p, size) == 0)
+  stash = kh_val( sd->datamap, k );
+
+  if ( uniform_stash_up_to_date(stash, (const void *)p, size ) )
     return 0;
 
-  memcpy(ud->data, p, size);
+  memcpy(stash->data, (const void*)p, size);
 
   return 1;
 }
@@ -197,7 +231,9 @@ shader_data_new(const char* name,
   self->refcount      = 0;
   self->uniforms = kh_init(hmsp);
   kh_resize(hmsp, self->uniforms, 16);
-  memset( self->datamap, 0x00, sizeof(self->datamap));
+  self->datamap = kh_init(hmip);
+  kh_resize(hmip, self->datamap, 16);
+//  memset( self->datamap, 0x00, sizeof(self->datamap));
 
   shader_data_reload(self);
 
@@ -215,6 +251,8 @@ shader_data_delete(shader_data_t* self)
   _logfi(" -[%s] id=%u", self->name, self->program_id);
   shader_data_clear_uniforms(self);
   kh_destroy(hmsp, self->uniforms);
+  kh_destroy(hmip, self->datamap);
+
   if (self->program_id)
     glDeleteProgram(self->program_id);
 
@@ -423,15 +461,16 @@ shader_data_compile( const char* src, const GLenum type )
 
   const GLchar *source[] = {
 //#if (SEN_PLATFORM != SEN_PLATFORM_WIN32 && SEN_PLATFORM != SEN_PLATFORM_LINUX && SEN_PLATFORM != SEN_PLATFORM_MAC)
-      //  (type == GL_VERTEX_SHADER ? "precision highp float;\n precision highp int;\n" : "precision mediump float;\n precision mediump int;\n"),
+  //      (type == GL_VERTEX_SHADER ? "precision highp float;\n precision highp int;\n" : "precision mediump float;\n precision mediump int;\n"),
 //#endif
 
-//#ifdef GL_ES_VERSION_2_0
-//    "#version 100\n"
-//#else
-//    "#version 150\n"
-//#endif
-//    ,
+#ifdef GL_ES_VERSION_2_0
+    "#version 100\n"
+#else
+    "#version 120\n"
+#endif
+    ,
+    
 #ifdef GL_ES_VERSION_2_0
     (type == GL_FRAGMENT_SHADER) ?
     "#ifdef GL_FRAGMENT_PRECISION_HIGH\n"
@@ -445,7 +484,7 @@ shader_data_compile( const char* src, const GLenum type )
     "#define mediump\n"
     "#define highp  \n"
 #endif
-
+    
         "uniform mat4 u_mvp;\n",
         "uniform sampler2D u_tex0;\n",
         "//------------------------------------\n",
@@ -498,7 +537,6 @@ shader_data_parse_attrs(shader_data_t* self)
 static void   shader_data_parse_uniforms(shader_data_t* self)
 {
   GLint unis; GLint loc;
-
   shader_data_clear_uniforms(self);
   glGetProgramiv(self->program_id, GL_ACTIVE_UNIFORMS, &unis);
   if(unis > 0) {
@@ -519,6 +557,7 @@ static void   shader_data_parse_uniforms(shader_data_t* self)
               if(c) *c = '\0';
             }
             loc = glGetUniformLocation(self->program_id, name);
+            gl_check_error();            
             _logfi(" UNI[%s], loc=%d", name, loc);
             if (loc >= 0) {
               uniform_t* new_uni = uniform_data_new(&(self->shader), name, loc, type, size );
@@ -567,7 +606,6 @@ sen_uniform_m4f(const struct uniform_t* uni, GLfloat* m4f)
 {
   if ( uniform_datamap_update(uni, m4f, sizeof(mat4) ) ) {
     glUniformMatrix4fv(   uni->location, 1, 0, m4f );
-    //gl_check_error();
   }
 }
 void
