@@ -67,6 +67,7 @@ sen_platform_locate_assets(const char* alias)
   do {  sprintf(buffer2, "%s/%s", path,s); sen_assets_set_root(buffer2); if (_assets_found) { \
     const char* ar = sen_assets_get_root(); \
     _logfi("Found assets at [%s]", ((ar && *ar) ? ar : "current folder"));\
+    UNUSED(ar);\
     return 1;\
   }} while(0)\
 
