@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-static const int MAX_BUFF = 4096;
+#define MAX_BUFF 4096
 
 #define LOG_PRINTF \
   char buffer[MAX_BUFF]; \
