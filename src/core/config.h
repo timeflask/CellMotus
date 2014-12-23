@@ -38,6 +38,11 @@
 #endif
 
 
+#if defined(SEN_TARGET_IOS)
+  #undef SEN_PLATFORM
+  #define SEN_PLATFORM SEN_PLATFORM_IOS
+#endif
+
 #if (SEN_PLATFORM == SEN_PLATFORM_ANDROID)
   extern struct AAssetManager* g_AssetManager;
 #endif

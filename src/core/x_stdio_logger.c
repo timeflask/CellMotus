@@ -3,8 +3,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+static const int MAX_BUFF = 4096;
+
 #define LOG_PRINTF \
-  char buffer[256]; \
+  char buffer[MAX_BUFF]; \
   va_list args; \
   va_start (args, fmt); \
   vsprintf (buffer,fmt, args); \
@@ -29,7 +31,7 @@ void sen_logw(const char *tag, const char *fmt, ...) {
 }
 
 void sen_loge(const char *tag, const char *fmt, ...) {
-  char buffer[256];
+  char buffer[MAX_BUFF];
   va_list args;
   va_start (args, fmt);
   vsprintf (buffer,fmt, args);
@@ -38,7 +40,7 @@ void sen_loge(const char *tag, const char *fmt, ...) {
 }
 
 void sen_printf(const char* fmt, ...) {
-  char buffer[256];
+  char buffer[MAX_BUFF];
   va_list args;
   va_start (args, fmt);
   vsprintf (buffer,fmt, args);

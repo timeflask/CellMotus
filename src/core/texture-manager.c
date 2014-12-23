@@ -526,7 +526,7 @@ sen_textures_collect(const char* atlas_name)
   else {
     _logfi ("Textures clearing...");
     do {
-      found = 0;
+      found = 0; i=0;
       kh_foreach_value(g_self->atlas_map, node,
         if (node->refcount == 0) {
           found = node;

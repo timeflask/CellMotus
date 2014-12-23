@@ -1,0 +1,487 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CEC51EFF1A4954E9005D7B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51EFE1A4954E9005D7B6E /* main.m */; };
+		CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F011A4954E9005D7B6E /* AppDelegate.m */; };
+		CEC51F091A4954E9005D7B6E /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F081A4954E9005D7B6E /* GameViewController.m */; };
+		CEC51F291A49D197005D7B6E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC51F281A49D197005D7B6E /* Default-568h@2x.png */; };
+		CEC51F2B1A49F0C1005D7B6E /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F2A1A49F0C1005D7B6E /* libpng.a */; };
+		CEC51F2D1A49F0F6005D7B6E /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F2C1A49F0F6005D7B6E /* libluajit.a */; };
+		CEC51F2F1A49F120005D7B6E /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F2E1A49F120005D7B6E /* libfreetype.a */; };
+		CEC51F501A49F253005D7B6E /* batch.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F321A49F253005D7B6E /* batch.c */; };
+		CEC51F511A49F253005D7B6E /* camera.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F331A49F253005D7B6E /* camera.c */; };
+		CEC51F521A49F253005D7B6E /* edtaa3func.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F341A49F253005D7B6E /* edtaa3func.c */; };
+		CEC51F531A49F253005D7B6E /* engine.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F351A49F253005D7B6E /* engine.c */; };
+		CEC51F541A49F253005D7B6E /* font.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F361A49F253005D7B6E /* font.c */; };
+		CEC51F551A49F253005D7B6E /* image.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F371A49F253005D7B6E /* image.c */; };
+		CEC51F561A49F253005D7B6E /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F381A49F253005D7B6E /* input.c */; };
+		CEC51F571A49F253005D7B6E /* label.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F391A49F253005D7B6E /* label.c */; };
+		CEC51F581A49F253005D7B6E /* layer.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F3A1A49F253005D7B6E /* layer.c */; };
+		CEC51F591A49F253005D7B6E /* lmath.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F3B1A49F253005D7B6E /* lmath.c */; };
+		CEC51F5A1A49F253005D7B6E /* luas.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F3C1A49F253005D7B6E /* luas.c */; };
+		CEC51F5B1A49F253005D7B6E /* node.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F3D1A49F253005D7B6E /* node.c */; };
+		CEC51F5C1A49F253005D7B6E /* object.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F3E1A49F253005D7B6E /* object.c */; };
+		CEC51F5D1A49F253005D7B6E /* quad.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F3F1A49F253005D7B6E /* quad.c */; };
+		CEC51F5E1A49F253005D7B6E /* render.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F401A49F253005D7B6E /* render.c */; };
+		CEC51F5F1A49F253005D7B6E /* scene.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F411A49F253005D7B6E /* scene.c */; };
+		CEC51F601A49F253005D7B6E /* scheduler.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F421A49F253005D7B6E /* scheduler.c */; };
+		CEC51F611A49F253005D7B6E /* shader.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F431A49F253005D7B6E /* shader.c */; };
+		CEC51F621A49F253005D7B6E /* shapes.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F441A49F253005D7B6E /* shapes.c */; };
+		CEC51F631A49F253005D7B6E /* signals.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F451A49F253005D7B6E /* signals.c */; };
+		CEC51F641A49F253005D7B6E /* sprite.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F461A49F253005D7B6E /* sprite.c */; };
+		CEC51F651A49F253005D7B6E /* texture-atlas.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F471A49F253005D7B6E /* texture-atlas.c */; };
+		CEC51F661A49F253005D7B6E /* texture-manager.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F481A49F253005D7B6E /* texture-manager.c */; };
+		CEC51F671A49F253005D7B6E /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F491A49F253005D7B6E /* texture.c */; };
+		CEC51F681A49F253005D7B6E /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4A1A49F253005D7B6E /* utils.c */; };
+		CEC51F691A49F253005D7B6E /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4B1A49F253005D7B6E /* vector.c */; };
+		CEC51F6A1A49F253005D7B6E /* vertex-attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4C1A49F253005D7B6E /* vertex-attribute.c */; };
+		CEC51F6B1A49F253005D7B6E /* vertex-buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4D1A49F253005D7B6E /* vertex-buffer.c */; };
+		CEC51F6C1A49F253005D7B6E /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4E1A49F253005D7B6E /* view.c */; };
+		CEC51F6D1A49F253005D7B6E /* x_stdio_logger.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */; };
+		CEC51F6F1A49F8F1005D7B6E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F6E1A49F8F1005D7B6E /* libz.dylib */; };
+		CEC51F721A49F970005D7B6E /* x_no_audio.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F701A49F970005D7B6E /* x_no_audio.c */; };
+		CEC51F731A49F970005D7B6E /* x_posix_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F711A49F970005D7B6E /* x_posix_timer.c */; };
+		CEC51FEE1A4A019E005D7B6E /* x_ios_asset.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */; };
+		CEC520261A4A14CC005D7B6E /* assets in Resources */ = {isa = PBXBuildFile; fileRef = CEC520251A4A14CC005D7B6E /* assets */; };
+		CEC520281A4A1746005D7B6E /* x_ios.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC520271A4A1746005D7B6E /* x_ios.m */; };
+		CEC5202A1A4A1A1C005D7B6E /* x_ios_settings.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CEC51EF91A4954E9005D7B6E /* CellMotus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CellMotus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEC51EFD1A4954E9005D7B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CEC51EFE1A4954E9005D7B6E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CEC51F001A4954E9005D7B6E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		CEC51F011A4954E9005D7B6E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		CEC51F071A4954E9005D7B6E /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
+		CEC51F081A4954E9005D7B6E /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		CEC51F281A49D197005D7B6E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		CEC51F2A1A49F0C1005D7B6E /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../ext/png/libs/ios/libpng.a; sourceTree = "<group>"; };
+		CEC51F2C1A49F0F6005D7B6E /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../ext/luajit/libs/ios/libluajit.a; sourceTree = "<group>"; };
+		CEC51F2E1A49F120005D7B6E /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../ext/ft2/libs/ios/libfreetype.a; sourceTree = "<group>"; };
+		CEC51F321A49F253005D7B6E /* batch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = batch.c; sourceTree = "<group>"; };
+		CEC51F331A49F253005D7B6E /* camera.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = camera.c; sourceTree = "<group>"; };
+		CEC51F341A49F253005D7B6E /* edtaa3func.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = edtaa3func.c; sourceTree = "<group>"; };
+		CEC51F351A49F253005D7B6E /* engine.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = engine.c; sourceTree = "<group>"; };
+		CEC51F361A49F253005D7B6E /* font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = font.c; sourceTree = "<group>"; };
+		CEC51F371A49F253005D7B6E /* image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = image.c; sourceTree = "<group>"; };
+		CEC51F381A49F253005D7B6E /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = input.c; sourceTree = "<group>"; };
+		CEC51F391A49F253005D7B6E /* label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = label.c; sourceTree = "<group>"; };
+		CEC51F3A1A49F253005D7B6E /* layer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = layer.c; sourceTree = "<group>"; };
+		CEC51F3B1A49F253005D7B6E /* lmath.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lmath.c; sourceTree = "<group>"; };
+		CEC51F3C1A49F253005D7B6E /* luas.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = luas.c; sourceTree = "<group>"; };
+		CEC51F3D1A49F253005D7B6E /* node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = node.c; sourceTree = "<group>"; };
+		CEC51F3E1A49F253005D7B6E /* object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = object.c; sourceTree = "<group>"; };
+		CEC51F3F1A49F253005D7B6E /* quad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = quad.c; sourceTree = "<group>"; };
+		CEC51F401A49F253005D7B6E /* render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render.c; sourceTree = "<group>"; };
+		CEC51F411A49F253005D7B6E /* scene.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = scene.c; sourceTree = "<group>"; };
+		CEC51F421A49F253005D7B6E /* scheduler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = scheduler.c; sourceTree = "<group>"; };
+		CEC51F431A49F253005D7B6E /* shader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = shader.c; sourceTree = "<group>"; };
+		CEC51F441A49F253005D7B6E /* shapes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = shapes.c; sourceTree = "<group>"; };
+		CEC51F451A49F253005D7B6E /* signals.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = signals.c; sourceTree = "<group>"; };
+		CEC51F461A49F253005D7B6E /* sprite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sprite.c; sourceTree = "<group>"; };
+		CEC51F471A49F253005D7B6E /* texture-atlas.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "texture-atlas.c"; sourceTree = "<group>"; };
+		CEC51F481A49F253005D7B6E /* texture-manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "texture-manager.c"; sourceTree = "<group>"; };
+		CEC51F491A49F253005D7B6E /* texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = texture.c; sourceTree = "<group>"; };
+		CEC51F4A1A49F253005D7B6E /* utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
+		CEC51F4B1A49F253005D7B6E /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
+		CEC51F4C1A49F253005D7B6E /* vertex-attribute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "vertex-attribute.c"; sourceTree = "<group>"; };
+		CEC51F4D1A49F253005D7B6E /* vertex-buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "vertex-buffer.c"; sourceTree = "<group>"; };
+		CEC51F4E1A49F253005D7B6E /* view.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view.c; sourceTree = "<group>"; };
+		CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_stdio_logger.c; sourceTree = "<group>"; };
+		CEC51F6E1A49F8F1005D7B6E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		CEC51F701A49F970005D7B6E /* x_no_audio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_no_audio.c; sourceTree = "<group>"; };
+		CEC51F711A49F970005D7B6E /* x_posix_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_posix_timer.c; sourceTree = "<group>"; };
+		CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_asset.m; sourceTree = "<group>"; };
+		CEC520251A4A14CC005D7B6E /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../assets; sourceTree = "<group>"; };
+		CEC520271A4A1746005D7B6E /* x_ios.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios.m; sourceTree = "<group>"; };
+		CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_settings.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CEC51EF61A4954E9005D7B6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEC51F6F1A49F8F1005D7B6E /* libz.dylib in Frameworks */,
+				CEC51F2F1A49F120005D7B6E /* libfreetype.a in Frameworks */,
+				CEC51F2D1A49F0F6005D7B6E /* libluajit.a in Frameworks */,
+				CEC51F2B1A49F0C1005D7B6E /* libpng.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CEC51EF01A4954E9005D7B6E = {
+			isa = PBXGroup;
+			children = (
+				CEC520251A4A14CC005D7B6E /* assets */,
+				CEC51F311A49F1A8005D7B6E /* core */,
+				CEC51F301A49F172005D7B6E /* libs */,
+				CEC51EFB1A4954E9005D7B6E /* CellMotus */,
+				CEC51EFA1A4954E9005D7B6E /* Products */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+		};
+		CEC51EFA1A4954E9005D7B6E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEC51EF91A4954E9005D7B6E /* CellMotus.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CEC51EFB1A4954E9005D7B6E /* CellMotus */ = {
+			isa = PBXGroup;
+			children = (
+				CEC51F281A49D197005D7B6E /* Default-568h@2x.png */,
+				CEC51EFD1A4954E9005D7B6E /* Info.plist */,
+				CEC51EFE1A4954E9005D7B6E /* main.m */,
+				CEC51F001A4954E9005D7B6E /* AppDelegate.h */,
+				CEC51F011A4954E9005D7B6E /* AppDelegate.m */,
+				CEC51F071A4954E9005D7B6E /* GameViewController.h */,
+				CEC51F081A4954E9005D7B6E /* GameViewController.m */,
+			);
+			name = CellMotus;
+			sourceTree = SOURCE_ROOT;
+		};
+		CEC51F301A49F172005D7B6E /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				CEC51F6E1A49F8F1005D7B6E /* libz.dylib */,
+				CEC51F2E1A49F120005D7B6E /* libfreetype.a */,
+				CEC51F2C1A49F0F6005D7B6E /* libluajit.a */,
+				CEC51F2A1A49F0C1005D7B6E /* libpng.a */,
+			);
+			name = libs;
+			sourceTree = "<group>";
+		};
+		CEC51F311A49F1A8005D7B6E /* core */ = {
+			isa = PBXGroup;
+			children = (
+				CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */,
+				CEC520271A4A1746005D7B6E /* x_ios.m */,
+				CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */,
+				CEC51F701A49F970005D7B6E /* x_no_audio.c */,
+				CEC51F711A49F970005D7B6E /* x_posix_timer.c */,
+				CEC51F321A49F253005D7B6E /* batch.c */,
+				CEC51F331A49F253005D7B6E /* camera.c */,
+				CEC51F341A49F253005D7B6E /* edtaa3func.c */,
+				CEC51F351A49F253005D7B6E /* engine.c */,
+				CEC51F361A49F253005D7B6E /* font.c */,
+				CEC51F371A49F253005D7B6E /* image.c */,
+				CEC51F381A49F253005D7B6E /* input.c */,
+				CEC51F391A49F253005D7B6E /* label.c */,
+				CEC51F3A1A49F253005D7B6E /* layer.c */,
+				CEC51F3B1A49F253005D7B6E /* lmath.c */,
+				CEC51F3C1A49F253005D7B6E /* luas.c */,
+				CEC51F3D1A49F253005D7B6E /* node.c */,
+				CEC51F3E1A49F253005D7B6E /* object.c */,
+				CEC51F3F1A49F253005D7B6E /* quad.c */,
+				CEC51F401A49F253005D7B6E /* render.c */,
+				CEC51F411A49F253005D7B6E /* scene.c */,
+				CEC51F421A49F253005D7B6E /* scheduler.c */,
+				CEC51F431A49F253005D7B6E /* shader.c */,
+				CEC51F441A49F253005D7B6E /* shapes.c */,
+				CEC51F451A49F253005D7B6E /* signals.c */,
+				CEC51F461A49F253005D7B6E /* sprite.c */,
+				CEC51F471A49F253005D7B6E /* texture-atlas.c */,
+				CEC51F481A49F253005D7B6E /* texture-manager.c */,
+				CEC51F491A49F253005D7B6E /* texture.c */,
+				CEC51F4A1A49F253005D7B6E /* utils.c */,
+				CEC51F4B1A49F253005D7B6E /* vector.c */,
+				CEC51F4C1A49F253005D7B6E /* vertex-attribute.c */,
+				CEC51F4D1A49F253005D7B6E /* vertex-buffer.c */,
+				CEC51F4E1A49F253005D7B6E /* view.c */,
+				CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */,
+			);
+			name = core;
+			path = ../core;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CEC51EF81A4954E9005D7B6E /* CellMotus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEC51F201A4954E9005D7B6E /* Build configuration list for PBXNativeTarget "CellMotus" */;
+			buildPhases = (
+				CEC51EF51A4954E9005D7B6E /* Sources */,
+				CEC51EF61A4954E9005D7B6E /* Frameworks */,
+				CEC51EF71A4954E9005D7B6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CellMotus;
+			productName = CellMotus;
+			productReference = CEC51EF91A4954E9005D7B6E /* CellMotus.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CEC51EF11A4954E9005D7B6E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SEN;
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = TimeFlask;
+				TargetAttributes = {
+					CEC51EF81A4954E9005D7B6E = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
+			};
+			buildConfigurationList = CEC51EF41A4954E9005D7B6E /* Build configuration list for PBXProject "CellMotus" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CEC51EF01A4954E9005D7B6E;
+			productRefGroup = CEC51EFA1A4954E9005D7B6E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CEC51EF81A4954E9005D7B6E /* CellMotus */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CEC51EF71A4954E9005D7B6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEC520261A4A14CC005D7B6E /* assets in Resources */,
+				CEC51F291A49D197005D7B6E /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CEC51EF51A4954E9005D7B6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEC51F5C1A49F253005D7B6E /* object.c in Sources */,
+				CEC5202A1A4A1A1C005D7B6E /* x_ios_settings.m in Sources */,
+				CEC51FEE1A4A019E005D7B6E /* x_ios_asset.m in Sources */,
+				CEC51F681A49F253005D7B6E /* utils.c in Sources */,
+				CEC51F611A49F253005D7B6E /* shader.c in Sources */,
+				CEC51F551A49F253005D7B6E /* image.c in Sources */,
+				CEC51F621A49F253005D7B6E /* shapes.c in Sources */,
+				CEC51F511A49F253005D7B6E /* camera.c in Sources */,
+				CEC51F561A49F253005D7B6E /* input.c in Sources */,
+				CEC51F521A49F253005D7B6E /* edtaa3func.c in Sources */,
+				CEC51F571A49F253005D7B6E /* label.c in Sources */,
+				CEC51F671A49F253005D7B6E /* texture.c in Sources */,
+				CEC51F641A49F253005D7B6E /* sprite.c in Sources */,
+				CEC51F661A49F253005D7B6E /* texture-manager.c in Sources */,
+				CEC51F731A49F970005D7B6E /* x_posix_timer.c in Sources */,
+				CEC51F721A49F970005D7B6E /* x_no_audio.c in Sources */,
+				CEC51F5B1A49F253005D7B6E /* node.c in Sources */,
+				CEC51F531A49F253005D7B6E /* engine.c in Sources */,
+				CEC520281A4A1746005D7B6E /* x_ios.m in Sources */,
+				CEC51F591A49F253005D7B6E /* lmath.c in Sources */,
+				CEC51F6D1A49F253005D7B6E /* x_stdio_logger.c in Sources */,
+				CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */,
+				CEC51F6A1A49F253005D7B6E /* vertex-attribute.c in Sources */,
+				CEC51F091A4954E9005D7B6E /* GameViewController.m in Sources */,
+				CEC51F6C1A49F253005D7B6E /* view.c in Sources */,
+				CEC51F501A49F253005D7B6E /* batch.c in Sources */,
+				CEC51F6B1A49F253005D7B6E /* vertex-buffer.c in Sources */,
+				CEC51F631A49F253005D7B6E /* signals.c in Sources */,
+				CEC51F5A1A49F253005D7B6E /* luas.c in Sources */,
+				CEC51F5F1A49F253005D7B6E /* scene.c in Sources */,
+				CEC51F5E1A49F253005D7B6E /* render.c in Sources */,
+				CEC51F691A49F253005D7B6E /* vector.c in Sources */,
+				CEC51F601A49F253005D7B6E /* scheduler.c in Sources */,
+				CEC51F5D1A49F253005D7B6E /* quad.c in Sources */,
+				CEC51F581A49F253005D7B6E /* layer.c in Sources */,
+				CEC51F651A49F253005D7B6E /* texture-atlas.c in Sources */,
+				CEC51F541A49F253005D7B6E /* font.c in Sources */,
+				CEC51EFF1A4954E9005D7B6E /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CEC51F1E1A4954E9005D7B6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../ext/png/include/ios,
+					../ext/luajit/include,
+					../ext/ft2/include/ios,
+					../core,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
+			};
+			name = Debug;
+		};
+		CEC51F1F1A4954E9005D7B6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../ext/png/include/ios,
+					../ext/luajit/include,
+					../ext/ft2/include/ios,
+					../core,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv7 armv7s";
+			};
+			name = Release;
+		};
+		CEC51F211A4954E9005D7B6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					"SEN_TARGET_IOS=1",
+					"SEN_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user/projects/CellMotus/src/ext/png/libs/ios,
+					/Users/user/projects/CellMotus/src/ext/luajit/libs/ios,
+					/Users/user/projects/CellMotus/src/ext/ft2/libs/ios,
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CEC51F221A4954E9005D7B6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "SEN_TARGET_IOS=1";
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user/projects/CellMotus/src/ext/png/libs/ios,
+					/Users/user/projects/CellMotus/src/ext/luajit/libs/ios,
+					/Users/user/projects/CellMotus/src/ext/ft2/libs/ios,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CEC51EF41A4954E9005D7B6E /* Build configuration list for PBXProject "CellMotus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEC51F1E1A4954E9005D7B6E /* Debug */,
+				CEC51F1F1A4954E9005D7B6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEC51F201A4954E9005D7B6E /* Build configuration list for PBXNativeTarget "CellMotus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEC51F211A4954E9005D7B6E /* Debug */,
+				CEC51F221A4954E9005D7B6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CEC51EF11A4954E9005D7B6E /* Project object */;
+}

@@ -108,12 +108,12 @@ sen_view_set_screen(float x, float y, float w, float h)
   g_self->r_size.y = h;
   g_self->s_size.x = w;
   g_self->s_size.y = h;
-
+#if SEN_PLATFORM != SEN_PLATFORM_IOS
   glViewport((GLint)(x),
              (GLint)(y),
              (GLsizei)(w),
              (GLsizei)(h));
-
+#endif
   g_self->viewport.x = x;
   g_self->viewport.y = y;
   g_self->viewport.width = w;
