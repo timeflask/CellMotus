@@ -12,7 +12,8 @@
 #undef SEN_LOG_TAG
 #define SEN_LOG_TAG "SEN:Asset"
 
-static const char* get_fpath(const char* path) {
+
+const char* sen_assets_get_full_path(const char* path) {
   sen_assert(path);
   char* assets_sub = strstr(path, "assets/" );
   if (assets_sub == path)
@@ -23,7 +24,6 @@ static const char* get_fpath(const char* path) {
   
   [relative_path appendString:
     [[NSString alloc] initWithCString:path encoding:NSASCIIStringEncoding]];
- // NSLog(relative_path);
   return
     [[[NSBundle mainBundle] pathForResource:relative_path ofType:nil]
      cStringUsingEncoding:NSASCIIStringEncoding];
@@ -37,7 +37,7 @@ asset_init(asset_t* self, const char* path)
   const char* fp;
   sen_assert(self);
   sen_assert(path);
-  fp = get_fpath(path);
+  fp = sen_assets_get_full_path(path);
   sen_assert(fp);
   self->path = sen_strdup(fp);
 
@@ -87,7 +87,7 @@ asset_delete(asset_t* self)
 int
 asset_exists(const char* _path)
 {
-  return get_fpath(_path) != NULL;
+  return sen_assets_get_full_path(_path) != NULL;
 }
 
 void
