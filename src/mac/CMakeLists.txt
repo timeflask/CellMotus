@@ -24,7 +24,7 @@ link_directories(
 set(PLATFORM_SOURCES 
   ${CORE_ROOT}/x_glfw_desktop_app.h
   ${CORE_ROOT}/x_glfw_desktop_app.c
-  ${CORE_ROOT}/x_mac_audio.c
+  ${CORE_ROOT}/x_apple_audio.m
   ${CORE_ROOT}/x_posix_timer.c
   ${CORE_ROOT}/x_mac.c
   ${SRC_ROOT}/mac/main.c

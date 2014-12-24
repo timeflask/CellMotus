@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CEB063F31A4AA82600BEFE20 /* x_apple_audio.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB063F21A4AA82600BEFE20 /* x_apple_audio.m */; };
 		CEC51EFF1A4954E9005D7B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51EFE1A4954E9005D7B6E /* main.m */; };
 		CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F011A4954E9005D7B6E /* AppDelegate.m */; };
 		CEC51F091A4954E9005D7B6E /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F081A4954E9005D7B6E /* GameViewController.m */; };
@@ -45,7 +46,6 @@
 		CEC51F6C1A49F253005D7B6E /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4E1A49F253005D7B6E /* view.c */; };
 		CEC51F6D1A49F253005D7B6E /* x_stdio_logger.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */; };
 		CEC51F6F1A49F8F1005D7B6E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F6E1A49F8F1005D7B6E /* libz.dylib */; };
-		CEC51F721A49F970005D7B6E /* x_no_audio.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F701A49F970005D7B6E /* x_no_audio.c */; };
 		CEC51F731A49F970005D7B6E /* x_posix_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F711A49F970005D7B6E /* x_posix_timer.c */; };
 		CEC51FEE1A4A019E005D7B6E /* x_ios_asset.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */; };
 		CEC520261A4A14CC005D7B6E /* assets in Resources */ = {isa = PBXBuildFile; fileRef = CEC520251A4A14CC005D7B6E /* assets */; };
@@ -54,6 +54,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CEB063F21A4AA82600BEFE20 /* x_apple_audio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_apple_audio.m; sourceTree = "<group>"; };
 		CEC51EF91A4954E9005D7B6E /* CellMotus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CellMotus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC51EFD1A4954E9005D7B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEC51EFE1A4954E9005D7B6E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -96,7 +97,6 @@
 		CEC51F4E1A49F253005D7B6E /* view.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view.c; sourceTree = "<group>"; };
 		CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_stdio_logger.c; sourceTree = "<group>"; };
 		CEC51F6E1A49F8F1005D7B6E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		CEC51F701A49F970005D7B6E /* x_no_audio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_no_audio.c; sourceTree = "<group>"; };
 		CEC51F711A49F970005D7B6E /* x_posix_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_posix_timer.c; sourceTree = "<group>"; };
 		CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_asset.m; sourceTree = "<group>"; };
 		CEC520251A4A14CC005D7B6E /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../assets; sourceTree = "<group>"; };
@@ -168,10 +168,10 @@
 		CEC51F311A49F1A8005D7B6E /* core */ = {
 			isa = PBXGroup;
 			children = (
+				CEB063F21A4AA82600BEFE20 /* x_apple_audio.m */,
 				CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */,
 				CEC520271A4A1746005D7B6E /* x_ios.m */,
 				CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */,
-				CEC51F701A49F970005D7B6E /* x_no_audio.c */,
 				CEC51F711A49F970005D7B6E /* x_posix_timer.c */,
 				CEC51F321A49F253005D7B6E /* batch.c */,
 				CEC51F331A49F253005D7B6E /* camera.c */,
@@ -293,7 +293,6 @@
 				CEC51F641A49F253005D7B6E /* sprite.c in Sources */,
 				CEC51F661A49F253005D7B6E /* texture-manager.c in Sources */,
 				CEC51F731A49F970005D7B6E /* x_posix_timer.c in Sources */,
-				CEC51F721A49F970005D7B6E /* x_no_audio.c in Sources */,
 				CEC51F5B1A49F253005D7B6E /* node.c in Sources */,
 				CEC51F531A49F253005D7B6E /* engine.c in Sources */,
 				CEC520281A4A1746005D7B6E /* x_ios.m in Sources */,
@@ -315,6 +314,7 @@
 				CEC51F581A49F253005D7B6E /* layer.c in Sources */,
 				CEC51F651A49F253005D7B6E /* texture-atlas.c in Sources */,
 				CEC51F541A49F253005D7B6E /* font.c in Sources */,
+				CEB063F31A4AA82600BEFE20 /* x_apple_audio.m in Sources */,
 				CEC51EFF1A4954E9005D7B6E /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

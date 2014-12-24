@@ -243,22 +243,23 @@ static void show_stats()
 }
 
 static scene_t* prev = NULL;
-void sen_process()
+static int render_clear, render_flush;
+void  sen_process_update()
 {
-  /* 
-  //axis
-  vec2 start = {{ -1, 0}};
-  vec2 end = {{ 1, 0}};
-  vec2 start2 = {{ 0, 1}};
-  vec2 end2 = {{ 0, -1}};
-  */
-
   
-  double now = sen_timer_now();
-  node_t* cam = (node_t*)sen_camera();
-
+  double now;
+  node_t* cam;
+ 
+  render_clear = 0;
+  render_flush = 0;
   if ((g_status&SEN_STATUS_STOPPED) || g_status == SEN_STATUS_DEAD) return;
+  render_clear = 1;
 
+  now = sen_timer_now();
+  cam = (node_t*)sen_camera();
+
+  sen_audio_update();
+  
   if (g_drop_dt) {
     g_drop_dt = 0;
     dt = 0;
@@ -267,7 +268,7 @@ void sen_process()
   {
     dt = max(0, now - g_prev_dt);
   }
-
+  
 #ifdef SEN_DEBUG
   if (dt > 0.25)
     dt = 1/60.0f;
@@ -277,7 +278,7 @@ void sen_process()
 #endif
   g_prev_dt = now;
   if (dt < F_EPSILON) return;
-
+  
   if ((cam->updated & SEN_NODE_UPDATE_MODEL) || ( prev != g_scene)) {
     if ( prev != g_scene && prev)
       update_scene_bbox((object_t*)prev, NULL);
@@ -286,25 +287,41 @@ void sen_process()
   }
   prev = g_scene;
   g_updateEntries = sen_scheduler_update(g_scheduler, dt);
+  render_flush = 1;
+  
+}
 
+void  sen_process_draw()
+{
+  if (!render_clear)
+    return;
+  
   sen_render_clear();
+  
+  if (!render_flush)
+    return;
+  
 #ifdef TEST
   test_draw();
 #else
   if (prev!=g_scene) return;
-
+  
   sen_render_node((node_t*)g_scene);
-
+  
   g_renderedItems= sen_render_flush(1);
 #endif
   
   //sen_render_clear();
   //sen_shapes_line(&start, &end);
   //sen_shapes_line(&start2, &end2);
-
+  
   show_stats();
+}
 
-  sen_audio_update();
+void sen_process()
+{
+  sen_process_update();
+  sen_process_draw();
 }
 
 
