@@ -446,6 +446,39 @@ local function key_down(a,b)
   --]]
 end
 
+local scroll_accum_x = 0
+local scroll_accum_y = 0
+local last_time  = os.time()
+local function input_scroll(a,b)
+  if on_click then return end
+  local board = a.parent
+  local scroll = sen.input_scroll(b)
+  local vb = sen.vp_box()
+  
+  local diff=os.difftime(os.time(),last_time)
+  scroll_accum_x = diff > 0 and 0 or ( scroll_accum_x +  scroll.x )
+  scroll_accum_y = diff > 0 and 0 or ( scroll_accum_y +  scroll.y )
+  local wf = (vb.r-vb.l)/32
+  local hf = (vb.t-vb.b)/32
+  if scroll_accum_x < -wf then
+    board:playClick(3)
+    scroll_accum_x = 0
+    return 1
+  end  
+  if scroll_accum_x > wf then
+    board:playClick(2)
+    scroll_accum_x = 0
+    return 1
+  end  
+  if scroll_accum_y < -hf then
+    board:playClick(1)
+    scroll_accum_y = 0
+    return 1
+  end  
+  last_time  = os.time()
+  return 0
+end
+
 function mboard:start()
   
   progress = settingsManager.get('progress',1)
@@ -458,21 +491,9 @@ function mboard:start()
   sen.connect("input", "touchesBegin", touches_begin, self.node)
   sen.connect("input", "touchesMove", touches_move, self.node)
   sen.connect("input", "keyDown", key_down, self.node)
- -- self:hideAll()
-  --[[
-  local prev_scene = scene.Prev()
-  local direction = 
-    ((prev_scene == scenes.gameScene or prev_scene == scenes.lvlsScene) and 6) or
-      prev_scene == scenes.optsScene and 4 or 2
-  --]]
-  --self:runMatrix( direction )
-  
- -- scheduler.ScheduleCoro(self.node, 
-                   --      sen.clsCoro( menu_coro ), 
-                      --   "menu_coro", 0.3)  
-  
-  
---  sen.connect("input", "keyDown", key_down, self.node)
+  sen.connect("input", "scroll", input_scroll, self.node)
+    scroll_accum_x = 0
+  scroll_accum_y = 0
 end
 
 function mboard:stop()
@@ -480,16 +501,11 @@ function mboard:stop()
   sen.disconnect(self.node, "touchesEnd", "input")
   sen.disconnect(self.node, "touchesMove", "input")
   sen.disconnect(self.node, "keyDown", "input")
- --  scheduler.Remove(self.node, 'bg_coro')
- --self.abg:stop()
---  scheduler.Remove(self.node, "menu_coro")
+  sen.disconnect(self.node, "scroll", "input")
 end
 
 function mboard:resize(b)
  self:_resize(b)
--- self:refill_cells()
--- self:reset()
- 
 end
 
 function mboard:runSideMatrix()

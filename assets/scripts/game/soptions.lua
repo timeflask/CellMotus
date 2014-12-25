@@ -516,6 +516,39 @@ local function key_down(a,b)
   --]]
 end
 
+local scroll_accum_x = 0
+local scroll_accum_y = 0
+local last_time  = os.time()
+local function input_scroll(a,b)
+  if on_click then return end
+  local board = a.parent
+  local scroll = sen.input_scroll(b)
+  local vb = sen.vp_box()
+  
+  local diff=os.difftime(os.time(),last_time)
+  scroll_accum_x = diff > 0 and 0 or ( scroll_accum_x +  scroll.x )
+  scroll_accum_y = diff > 0 and 0 or ( scroll_accum_y +  scroll.y )
+  local wf = (vb.r-vb.l)/32
+  local hf = (vb.t-vb.b)/32
+  if scroll_accum_x < -wf then
+    board:click(1)
+    scroll_accum_x = 0
+    return 1
+  end  
+  if scroll_accum_x > wf then
+    board:click(3)
+    scroll_accum_x = 0
+    return 1
+  end  
+  if scroll_accum_y <-hf then
+    board:click(2)
+    scroll_accum_y = 0
+    return 1
+  end  
+  last_time  = os.time()
+  return 0
+end
+
 function oboard:start()
   prev_settings =   settingsManager.copy()
   self:reset()
@@ -523,6 +556,9 @@ function oboard:start()
   sen.connect("input", "touchesBegin", touches_begin, self.node)
   sen.connect("input", "touchesMove", touches_move, self.node)
   sen.connect("input", "keyDown", key_down, self.node)
+  sen.connect("input", "scroll", input_scroll, self.node)
+   scroll_accum_x = 0
+  scroll_accum_y = 0 
 end
 
 function oboard:stop()
@@ -530,6 +566,8 @@ function oboard:stop()
   sen.disconnect(self.node, "touchesEnd", "input")
   sen.disconnect(self.node, "touchesMove", "input")
   sen.disconnect(self.node, "keyDown", "input")
+  sen.disconnect(self.node, "scroll", "input")
+
   --self.abg:stop()
 end
 
