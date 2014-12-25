@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE7152FE1A4C94B4006A92A6 /* x_apple_settings.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7152FD1A4C94B4006A92A6 /* x_apple_settings.m */; };
 		CEB063F51A4B83AC00BEFE20 /* x_ios_audio.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */; };
 		CEC51EFF1A4954E9005D7B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51EFE1A4954E9005D7B6E /* main.m */; };
 		CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F011A4954E9005D7B6E /* AppDelegate.m */; };
@@ -50,10 +51,10 @@
 		CEC51FEE1A4A019E005D7B6E /* x_ios_asset.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */; };
 		CEC520261A4A14CC005D7B6E /* assets in Resources */ = {isa = PBXBuildFile; fileRef = CEC520251A4A14CC005D7B6E /* assets */; };
 		CEC520281A4A1746005D7B6E /* x_ios.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC520271A4A1746005D7B6E /* x_ios.m */; };
-		CEC5202A1A4A1A1C005D7B6E /* x_ios_settings.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE7152FD1A4C94B4006A92A6 /* x_apple_settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_apple_settings.m; sourceTree = "<group>"; };
 		CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_audio.m; sourceTree = "<group>"; };
 		CEC51EF91A4954E9005D7B6E /* CellMotus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CellMotus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC51EFD1A4954E9005D7B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -101,7 +102,6 @@
 		CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_asset.m; sourceTree = "<group>"; };
 		CEC520251A4A14CC005D7B6E /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../assets; sourceTree = "<group>"; };
 		CEC520271A4A1746005D7B6E /* x_ios.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios.m; sourceTree = "<group>"; };
-		CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_settings.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,8 +168,8 @@
 		CEC51F311A49F1A8005D7B6E /* core */ = {
 			isa = PBXGroup;
 			children = (
+				CE7152FD1A4C94B4006A92A6 /* x_apple_settings.m */,
 				CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */,
-				CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */,
 				CEC520271A4A1746005D7B6E /* x_ios.m */,
 				CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */,
 				CEC51F711A49F970005D7B6E /* x_posix_timer.c */,
@@ -279,7 +279,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEC51F5C1A49F253005D7B6E /* object.c in Sources */,
-				CEC5202A1A4A1A1C005D7B6E /* x_ios_settings.m in Sources */,
 				CEC51FEE1A4A019E005D7B6E /* x_ios_asset.m in Sources */,
 				CEC51F681A49F253005D7B6E /* utils.c in Sources */,
 				CEC51F611A49F253005D7B6E /* shader.c in Sources */,
@@ -307,6 +306,7 @@
 				CEC51F631A49F253005D7B6E /* signals.c in Sources */,
 				CEC51F5A1A49F253005D7B6E /* luas.c in Sources */,
 				CEC51F5F1A49F253005D7B6E /* scene.c in Sources */,
+				CE7152FE1A4C94B4006A92A6 /* x_apple_settings.m in Sources */,
 				CEC51F5E1A49F253005D7B6E /* render.c in Sources */,
 				CEC51F691A49F253005D7B6E /* vector.c in Sources */,
 				CEB063F51A4B83AC00BEFE20 /* x_ios_audio.m in Sources */,
