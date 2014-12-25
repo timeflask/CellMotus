@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "view.h"
 #include "hrtimer.h"
+#include "engine.h"
 #include <math.h>
 
 #undef SEN_LOG_TAG
@@ -116,9 +117,11 @@ static const void* signal_keyDown = NULL;
 static int on_key_down(object_t* _null, void* data, object_t* _null2, const char* sig)
 {
   UNUSED(_null); UNUSED(_null2);UNUSED(sig);
-
-  sen_signal_emit(signal_keyDown, data);
-  _logfi("KEY DOWN : %d", *(int*)data);
+  if (*(int*)data == 290) 
+    sen_screenshot();
+  else
+    sen_signal_emit(signal_keyDown, data);
+  //_logfi("KEY DOWN : %d", *(int*)data);
   return 0;
 }
 

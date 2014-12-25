@@ -18,4 +18,6 @@ SEN_DECL void  sen_exit();
 
 int          sen_status();
 
+void sen_screenshot();
+
 #endif

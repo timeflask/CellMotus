@@ -21,7 +21,7 @@
 #include "image.h"
 //#include <sys/time.h>
 //#include <time.h>
-
+#include <stdio.h>
 
 //static sen_timer_t      g_timer;
 static float            g_fps = 0.0f;
@@ -325,3 +325,56 @@ void sen_process()
 }
 
 
+
+void sen_screenshot()
+{
+  unsigned char *output = 0;
+  const vec4* vp = sen_view_get_viewport();
+  int SCREEN_WIDTH = (int) vp->z;
+  int SCREEN_HEIGHT = (int) vp->w;
+  FILE *sFile = 0; int i;
+
+  unsigned char tgaHeader[12] = {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  unsigned char header[6];
+  unsigned char bits = 0;
+  int colorMode = 0;
+  unsigned char tempColors = 0;
+
+  output = malloc( SCREEN_WIDTH * SCREEN_HEIGHT * 3);
+
+  glReadPixels(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
+                  output);
+
+  sFile = fopen("screenshot.tga", "wb");
+
+  if(!sFile)
+  {
+      _logfe("Failed to to open file for screenshot");
+      free(output);
+      return;
+  }
+
+  colorMode = 3;  bits = 24;
+
+  header[0] = SCREEN_WIDTH % 256;
+  header[1] = SCREEN_WIDTH / 256;
+  header[2] = SCREEN_HEIGHT % 256;
+  header[3] = SCREEN_HEIGHT / 256;
+  header[4] = bits;
+  header[5] = 0;
+    
+  fwrite(tgaHeader, sizeof(tgaHeader), 1, sFile);
+  fwrite(header, sizeof(header), 1, sFile);
+
+  for(i=0; i < SCREEN_WIDTH * SCREEN_HEIGHT * colorMode; i+=colorMode)
+  {
+      tempColors = output[i];
+      output[i] = output[i+2];
+      output[i+2] = tempColors;
+  }
+
+  fwrite(output, SCREEN_WIDTH * SCREEN_HEIGHT * colorMode, 1, sFile);
+
+  fclose(sFile);
+  free(output);
+}
