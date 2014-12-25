@@ -12,6 +12,11 @@
 #import <Foundation/Foundation.h>
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
+
+#if SEN_PLATFORM==SEN_PLATFORM_IOS
+#import <OpenAL/oalStaticBufferExtension.h>
+#endif
+
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
 
@@ -25,6 +30,43 @@ static void* getOpenALAudioData( CFURLRef inFileURL, ALsizei *outDataSize,
                                  ALenum *outDataFormat, ALsizei* outSampleRate,
                                  ALdouble* duration);
 
+//------------------------------------------------------------------------- openAL Sound
+
+#if SEN_PLATFORM == SEN_PLATFORM_IOS
+static alBufferDataStaticProcPtr  alBufferDataStaticProc = NULL;
+#endif
+/*
+@interface sound_t : NSObject 
+{
+	ALuint          bufferID;		
+	ALuint          sourceID;
+	ALdouble        duration;
+	ALfloat         volume;		
+	ALfloat         pitch;		
+	
+	ALenum          error;				
+	ALvoid         *data;	
+
+	NSMutableArray *temp;
+	NSString       *path;
+}
+
+@property (nonatomic, readonly) ALenum error;
+@property (nonatomic, readonly) ALdouble duration;
+@property (nonatomic) ALfloat volume;
+@property (nonatomic) ALfloat pitch;
+@property (nonatomic, copy, readonly) NSString *path;
+
+- (id) initLoad:(NSString *)file loop:(BOOL)loops;
+
+- (BOOL) play;
+- (BOOL) stop;
+- (BOOL) pause;
+- (BOOL) rewind;
+- (BOOL) is_playing;
+- (BOOL) is_anyPlaying;
+@end
+*/
 //------------------------------------------------------------------------- openAL Player
 
 typedef struct sound_t 
@@ -47,18 +89,19 @@ static void soundMap_collect();
 static sound_t* soundMap_get(unsigned int key);
 static void soundMap_set(const char* path);
 
-//static int isDevicePlayingMusic = 0;
-//static int isInterrupted  = 0;
+static int isDevicePlayingMusic = 0;
+static int isInterrupted  = 0;
 static khash_t(hmip)* mapSound = NULL;
 static ALdouble minDuration = 1000000.0f;
 
-//static void interruption_begin ();
-//static void interruption_end ();
-//static void interruption_callback (void *data, UInt32 state);
+static void interruption_begin ();
+static void interruption_end ();
+static void interruption_callback (void *data, UInt32 state);
 static void openAL_shutdown();
 static void openAL_init();
 static void clear_sounds(int refs);
 static unsigned int hash_string(const char *s);
+
 
 //========================================================================= SENAUDIO
 //------------------------------------------------------------------------- SENAudio init - destroy
@@ -67,9 +110,15 @@ void sen_audio_init()
 {
   mapSound = kh_init(hmip);
 
-  openAL_init();
 
-  //interruption_end();
+  OSStatus status = AudioSessionInitialize(NULL, NULL, 
+                                           interruption_callback, NULL);
+  if (status != kAudioSessionNoError) {
+    _logfe("AudioSessionInitialize FAILED");
+    return;
+  }
+  
+  interruption_end();
 
   //sound_t *s = sound_new("assets/audio/move0.wav");  
 //  sound_play(s);
@@ -513,6 +562,44 @@ static void* getOpenALAudioData(CFURLRef inFileURL,
 //===================================================================================================
 //
 //===================================================================================================
+static void interruption_begin ()
+{
+  _logfi("  .begin interruption");	
+  sen_music_stop(1);
+  sen_sound_stop_all();
+  openAL_shutdown();
+
+  UInt32 cat = isDevicePlayingMusic ? kAudioSessionCategory_MediaPlayback :
+                                      kAudioSessionCategory_UserInterfaceSoundEffects;
+	AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(cat), &cat);
+  AudioSessionSetActive(YES);	AudioSessionSetActive(NO);
+}
+
+static void interruption_end ()
+{
+	UInt32 isPlaying;
+	UInt32 psize = sizeof(isPlaying);
+  
+  openAL_init();
+  
+	OSStatus err = AudioSessionGetProperty(kAudioSessionProperty_OtherAudioIsPlaying, 
+  &psize, &isPlaying);	
+
+#ifdef SEN_DEBUG  
+	if(err) 
+    _logfe("AudioSessionGetProperty Error:%d", err);
+  else
+  _logfi("_OtherAudioIsPlaying = %u", isPlaying);
+#endif  
+
+  isDevicePlayingMusic = 	isPlaying ? 1 : 0;
+  UInt32	cat = isDevicePlayingMusic ? kAudioSessionCategory_AmbientSound :
+                                        kAudioSessionCategory_SoloAmbientSound;
+                                           
+  AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, 
+                            sizeof(cat), &cat);		
+	AudioSessionSetActive(YES);
+}
 
 static void openAL_shutdown()
 {
@@ -534,6 +621,38 @@ static void openAL_init()
 	if(!context) return;
 	
 	alcMakeContextCurrent(context);
+}
+
+static void interruption_callback (void *data, UInt32 state) 
+{
+  if (state == kAudioSessionBeginInterruption) 
+	{	
+    _logfi("Audio Interruption ON");	
+		interruption_begin();
+    isInterrupted = 1;
+  } 
+	else if (state == kAudioSessionEndInterruption && isInterrupted)
+	{
+    _logfi("Audio Interruption OFF");	
+    interruption_end();
+    isInterrupted = 0;
+  }
+}
+
+static const char* get_fpath(const char* path) {
+  sen_assert(path);
+  char* assets_sub = strstr(path, "assets/" );
+  if (assets_sub == path)
+    path += strlen("assets/");
+     
+  NSMutableString* relative_path = 
+      [[NSMutableString alloc] initWithString:@"/assets/"];
+  
+  [relative_path appendString:
+    [[NSString alloc] initWithCString:path encoding:NSASCIIStringEncoding]];
+  return
+    [[[NSBundle mainBundle] pathForResource:relative_path ofType:nil]
+     cStringUsingEncoding:NSASCIIStringEncoding];
 }
 
 static void clear_sounds(int refs)
@@ -558,11 +677,11 @@ static sound_t* sound_new( const char* path )
 {
   struct_malloc(sound_t, self);
   sen_assert(path);
-  _logfi(path);
+
 #if SEN_PLATFORM == SEN_PLATFORM_IOS  
   self->path = strdup(sen_assets_get_full_path(path));
 #else
-  self->path = sen_assets_get_full_path(path);
+  self->path = strdup(path);
 #endif
 
   self->data = NULL;
@@ -583,14 +702,16 @@ static sound_t* sound_new( const char* path )
     _logfw("%s not Found", self->path);
 		return self;
 	}
-  
 	
 	self->data = getOpenALAudioData(CFBridgingRetain(fileURL), &size, &format, &freq, &(self->duration) );
   if (!self->data) return self;
 
   check_exit( alGenBuffers(1, &(self->bufferID) ) );
   
-  check_exit( alBufferData(self->bufferID, format, self->data, size, freq) );
+  if (alBufferDataStaticProc == NULL) 
+    alBufferDataStaticProc = (alBufferDataStaticProcPtr) alGetProcAddress((const ALCchar*) "alBufferDataStatic");    
+  
+  check_exit( alBufferDataStaticProc(self->bufferID, format, self->data, size, freq) );
   check_exit( alGenSources(1, & (self->sourceID) ) );
   check_exit( alSourcei(self->sourceID, AL_BUFFER, self->bufferID) );
 	

@@ -57,6 +57,8 @@ PATHS
 
 find_package(ZLIB REQUIRED)
 find_package(OpenGL REQUIRED)
+find_library(AL_LIB OpenAL)
+find_library(ATB_LIB AudioToolbox)
   
 set(PLATFORM_LIBS 
    ${MGLFW_LIB} 
@@ -68,6 +70,8 @@ set(PLATFORM_LIBS
    ${ZLIB_LIBRARY} 
    ${LUA_LIB}
    ${OPENGL_LIBRARIES}
+   ${AL_LIB}
+   ${ATB_LIB}
  )
 
 add_executable(${APP_NAME}

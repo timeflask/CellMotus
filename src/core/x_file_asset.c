@@ -28,6 +28,17 @@ static char* get_path(const char* path)
   return ret;
 }
 
+char* sen_assets_get_full_path(const char* path)
+{
+  char buff[4096];
+  if (strstr("assets", path) != path) {
+    sprintf(buff,"assets/%s", path);
+    return get_path(buff);
+  }
+  else
+    return get_path(path);
+}
+
 void
 asset_init(asset_t* self, const char* path)
 {

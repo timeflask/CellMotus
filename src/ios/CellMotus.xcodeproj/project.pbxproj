@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CEB063F31A4AA82600BEFE20 /* x_apple_audio.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB063F21A4AA82600BEFE20 /* x_apple_audio.m */; };
+		CEB063F51A4B83AC00BEFE20 /* x_ios_audio.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */; };
 		CEC51EFF1A4954E9005D7B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51EFE1A4954E9005D7B6E /* main.m */; };
 		CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F011A4954E9005D7B6E /* AppDelegate.m */; };
 		CEC51F091A4954E9005D7B6E /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F081A4954E9005D7B6E /* GameViewController.m */; };
@@ -54,7 +54,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CEB063F21A4AA82600BEFE20 /* x_apple_audio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_apple_audio.m; sourceTree = "<group>"; };
+		CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_audio.m; sourceTree = "<group>"; };
 		CEC51EF91A4954E9005D7B6E /* CellMotus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CellMotus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC51EFD1A4954E9005D7B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEC51EFE1A4954E9005D7B6E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 		CEC51F311A49F1A8005D7B6E /* core */ = {
 			isa = PBXGroup;
 			children = (
-				CEB063F21A4AA82600BEFE20 /* x_apple_audio.m */,
+				CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */,
 				CEC520291A4A1A1C005D7B6E /* x_ios_settings.m */,
 				CEC520271A4A1746005D7B6E /* x_ios.m */,
 				CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */,
@@ -309,12 +309,12 @@
 				CEC51F5F1A49F253005D7B6E /* scene.c in Sources */,
 				CEC51F5E1A49F253005D7B6E /* render.c in Sources */,
 				CEC51F691A49F253005D7B6E /* vector.c in Sources */,
+				CEB063F51A4B83AC00BEFE20 /* x_ios_audio.m in Sources */,
 				CEC51F601A49F253005D7B6E /* scheduler.c in Sources */,
 				CEC51F5D1A49F253005D7B6E /* quad.c in Sources */,
 				CEC51F581A49F253005D7B6E /* layer.c in Sources */,
 				CEC51F651A49F253005D7B6E /* texture-atlas.c in Sources */,
 				CEC51F541A49F253005D7B6E /* font.c in Sources */,
-				CEB063F31A4AA82600BEFE20 /* x_apple_audio.m in Sources */,
 				CEC51EFF1A4954E9005D7B6E /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

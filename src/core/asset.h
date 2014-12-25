@@ -27,8 +27,11 @@ SEN_DECL const char*
 sen_assets_get_root();
 
 #if SEN_PLATFORM == SEN_PLATFORM_IOS
-SEN_DECL const char*
-sen_assets_get_full_path();
+const char* sen_assets_get_full_path(const char* path);
+#endif
+
+#if SEN_PLATFORM == SEN_PLATFORM_MAC
+char* sen_assets_get_full_path(const char* path);
 #endif
 
 #endif
