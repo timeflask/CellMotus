@@ -19,6 +19,8 @@ class "optLine"
 
 local CoroWait = sen.CoroWait
 
+local scr = sen.screen()
+
 local optLineCoro = function (node, dt)
   node.clear()
   CoroWait(dt, rand()*0.5)
@@ -306,10 +308,10 @@ local buttonLineCoro = function (node, dt)
   if cfg.rico then 
     q2 = sen.clsSprite(nil, cfg.rico)
     --local qb = q2.getBBox()
-    local f = math.min((lh - 8),20) / math.max(q2.height(), q2.width())
+    local f = math.min((lh - 8),scr.baby and 16 or 20) / math.max(q2.height(), q2.width())
     q2.scale(f,f) 
     node.q2 = q2
-    q2.moveTo(bbox.r-q2.width()*f, 0 )
+    q2.moveTo(bbox.r-q2.width()*f, scr.baby and -lh/5 or 0)
     q2.setColor{a=0}
     node.addChild(q2)
  end   
@@ -354,7 +356,7 @@ local buttonLineCoro = function (node, dt)
         lb.setColor({a=pow(dt,cf.rate)*(node.enabled and lba1 or 0.1)})
         lb2.setColor({a=pow(dt,cf.rate)*(node.enabled and lba2 or 0.1)})
         if q2 then 
-          q2.setColor({a=pow(dt,cf.rate)*(node.enabled and 0.15 or 0.05)})
+          q2.setColor({a=pow(dt,cf.rate)*(node.enabled and 0.25 or 0.05)})
         end   
       end,
       start_trigger = function(self,cf)
@@ -399,7 +401,7 @@ local buttonLineClickCoro = function (node, dt)
  node.quad.setColor(cfg.lineColor or {1,1,1,0.05})
  node.q1.setColor(node.enabled and (cfg.pquadColor or {1,1,1,1}) or {1,1,1,0.1})
  if node.q2 then
-   node.q2.setColor{a=node.enabled and 0.15 or 0.05}
+   node.q2.setColor{a=node.enabled and 0.25 or 0.05}
  end
 
   if not node.enabled then
@@ -543,7 +545,7 @@ function buttonLine:enable(flag)
   if node.enabled == f then return end
   node.enabled = f
    if node.q2 then
-     node.q2.setColor{a=node.enabled and 0.15 or 0.05}
+     node.q2.setColor{a=node.enabled and 0.25 or 0.05}
    end
   if node.enabled then
      if node.lb then

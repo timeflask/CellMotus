@@ -1267,7 +1267,8 @@ local function input_scroll(a,b)
   local board = a.parent
   local scroll = sen.input_scroll(b)
   local vb = sen.vp_box()
-  local s = -scroll.y * (vb.t-vb.b) / 14
+  
+  local s = -(scroll.y<0 and -1 or 1) * (vb.t-vb.b) / 14
   --s = s > scroll_max and scroll_max or s>scroll_min and scroll_min or s
   camera.move( 0, s)
   local y = camera.posY()
