@@ -31,6 +31,7 @@ sen_platform_screen_size_name()
 
 void sen_exit()
 {
+  exit(0);
 }
 
 static const char PLATFORM_NAME[] = "IOS/OpenGL GLKit";
