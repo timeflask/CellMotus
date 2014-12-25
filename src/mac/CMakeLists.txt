@@ -27,6 +27,7 @@ set(PLATFORM_SOURCES
   ${CORE_ROOT}/x_apple_audio.m
   ${CORE_ROOT}/x_posix_timer.c
   ${CORE_ROOT}/x_mac.c
+  ${CORE_ROOT}/x_apple_settings.m
   ${SRC_ROOT}/mac/main.c
 )
 

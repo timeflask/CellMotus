@@ -23,6 +23,7 @@ set(PLATFORM_SOURCES
   ${CORE_ROOT}/x_linux_audio.cpp
   ${CORE_ROOT}/x_posix_timer.c
   ${CORE_ROOT}/x_posix.c
+  ${CORE_ROOT}/x_file_settings.c
   ${SRC_ROOT}/linux/main.c
 )
 
