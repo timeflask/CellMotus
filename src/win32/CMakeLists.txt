@@ -22,6 +22,7 @@ set(PLATFORM_SOURCES
   ${CORE_ROOT}/x_win32_audio.c
   ${CORE_ROOT}/x_win32_timer.c
   ${CORE_ROOT}/x_win32.c
+  ${CORE_ROOT}/x_file_settings.c
   ${SRC_ROOT}/win32/main.c
 )
   

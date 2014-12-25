@@ -68,7 +68,6 @@ set(CORE_SOURCES
   ${CORE_ROOT}/platform-config.h
   ${CORE_ROOT}/audio.h
   ${CORE_ROOT}/settings.h
-  ${CORE_ROOT}/x_file_settings.c
   ${CORE_ROOT}/shaders/vs_pos4f_tex2f.h
   ${CORE_ROOT}/shaders/fs_tex2f.h
   ${CORE_ROOT}/shaders/vs_pos4f_tex2f_col4f.h
