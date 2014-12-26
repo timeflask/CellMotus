@@ -1015,7 +1015,9 @@ function gboard:runMatrixEffect(dir, updade, type, max_index)
   for i,column in pairs(self.cells) do
     for j,v in pairs(column) do
       if v.state then
-        if not self:cell_full_visible(v) then
+        if not self:cell_full_visible(v) 
+          --or v.row>self.max_j-2
+        then
           v:setEmpty()
         else
           v.state.locked = true
@@ -1030,8 +1032,16 @@ function gboard:runMatrixEffect(dir, updade, type, max_index)
   
   if dir == 2 or dir == 5 then
     local mj = max_index or (dir==2 and self.max_j-1) or (dir==5 and self.min_j+1)
+    local cs = dir==2 and 1 or -1
     for i,column in pairs(self.cells) do
       local cell  = column[mj]
+      local cj = mj
+      local c = nil
+      repeat
+        cj = cj + cs
+        c = column[cj]
+        if c then c:setEmpty() else break end
+      until false
       if cell then
         cell:runMatrixEffect(dir, updade, 1)
       end
