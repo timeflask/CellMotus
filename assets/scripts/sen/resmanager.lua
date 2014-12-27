@@ -70,8 +70,8 @@ local function ResManagerClosure(AtlasName, AtlasSize)
     return m_atlas_size
   end
   
-  function _.loadFont (name, file, size)
-    C.sen_textures_load_font(m_search_path.fonts..file, size, nil, name, m_atlas_name, m_atlas_size)
+  function _.loadFont (name, file, size,alphabet)
+    C.sen_textures_load_font(m_search_path.fonts..file, size, alphabet, name, m_atlas_name, m_atlas_size)
   end
   
   function _.loadLabelShaders ()

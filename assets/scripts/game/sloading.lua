@@ -83,7 +83,7 @@ local loading_func = function (ref, dt)
 
                 
   for k,v in pairs(fonts) do
-    resManager.loadFont(k, v[1], v[2])
+    resManager.loadFont(k, v[1], v[2], res.alphabet)
     incProgress()                 
   end
    
