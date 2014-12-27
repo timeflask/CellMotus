@@ -139,6 +139,8 @@ init(const desktop_app_config_t* config)
   else
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
   glfwWindowHint(GLFW_AUX_BUFFERS, g_cfg.aux_buffers);
+  glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+  
   
   mainWindow = glfwCreateWindow(g_cfg.width, g_cfg.height, g_cfg.title, 0, 0);
 
@@ -157,7 +159,6 @@ init(const desktop_app_config_t* config)
   glfwSetFramebufferSizeCallback(mainWindow, frame_size_callback);
   glfwSetScrollCallback(mainWindow, scroll_callback);
   glfwSetWindowPosCallback(mainWindow, pos_callback);
-
   glfwMakeContextCurrent(mainWindow);
 
   
@@ -171,7 +172,8 @@ init(const desktop_app_config_t* config)
   _logfi("Window Frame buffer size %dx%d", frameBufferW, frameBufferH);
   sen_init(frameBufferW, frameBufferH);
   init_signals();
-
+  
+  glfwShowWindow(mainWindow);
   return 1;
   //glfwSwapInterval(1);
 }
