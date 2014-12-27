@@ -490,7 +490,7 @@ local function LevelChoosenCoro(node, dt)
   --scene.delChild("scroll_up")
   --scene.delChild("scroll_down")
     
-  audioPlayer.playSound("button0.mp3")
+  audioPlayer.playSound("button0.wav")
   local tar1 = self.nodes["bg"]
   local tar2 = self.nodes["border"]
   
@@ -842,7 +842,7 @@ function lboard:scrollTo(s)
        end_trigger = function()
          this:fadeInLevels()
          ----[[
-         audioPlayer.playSound("matrix0.mp3")
+         audioPlayer.playSound("matrix0.wav")
          for _,c in pairs(this.cells) do
            for __,v in pairs(c) do
              if v.matrix then

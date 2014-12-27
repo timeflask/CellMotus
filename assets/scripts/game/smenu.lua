@@ -115,7 +115,7 @@ local function move_camera(x,y,speed,rate,on_end)
 end
 
 local function bclick_coro(node, dt)
-  --audioPlayer.playSound("button0.mp3")
+  --audioPlayer.playSound("button0.wav")
   local board = node.board
   local c = board.click_target
   local v = board.bLines[c]
@@ -274,7 +274,7 @@ function mboard:mboard(scene)
      DescLabelTitle=rs.msStart2,
      pquadColor = conf.cell_colors[2],
      rico="ico_sd",
-     sound = "button0.mp3"
+     sound = "button0.wav"
     })
 
   self.bLines[2] = buttonLine(self.mnode, 
@@ -282,7 +282,7 @@ function mboard:mboard(scene)
      DescLabelTitle=rs.msContinue2,
      pquadColor = conf.cell_colors[3],
      rico="ico_sl",
-     sound = "button0.mp3"
+     sound = "button0.wav"
      
     })
       
@@ -291,7 +291,7 @@ function mboard:mboard(scene)
      DescLabelTitle=rs.msSettings2,
      pquadColor = conf.cell_colors[1],
      rico="ico_sr",
-     sound = "button0.mp3"
+     sound = "button0.wav"
      
     })
 
@@ -301,7 +301,7 @@ function mboard:mboard(scene)
      pquadColor = conf.cell_colors[4],
      bottom = true,
      --rico="ico_sd",
-     sound = "button0.mp3"
+     sound = "button0.wav"
      
     })
     

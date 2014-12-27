@@ -126,7 +126,7 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
 
     if (prev_dir ~= nil and prev_dir~=state.dir) then
       actionManager.run(a, conf.effect_direction_change(prev_dir, state.dir, 1, 1/2))
-      audioPlayer.playSound("rotate0.mp3")
+      audioPlayer.playSound("rotate0.wav")
     end 
           
     actionManager.run(s, conf.effect_slide_to(opp_cell, self, speed_rate ))
@@ -1075,7 +1075,7 @@ function gboard:runMatrixEffect(dir, updade, type, max_index)
     end   
   end    
   
-  audioPlayer.playSound("matrix0.mp3")
+  audioPlayer.playSound("matrix0.wav")
   self:update_area_effect(2)
 end
 
@@ -1616,7 +1616,7 @@ function gboard:gboard(scene)
    shift_p = 0,
    pquadColor = conf.cell_colors[3],
     rico="ico_su",
-    sound="button0.mp3"
+    sound="button0.wav"
   })
 
   

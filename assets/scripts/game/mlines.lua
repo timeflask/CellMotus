@@ -112,7 +112,7 @@ local optLineClickCoro = function (node, dt)
  settingsManager.set(cfg.settings_key,sv)
  
  
- audioPlayer.playSound(sv and "button0.mp3" or "button1.mp3")
+ audioPlayer.playSound(sv and "button0.wav" or "button1.wav")
   --print(cfg.settings_key, settingsManager.get(cfg.settings_key,cfg.setting_def))
 -- local text = (sv and '[x] ' or '[ ] ')..(cfg.LabelTitle or "some option")
  --node.lb.setText(text)
@@ -381,7 +381,7 @@ local buttonLineClickCoro = function (node, dt)
  --print(cfg.settings_key, settingsManager.get(cfg.settings_key,cfg.setting_def))
  --local sv = not settingsManager.get(cfg.settings_key,cfg.setting_def)
  --settingsManager.set(cfg.settings_key,sv)
- local snd = cfg.sound and cfg.sound or  "button1.mp3"
+ local snd = cfg.sound and cfg.sound or  "button1.wav"
  audioPlayer.playSound(snd)
  --print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
   --print(cfg.settings_key, settingsManager.get(cfg.settings_key,cfg.setting_def))

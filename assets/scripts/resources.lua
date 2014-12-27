@@ -41,10 +41,10 @@ return {
     sounds = {
       impact0 = "impact0.wav",
       move0 = "move0.wav",
-      rotate0 = "rotate0.mp3",
-      button0 = "button0.mp3",
-      button1 = "button1.mp3",
-      matrix0 = "matrix0.mp3", 
+      rotate0 = "rotate0.wav",
+      button0 = "button0.wav",
+      button1 = "button1.wav",
+      matrix0 = "matrix0.wav", 
       
     }
   },
