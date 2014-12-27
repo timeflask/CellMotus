@@ -51,7 +51,7 @@ function gcell:update_area_effect(dist,maxf, delay)
   local a = s.color().a
 
   if dist and maxf then 
-    s.amax = conf.cell_color_bg[4]*(1-dist/maxf) -- self.areaCount > 0 and conf.cell_color_bg[4] or 0
+    s.amax = 0.5*conf.cell_color_bg[4]*(1-dist/maxf) -- self.areaCount > 0 and conf.cell_color_bg[4] or 0
   end
   
   if delay then return end   
@@ -249,6 +249,7 @@ function gcell:setItem(state, dir, bounce, from)
     --self:update_area_effect(1)
   if bounce == nil then
     self.board:items_adjust() 
+    self.board:updateTrails();
   end 
 end
 
@@ -268,7 +269,7 @@ function gcell:setPin(state, init)
    self.state = state
    --self:update_area_effect(-1)
    self:addToBoardItems()
-   
+   self.board:updateTrails()   
 end
 
 function gcell:setArrow(state, init)
@@ -288,6 +289,7 @@ function gcell:setArrow(state, init)
    self.state = state
 
    self:addToBoardItems()
+   self.board:updateTrails()
 end
 
 function gcell:updateGameState(map)
@@ -1271,10 +1273,74 @@ function gboard:resetTurnsQueue()
   self.bLines[3]:enable(false)
 end
 
+function gboard:updateTrails()
+  if #self.items < self.current_level.ntotal and actionManager.is_running('matrixEffect')  then return end
+  
+  for _,v in ipairs (self.trails) do
+    self.node.delChild(v)
+  end
+  self.trails = {}
+  
+  for _,v in ipairs(self.items) do
+    if   level.is_item(v.state)  then
+
+      --local dir = (v.state.dir+3)%6
+      --if (dir == 0) then dir = 6 end 
+      local dir = v.state.dir
+      local c = v:get_neighbor(dir)
+      local br = 0
+      local col = v.state.color
+      local alph = 0.15
+      local grad = 0
+      while true do
+        while c and level.is_item(c.state) and c.state.dir~=dir do
+          col = c.state.color
+          c = c:get_neighbor(dir)
+        end
+
+        if not c then break end
+        br = level.is_item(c.state) and 2 or level.is_arrow(c.state) and 1 or 0 
+        if br > 1 then break end
+        
+        if level.is_pin(c.state) and c.state.color == v.state.color then
+          grad = 1.2
+        end
+        
+        local p1 = get_sprite(conf.image("cell11"), self) 
+        p1.moveTo( c.x , c.y )
+        p1.scale(0.95,0.95,true)
+        p1.setColor(col.r*alph,col.g*alph,col.b*alph,col.a*alph)
+        --p1.setColor({a=alph})
+        p1.blend(4)
+        p1.ZOrder(0.1)
+
+        table.insert(self.trails,p1)
+        self.node.addChild(p1)
+
+        if grad >0 then
+           alph = alph / grad
+        end
+        
+        if br > 0 then break end
+   
+        --
+         -- print('PIN OR EMPTY', c.col, c.row)
+        --
+        c = c:get_neighbor(dir)
+      end
+      if br > 0 then
+       -- print((br>1 and 'ARROW' or 'ITEM'), c.col, c.row)
+      end      
+    end  
+  end 
+end
+
 function gboard:nextLevel(step)
   --self:clear()
    --self:trim_cells()
+  
   self.items = {}
+  
   camera.moveTo(0,0)
   self.current_level = self.lvls:next(step)
   self:resetTurnsQueue()
@@ -1502,6 +1568,7 @@ function gboard:gboard(scene)
   })
 
   
+  self.trails = {}
   
 end
 
