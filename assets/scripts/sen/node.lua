@@ -210,6 +210,10 @@ function sen_node_class.inherit(self)
     ref.blend = blend
   end
 
+  function self.getBlend()
+    return ref.blend
+  end
+
   function self.ZOrder(z)
     C.sen_node_Z(ref, z or 0);
   end

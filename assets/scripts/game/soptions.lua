@@ -300,6 +300,9 @@ local click_coro = function (node, dt)
       for _,v in pairs(board.oLines) do
         local def = v.node.cfg.setting_def
         local key = v.node.cfg.settings_key
+        if prev_settings[key] == nil then
+          prev_settings[key] = def
+        end
         if settingsManager.get(key, def) ~= prev_settings[key] then
           v:doClick()
           scheduler.Wait(v.node)
@@ -370,7 +373,7 @@ function oboard:reset()
     pointerColorT = conf.cell_colors[1],    
   })                           
 local scr = sen.screen()
-  local w  = (bbox.t-bbox.b)/10  * ( scr.baby and 1.5 or 1 )  --self.hcell*0.7
+  local w  = (bbox.t-bbox.b)/11  * ( scr.baby and 1.5 or 1 )  --self.hcell*0.7
    ts = ts-24-w/2 --bbox.t - self.hcell
   local i = 0
   for _,v in pairs(self.oLines) do
@@ -458,17 +461,22 @@ function oboard:oboard(scene)
   self.oLines = {}
   
       
-  self.oLines["sounds"] = optLine(scene, 
+  self.oLines[0] = optLine(scene, 
     {LabelTitle=rs.osSounds, settings_key="sounds_enabled", setting_def=true,
      DescLabelTitle=rs.osSoundsDesc,
     })
     
-  self.oLines["colors"] = optLine(scene, 
+  self.oLines[1] = optLine(scene, 
     {LabelTitle=rs.osRandomColors, settings_key="random_colors", setting_def=false,
      DescLabelTitle=rs.osRandomColorsDesc,
     })
+
+  self.oLines[2] = optLine(scene, 
+  {LabelTitle=rs.osShowTrails, settings_key="trails", setting_def=true,
+   DescLabelTitle=rs.osShowTrailsDesc,
+  })
   
-  self.oLines["menu_skip"] = optLine(scene, 
+  self.oLines[3] = optLine(scene, 
   {LabelTitle=rs.osSkipMenus, settings_key="skip_menu", setting_def=false,
    DescLabelTitle=rs.osSkipMenusDesc,
   })

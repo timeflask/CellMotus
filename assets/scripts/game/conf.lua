@@ -62,9 +62,9 @@ local config = {
  
  swapper_color = {1,1,1,0.7},
  
- slevels_bg_color = { 0x15, 0x11, 0x17, 0xFF },
- sgame_bg_color = { 0x15, 0x11, 0x17, 0xFF },
- smenu_bg_color = { 0x15, 0x11, 0x17, 0xFF },
+ slevels_bg_color = { 0x15, 0x11, 0x17, 0x00 },
+ sgame_bg_color = { 0x15, 0x11, 0x17, 0x00 },
+ smenu_bg_color = { 0x15, 0x11, 0x17, 0x00 },
  
  matrix_colors  = {
   --{0xA1,0xD3,0xEF,1},
@@ -108,19 +108,32 @@ local config = {
       duration = 1,
       rate = rate or (1/rand(3)),
       amax = alpha_max or 1,
+      col = nil,
       trigger = function(self, dt, conf)
-        self.setColor( {a=conf.amax*pow(dt, conf.rate)} )
+        local f = conf.amax*pow(dt, conf.rate)
+        if self.getBlend() == 4 then
+          self.setColor( conf.col.r*f,conf.col.g*f,conf.col.b*f,conf.col.a*f)
+        else
+          self.setColor( {a=f})
+        end
       end,
       end_trigger=function(self, conf)
         if conf.on_end then
           conf.on_end(self)
         end
+        self.bcol = conf.col
       end,
       start_trigger = function(self, conf)
+        conf.col = self.bcol or self.color()
         if conf.amax > 0.999 then
-          conf.amax = self.color().a
+          conf.amax = conf.col.a
         end  
-        self.setColor({a=0})
+
+        if self.getBlend() == 4 then
+          self.setColor( 0,0,0,0)
+        else
+          self.setColor({a=0})
+        end
       end      
     },
 
@@ -138,16 +151,24 @@ local config = {
       on_end = on_end,
       rate = rate or (1/rand(3)),
       astart = alpha_start or 1, 
+      col = nil,
       trigger = function(self, dt, conf)
-        self.setColor( {a= conf.astart*(1-pow(dt, conf.rate)) } )
+        local f = conf.astart*(1-pow(dt, conf.rate))
+        if self.getBlend() == 4 then
+          self.setColor( conf.col.r*f,conf.col.g*f,conf.col.b*f,conf.col.a*f)
+        else
+          self.setColor( {a=f})
+        end
       end,
       start_trigger = function(self, conf)
+        conf.col = self.bcol or self.color()
         self.setColor({a=conf.astart})
       end,
       end_trigger = function(self, conf)
         if conf.on_end then
           conf.on_end(self)  
         end  
+        self.bcol = conf.col
       end
     },
   }

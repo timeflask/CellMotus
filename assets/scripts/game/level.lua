@@ -118,6 +118,7 @@ function level:fillData(data)
   end
   if content then
     self.map[data.i][data.j] = content
+    self.ntotal = self.ntotal  + 1
   end  
 end
 
@@ -127,6 +128,7 @@ function level:level(cfg)
   self.nitems = 0
   self.npins = 0
   self.narrows = 0
+  self.ntotal = 0
   
   local map = self.map
   

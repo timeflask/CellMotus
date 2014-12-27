@@ -23,6 +23,7 @@ return {
     pin128          = "pin128.png",
     arrow128        = "arrow128.png",
     selector128     = "selector128.png",
+    cell11128     = "cell11.png",
 
     ico_sl = "ico_sl.png",
     ico_su = "ico_su.png",
@@ -85,6 +86,9 @@ return {
     
     osSkipMenus        = "SKIP MENUS",
     osSkipMenusDesc    = "switch to game screen after loading",
+    
+    osShowTrails        = "SHOW TRAILS",
+    osShowTrailsDesc    = "colored cells trails",
     
     osAboutTitle       = "ABOUT",
     
