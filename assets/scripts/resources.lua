@@ -87,6 +87,9 @@ return {
     osSkipMenus        = "SKIP MENUS",
     osSkipMenusDesc    = "switch to game screen after loading",
     
+    osShowTrails        = "SHOW TRAILS",
+    osShowTrailsDesc    = "colored cells trails",
+    
     osAboutTitle       = "ABOUT",
     
     osAboutL1          = "CELL MOTUS GAME v.".."0.9", 

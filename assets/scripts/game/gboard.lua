@@ -6,6 +6,7 @@ local conf          = require "game.conf"
 local scheduler     = sen.Scheduler()
 local actionManager = sen.ActionManager
 local audioPlayer   = sen.AudioPlayer
+local settingsManager = sen.SettingsManager
 
 
 require "game.atlabel"
@@ -15,6 +16,7 @@ local rs    = (require "resources").str
 
 local camera = sen.camera()
 local last_curr_maxn = 5
+local optShowTrails = settingsManager.get('trails', true)
 
 class "gcell" ("base_cell")
 
@@ -51,7 +53,7 @@ function gcell:update_area_effect(dist,maxf, delay)
   local a = s.color().a
 
   if dist and maxf then 
-    s.amax = 0.5*conf.cell_color_bg[4]*(1-dist/maxf) -- self.areaCount > 0 and conf.cell_color_bg[4] or 0
+    s.amax = (optShowTrails and 0.5 or 1)*conf.cell_color_bg[4]*(1-dist/maxf) -- self.areaCount > 0 and conf.cell_color_bg[4] or 0
   end
   
   if delay then return end   
@@ -397,7 +399,7 @@ end
 local touched_item = nil
 local TAIL_MAX = 8
 
-function gcell:setupTouchEffectTail()
+function gcell:setupTouchEffectTail(st)
   if touched_item == nil then return end
   local state = self.state
   if level.is_item(state) then
@@ -407,19 +409,19 @@ function gcell:setupTouchEffectTail()
           not level.is_item(c.state) and 
           not level.is_arrow(c.state) and 
           max < TAIL_MAX do
-      c:setupTouchEffect(max)    
+      c:setupTouchEffect(max, st or self.state)    
       c = c:get_neighbor(state.dir)
       max = max + 1
     end
     ----[[
     if (c and max < TAIL_MAX) then
-      c:setupTouchEffect(max,self.state)    
+      c:setupTouchEffect(max,st or self.state)    
     end
     --]]
   end
 end
 
-local TOUCH_MAX_ALPHA = 0.15
+local TOUCH_MAX_ALPHA = 0.8
 
 
 function gcell:setupTouchEffect(dist, st)
@@ -430,27 +432,34 @@ function gcell:setupTouchEffect(dist, st)
   local sel_state = (dist== nil or level.is_item(state))
   
   local s = sel_state and get_sprite(conf.image("selector"), self.board) or
-                          get_sprite(conf.image("cellbg"), self.board) 
+                          get_sprite(conf.image("cell11"), self.board) 
   s.moveTo( self.x , self.y )
-  local col = sel_state and state.color or {1,1,1,0}
+  --local col = sel_state and state.color or {1,1,1,0}
+  local col =  st and st.color or state and state.color  or {1,1,1,1}
+  if not sel_state then
+    s.blend(4)
+  end  
   local distance = dist or 1
-  s.amax = sel_state and 0.3 or TOUCH_MAX_ALPHA/distance
+  s.amax = sel_state and 0.3 or  0.4--TOUCH_MAX_ALPHA/distance
   
   local scale = level.is_item(state) and 1.1 or 0.95
   s.setColor(col)
-  s.setColor({a=0})
+  s.bcol = col
+  s.setColor({a=sel_state and 0 or 1})
   s.scale(scale,scale, true)
+  s.ZOrder(0.1)
   self.sprites["@touch"] = s
   self.board.node.addChild(s)
   
   
   local f = nil
   if dist== nil then
-    f= function() self:setupTouchEffectTail() end 
+    f= function() self:setupTouchEffectTail(st) end 
   end  
- 
+ --if sel_state then
   actionManager.run(s,
-    conf.effect_fadeIn(1,1/2,s.amax,f), 'touchedItem')
+    conf.effect_fadeIn(2,0.5+rand()*2,s.amax,f), 'touchedItem')
+   -- end
 end
 
 function gcell:touchEffectIn()
@@ -826,7 +835,11 @@ local function touches_move(node, data)
       local s = v.sprites["@touch"]
       if s and v ~= touched_item and v~=cell then
         actionManager.stop(s, 'blink')
-        s.setColor({a=s.amax})
+        if s.getBlend() == 4 and s.bcol then
+          s.setColor({b=s.bcol.b*s.amax,g=s.bcol.g*s.amax,r=s.bcol.r*s.amax,a=s.bcol.a*s.amax})
+        else
+          s.setColor({a=s.amax})
+        end  
       end  
     end
   end
@@ -897,6 +910,7 @@ function gboard:bClick(c)
     for _,v in ipairs(self.bLines) do
       v:doClose(1, _==1)
     end
+    self:clearTrails()
     move_camera(2*(-self.scene_bbox.r+self.scene_bbox.l),camera.posY(),
     function()
       camera.moveTo(0,0)            
@@ -1273,13 +1287,21 @@ function gboard:resetTurnsQueue()
   self.bLines[3]:enable(false)
 end
 
-function gboard:updateTrails()
-  if #self.items < self.current_level.ntotal and actionManager.is_running('matrixEffect')  then return end
-  
+function gboard:clearTrails(reset)
+  actionManager.stop(nil, 'trail')
   for _,v in ipairs (self.trails) do
-    self.node.delChild(v)
+    v.setColor(0,0,0,0)
+    self.trails_cache:push_right(v)
   end
   self.trails = {}
+  self.trails_reset = reset == true
+end
+
+function gboard:updateTrails()
+  if not optShowTrails then return end
+  
+  if   #self.items < self.current_level.ntotal and actionManager.is_running(nil,'matrixEffect')  then self.trails_reset=true return end
+  self:clearTrails(self.trails_reset)
   
   for _,v in ipairs(self.items) do
     if   level.is_item(v.state)  then
@@ -1290,7 +1312,7 @@ function gboard:updateTrails()
       local c = v:get_neighbor(dir)
       local br = 0
       local col = v.state.color
-      local alph = 0.15
+      local alph = 0.2
       local grad = 0
       while true do
         while c and level.is_item(c.state) and c.state.dir~=dir do
@@ -1302,24 +1324,51 @@ function gboard:updateTrails()
         br = level.is_item(c.state) and 2 or level.is_arrow(c.state) and 1 or 0 
         if br > 1 then break end
         
-        if level.is_pin(c.state) and c.state.color == v.state.color then
-          grad = 1.2
-        end
+       -- if level.is_pin(c.state) and c.state.color == v.state.color then
+         -- grad = 1.2
+     --   end
         
-        local p1 = get_sprite(conf.image("cell11"), self) 
-        p1.moveTo( c.x , c.y )
-        p1.scale(0.95,0.95,true)
-        p1.setColor(col.r*alph,col.g*alph,col.b*alph,col.a*alph)
-        --p1.setColor({a=alph})
-        p1.blend(4)
-        p1.ZOrder(0.1)
-
-        table.insert(self.trails,p1)
-        self.node.addChild(p1)
-
-        if grad >0 then
-           alph = alph / grad
+        
+        local p1 = self.trails_cache:pop_right()
+        if not p1 then p1= get_sprite(conf.image("cell11"), self) 
+          p1.scale(0.95,0.95,true)
+          --p1.setColor({a=alph})
+          p1.blend(4)
+          p1.ZOrder(0.1)
+          self.node.addChild(p1)
+          p1.setColor(0,0,0,0)
         end
+        p1.moveTo( c.x , c.y )
+        p1.tail_col = col
+        
+        
+        if self.trails_reset then
+          actionManager.run(p1, 
+          {
+            name = "interval",
+            duration = rand(3)/3,
+            x = x,
+            y = y,
+            rate = rand()*2,
+            trigger = function(self, dt, conf)
+              local dx = math.pow(dt, conf.rate) * alph
+              local col = self.tail_col
+              self.setColor(col.r *dx , col.g *dx, col.b *dx, col.a *dx )
+            end
+          },'trail')
+        else
+          --p1.setColor(p1.tail_col)
+          p1.setColor(col.r*alph,col.g*alph,col.b*alph,col.a*alph)
+        end        
+        
+        --p1.setColor(col.r*alph,col.g*alph,col.b*alph,col.a*alph)
+        
+        table.insert(self.trails,p1)
+        
+
+        --if grad >0 then
+           --alph = alph / grad
+      --  end
         
         if br > 0 then break end
    
@@ -1333,11 +1382,13 @@ function gboard:updateTrails()
       end      
     end  
   end 
+   self.trails_reset = false
 end
 
 function gboard:nextLevel(step)
   --self:clear()
    --self:trim_cells()
+  self:clearTrails(true)
   
   self.items = {}
   
@@ -1374,6 +1425,7 @@ function gboard:nextLevel(step)
 end
 
 function gboard:_setLevel(tbl)
+  self:clearTrails(true)
   self.items = {}
   self:clear()
   self.current_level = tbl
@@ -1569,6 +1621,7 @@ function gboard:gboard(scene)
 
   
   self.trails = {}
+  self.trails_cache = sen.clsDeque.new()
   
 end
 
@@ -1662,6 +1715,10 @@ function gboard:start()
   scroll_accum_x = 0
   scroll_accum_y = 0
 
+  optShowTrails = settingsManager.get('trails', true)
+  if not optShowTrails then
+    self:clearTrails()
+  end
 --  camera.moveTo(0,0)
   if (  self.current_level == nil ) then 
      self:setLevel(self.lvls.curr)
