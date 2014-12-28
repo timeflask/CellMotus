@@ -16,6 +16,11 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.graphics.PixelFormat;
+//import android.view.View;
+import android.view.WindowManager;
+//import android.view.Display;
+
+//import android.widget.Toast;
 
 public class SENActivity extends Activity {
 
@@ -182,15 +187,40 @@ public class SENActivity extends Activity {
 	
 	
    private final static boolean is_emulator() {
-	  String model = Build.MODEL;
+//	  String model = Build.MODEL;
 	  String product = Build.PRODUCT;
 	  boolean res = product != null && ( product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_") );
-	  Log.d(__class, "model[" + model+ "]  product[" +product+"] emulator["+ res +"]" );
+	  //Log.d(__class, "model[" + model+ "]  product[" +product+"] emulator["+ res +"]" );
 	  return res;
   }
    
   public void doExit() {
 	  moveTaskToBack(true);
   }
-	
+
+  public void setKeepScreenOn(boolean value, boolean showToast) {
+      final boolean newValue = value;
+     // final boolean _showToast = showToast; 
+    //  final String message = "[Keep screen on]"; 
+      runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+        	  
+       	    if (newValue) 
+        	  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        	else	
+          	  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+          //	if (_showToast && newValue)  
+	          //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+          }
+      });
+  }
+  
+  @Override
+  public void onAttachedToWindow() {
+     super.onAttachedToWindow();
+
+    setKeepScreenOn(SENHandler.s_IsKeepScreenOn, false);
+  }  
+  
 }

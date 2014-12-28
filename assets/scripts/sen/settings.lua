@@ -37,6 +37,8 @@ local function SettingsrClosure(name)
     curr = 1,
     music_vol = 0.1,
     sounds_vol = 0.3,
+    random_colors = true,
+    trails = true,
   }
   ]]))()
     

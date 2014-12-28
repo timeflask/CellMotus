@@ -528,12 +528,17 @@ function gcell:is_outscreen()
     print(self.y - board.hcell*0.5 , board.scene_bbox.b+board.bLines[1].height)
   end 
   --]] 
+  local vp = sen.vp_box()
   local scr = sen.screen()
+  --print(  self.y - board.hcell*0.5, board.bLines[1].height + board.scene_bbox.b )
   return 
-     not board:cell_full_visible(self, 0.1) or
-         self.y - board.hcell*0.5 < board.scene_bbox.b+
+     not board:cell_full_visible(self, 0.0)
+     --[[
+         or
+         (self.y - board.hcell*0.5)*board.scale < board.scene_bbox.b+
          
          (scr.baby and board.bLines[1].height/1.3 or board.bLines[1].height)
+         --]]
 end
 
 function gcell:is_screen_blocked(to)
@@ -897,6 +902,7 @@ function gboard:undo()
 end
 
 function gboard:bClick(c)
+  if actionManager.is_running(nil,'matrixEffect') then return end
   local b = self.bLines[c]
   if b then b:doClick() end
 
@@ -1537,7 +1543,7 @@ function gboard:rescale(trim, to)
   
   
     local b = self.scene_bbox
-     b.b = (sb.b - y) / sy
+     b.b = (sb.b - y) / sy + self.bLines[1].height
      b.t = (sb.t - y) / sy
      b.r = (sb.r - x) / sx
      b.l = (sb.l - x) / sx

@@ -132,7 +132,7 @@ function level:level(cfg)
   
   local map = self.map
   
-  if settingsManager.get("random_colors", false) then
+  if settingsManager.get("random_colors", true) then
     shuffle(colors)
   else
     colors =table.shallow_copy(conf.cell_colors)

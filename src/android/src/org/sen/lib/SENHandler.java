@@ -3,7 +3,9 @@ package org.sen.lib;
 //import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.view.Display;
+//import android.view.Window;
 import android.view.WindowManager;
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.content.SharedPreferences;
 //import android.util.Log;
@@ -11,6 +13,7 @@ public class SENHandler {
 
   private static SENActivity s_activity = null;
   private static boolean  s_bInitialized = false;
+  public static boolean  s_IsKeepScreenOn = false;
   private static SENMusic s_music;
   private static SENSound s_sound;
 
@@ -20,7 +23,6 @@ public class SENHandler {
     s_activity = activity;
     s_music = new SENMusic(activity);
     s_sound = new SENSound(activity);
-    
     
     s_bInitialized = true;
   }
@@ -68,17 +70,23 @@ public class SENHandler {
   }  
   
   public static void onEnterBackground(){
-	    s_music.onEnterBackground();
-	    s_sound.onEnterBackground();
+	if (s_IsKeepScreenOn) {
+   	  setKeepScreenOn(false, true);
+	}
+	s_music.onEnterBackground();
+	s_sound.onEnterBackground();
   }
 
   public static void onEnterForeground(){
-	    s_music.onEnterForeground();
-	    s_sound.onEnterForeground();
-	  
+	if (s_IsKeepScreenOn) {
+		setKeepScreenOn(true, true);
+	}
+    s_music.onEnterForeground();
+    s_sound.onEnterForeground();
   }
 
   public static void end() {
+	  setKeepScreenOn(false, true);
       s_music.end();
       s_sound.end();
   }
@@ -170,18 +178,44 @@ public class SENHandler {
   
 
   private static final String SENPREFS = "senPrefs";
+  private static final String kso_true = "keep_screen_on = true";
+  private static final String kso_false = "keep_screen_on = false";
+  
+  public static void setKeepScreenOn(boolean value, boolean showToast) 
+  {
+      ((SENActivity)s_activity).setKeepScreenOn(value, showToast);
+  }
+  
+  @SuppressLint("DefaultLocale")
+  public static void SwitchScreenOn(String lua_table) {
+	if (!s_bInitialized ) return;
+	  
+    if (lua_table.toLowerCase().contains(kso_true)) {
+    	if (s_IsKeepScreenOn) return;
+    	s_IsKeepScreenOn = true;
+    	setKeepScreenOn(true, true);    	
+    }else if (lua_table.toLowerCase().contains(kso_false)) {
+    	if (!s_IsKeepScreenOn) return;
+    	s_IsKeepScreenOn = false;
+    	setKeepScreenOn(false, true);
+    }
+    else
+    {
+    }
+  }
   
   public static void setKeyString(String key, String value) {
       SharedPreferences settings = s_activity.getSharedPreferences(SENPREFS, 0);
       SharedPreferences.Editor editor = settings.edit();
+      SwitchScreenOn(value);
       editor.putString(key, value);
-	 // Log.d("SEN:Android:Settings", "--->  "+ value); 
       editor.commit();
   }
   public static String getKeyString(String key, String defaultValue) {
       SharedPreferences settings = s_activity.getSharedPreferences(SENPREFS, 0);
-	 // Log.d("SEN:Android:Settings", "<---  "+ settings.getString(key, defaultValue)); 
-      return settings.getString(key, defaultValue);
+      String ret = settings.getString(key, defaultValue);
+      SwitchScreenOn(ret);
+      return ret;
   }
   
 }

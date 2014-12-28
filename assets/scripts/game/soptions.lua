@@ -389,7 +389,7 @@ local scr = sen.screen()
     ts = ts - w - 1
     i = i + 1
   end  
-  
+  --[[
   self.aboutLabel:moveTo(self.scene_bbox.l+10, ts)
   self.aboutLabel:restart(
   {
@@ -398,12 +398,12 @@ local scr = sen.screen()
     Text=rs.osAboutTitle..'   ',
     quadColorT = {1,1,1,0}
   })                           
-
+--]]
   local lb = self.node.abl1
-  lb.moveTo(self.scene_bbox.l+10, ts-35)
+  lb.moveTo(self.scene_bbox.l+10, ts) -- ts-35
   lb.setColor({a=0})
   actionManager.run(lb, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
-  
+  --[[
   lb = self.node.abl2
   lb.moveTo(self.scene_bbox.l+10, ts-45)
   lb.setColor({a=0})
@@ -413,6 +413,7 @@ local scr = sen.screen()
   lb.moveTo(self.scene_bbox.l+10, ts-55)
   lb.setColor({a=0})
   actionManager.run(lb, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
+   --]]
    
   local w  = (bbox.t-bbox.b)/16 * ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
   local bs = bbox.b + w/2+2
@@ -442,12 +443,13 @@ function oboard:oboard(scene)
   self.node.parent = self
   
   self.titleLabel = atLabel(self.node)
-  self.aboutLabel = atLabel(self.node)
+  --self.aboutLabel = atLabel(self.node)
   
   local  lb1 = sen.clsLabel(nil, "mecha_s", rs.osAboutL1)
   lb1.setColor({a=0})
   self.node.abl1 = lb1
   self.node.addChild(lb1)
+  --[[
   local  lb2 = sen.clsLabel(nil, "mecha_s", rs.osAboutL2)
   lb2.setColor({a=0})
   self.node.abl2 = lb2
@@ -456,7 +458,7 @@ function oboard:oboard(scene)
   lb3.setColor({a=0})
   self.node.abl3 = lb3
   self.node.addChild(lb3)
-
+==]]
   
   self.oLines = {}
   
@@ -467,7 +469,7 @@ function oboard:oboard(scene)
     })
     
   self.oLines[1] = optLine(scene, 
-    {LabelTitle=rs.osRandomColors, settings_key="random_colors", setting_def=false,
+    {LabelTitle=rs.osRandomColors, settings_key="random_colors", setting_def=true,
      DescLabelTitle=rs.osRandomColorsDesc,
     })
 
@@ -480,6 +482,12 @@ function oboard:oboard(scene)
   {LabelTitle=rs.osSkipMenus, settings_key="skip_menu", setting_def=false,
    DescLabelTitle=rs.osSkipMenusDesc,
   })
+  if string.match(string.lower(sen.platformName()), "android") then 
+    self.oLines[4] = optLine(scene, 
+    {LabelTitle=rs.osKeepScreenOn, settings_key="keep_screen_on", setting_def=false,
+     DescLabelTitle=rs.osKeepScreenOnDesc,
+    })
+  end  
   
   self.bLines = {}
   self.bLines[1] = buttonLine(scene, 

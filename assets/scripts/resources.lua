@@ -1,7 +1,10 @@
 -- Hello julia test
 local sen    = require "sen.core"
+GAME_VERSION_MAJOR  = 0
+GAME_VERSION_MINOR  = 9
 local src = sen.screen()
 return {
+
   atlas_size = 512,
 
   fonts = {
@@ -90,11 +93,13 @@ return {
     osShowTrails        = "SHOW TRAILS",
     osShowTrailsDesc    = "colored cells trails",
     
-    osAboutTitle       = "ABOUT",
+    osKeepScreenOn     = "KEEP SCREEN ON",
+    osKeepScreenOnDesc = "Prevent sleep when game active",
     
-    osAboutL1          = "CELL MOTUS GAME v.".."0.9", 
-    osAboutL2          = "COPYRIGHT [c] TIME FLASK 2014",
-    osAboutL3          = "PLATFORM: ",
+    osAboutTitle       = "ABOUT",
+    osAboutL1          = "CELL MOTUS v."..GAME_VERSION_MAJOR.."."..GAME_VERSION_MINOR.." [c] TIME FLASK 2014", 
+    --osAboutL2          = "COPYRIGHT [c] TIME FLASK 2014",
+    --osAboutL3          = "PLATFORM: ",
     
     utf8test = "",
   },
