@@ -33,6 +33,7 @@ typedef struct desktop_app_config_t_2 {
   int gl_forward_compat;  
   int aux_buffers;  
     int max_fps;
+    int decorated;
   
 } desktop_app_config_t_2;
 
@@ -66,6 +67,7 @@ out.gl_profile=p.gl_profile
 out.gl_forward_compat=p.gl_forward_compat
 out.aux_buffers = p.aux_buffers
 out.max_fps = p.max_fps
+out.decorated = p.decorated
 
 C.sen_settings_set_str('.desktop', inspect(out))
 --print (inspect(out))

@@ -132,6 +132,8 @@ init(const desktop_app_config_t* config)
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,g_cfg.gl_ver_major);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,g_cfg.gl_ver_minor);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,g_cfg.gl_forward_compat);
+  glfwWindowHint(GLFW_DECORATED,g_cfg.decorated);
+
   if (g_cfg.gl_profile == 1)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
   else if (g_cfg.gl_profile == 2)
@@ -548,7 +550,7 @@ void sen_desktop_app_default_config(desktop_app_config_t* cfg)
   cfg->gl_forward_compat = 0;
   cfg->aux_buffers = 0;
   cfg->max_fps = 60;
-
+  cfg->decorated = GL_TRUE;
 }
 
 desktop_app_config_t* sen_desktop_app_get_config()

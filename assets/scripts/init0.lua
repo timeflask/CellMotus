@@ -29,6 +29,7 @@ typedef struct desktop_app_config_t {
   int gl_forward_compat;  
   int aux_buffers;  
     int max_fps;
+    int decorated;
   
 } desktop_app_config_t;
 
