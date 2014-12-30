@@ -31,7 +31,7 @@ sen_settings_get_str(const char* key, const char* defaultValue)
                              [[NSString alloc] initWithUTF8String:defaultValue]);
   ret = res ? sen_strdup ( [res UTF8String] ) : sen_strdup(defaultValue);
 #if SEN_PLATFORM==SEN_PLATFORM_MAC
-  [res release];
+//  [res release];
 #endif
   return ret;
   

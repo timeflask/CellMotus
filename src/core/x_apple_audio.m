@@ -562,7 +562,8 @@ static sound_t* sound_new( const char* path )
 #if SEN_PLATFORM == SEN_PLATFORM_IOS  
   self->path = strdup(sen_assets_get_full_path(path));
 #else
-  self->path = sen_assets_get_full_path(path);
+  //self->path = sen_assets_get_full_path(path);
+  self->path = strdup(sen_assets_get_full_path(path));
 #endif
 
   self->data = NULL;

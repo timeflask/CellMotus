@@ -14,11 +14,11 @@ else()
    set(PLATFORM_FOLDER linux)
 endif()
 
-if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+if ( ARCH_64 )
   set(ARCH_DIR "64-bit")
-else()
+else(ARCH_64)
   set(ARCH_DIR "32-bit")
-endif()
+endif(ARCH_64)
 
 
 include_directories(

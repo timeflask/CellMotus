@@ -5,6 +5,7 @@ set(APP_NAME CellMotus)
 project (${APP_NAME})
 
 option(DEBUG_MODE "Build Debug" ON)
+option(ARCH_64 "64-bit" ON)
 
 if(DEBUG_MODE)
   set(CMAKE_BUILD_TYPE DEBUG)

@@ -11,7 +11,14 @@ make clean
 make CC="gcc -m64 -arch x86_64" clean all
 
 if [ -f $SRCDIR/src/libluajit.a ]; then
-    mv $SRCDIR/src/libluajit.a $DESTDIR/libluajit.a
+    mv $SRCDIR/src/libluajit.a $DESTDIR/64-bit/libluajit.a
+fi;
+
+make clean
+make CC="gcc -m32" clean all
+
+if [ -f $SRCDIR/src/libluajit.a ]; then
+mv $SRCDIR/src/libluajit.a $DESTDIR/32-bit/libluajit.a
 fi;
 
 make clean

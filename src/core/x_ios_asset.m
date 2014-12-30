@@ -25,8 +25,8 @@ const char* sen_assets_get_full_path(const char* path) {
   [relative_path appendString:
     [[NSString alloc] initWithCString:path encoding:NSASCIIStringEncoding]];
   return
-    [[[NSBundle mainBundle] pathForResource:relative_path ofType:nil]
-     cStringUsingEncoding:NSASCIIStringEncoding];
+    [[[NSBundle mainBundle] pathForResource:relative_path ofType:nil] 
+     cStringUsingEncoding:NSASCIIStringEncoding ];
 }
 
 void

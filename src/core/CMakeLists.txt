@@ -17,7 +17,6 @@ set(CORE_SOURCES
   ${CORE_ROOT}/lmath.h
   ${CORE_ROOT}/lmath.c
   ${CORE_ROOT}/asset.h
-  ${CORE_ROOT}/x_file_asset.c
   ${CORE_ROOT}/vertex-attribute.h
   ${CORE_ROOT}/vertex-attribute.c
   ${CORE_ROOT}/vertex-buffer.h
