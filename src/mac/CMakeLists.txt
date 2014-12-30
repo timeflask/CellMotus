@@ -130,12 +130,25 @@ ADD_CUSTOM_COMMAND(
    # COMMENT "Release")
   
   
-set(RELEASE_APP ${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/${APP_NAME}.app)  
- add_custom_command(
-     TARGET ${APP_NAME}
-     POST_BUILD
-     COMMAND rm -Rf ${RELEASE_APP} && cp -Raf ${PRODUCT_NAME} ${RELEASE_APP}
- )
+  set(RELEASE_APP ${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/${APP_NAME}.app)  
+  add_custom_command(
+      TARGET ${APP_NAME}
+      POST_BUILD
+      COMMAND rm
+      ARGS -rf ${RELEASE_APP}
+  )
+  add_custom_command(
+      TARGET ${APP_NAME}
+      POST_BUILD
+      COMMAND cp
+      ARGS -RpfH ${PRODUCT_NAME} ${RELEASE_APP}
+  )
+ # add_custom_command(
+     # TARGET ${APP_NAME}
+     # POST_BUILD
+     # COMMAND rm
+     # ARGS -f "${RELEASE_APP}/${APP_NAME}.app"
+ # )
  # add_custom_command(TARGET ${APP_NAME} POST_BUILD
    # COMMAND ${CMAKE_COMMAND} -E copy_if_different
    # "${PRODUCT_NAME}"
