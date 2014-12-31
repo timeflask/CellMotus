@@ -23,6 +23,7 @@ set(PLATFORM_SOURCES
   ${CORE_ROOT}/x_win32_timer.c
   ${CORE_ROOT}/x_win32.c
   ${CORE_ROOT}/x_file_settings.c
+  ${CORE_ROOT}/x_file_asset.c
   ${SRC_ROOT}/win32/main.c
   ${SRC_ROOT}/win32/main.rc
 )
