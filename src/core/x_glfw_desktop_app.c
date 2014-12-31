@@ -4,7 +4,7 @@
 #include <string.h>
 
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
-  #define GLFW_DLL
+  //#define GLFW_DLL
 #endif
 
 #include "glfw3.h"

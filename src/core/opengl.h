@@ -17,6 +17,7 @@
   #define glReleaseShaderCompiler(xxx)
 
 #elif SEN_PLATFORM == SEN_PLATFORM_WIN32
+  #define GLEW_STATIC
   #include "glew.h"
 #elif SEN_PLATFORM == SEN_PLATFORM_LINUX
   #include <GL/glew.h>

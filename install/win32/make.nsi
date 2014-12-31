@@ -53,7 +53,7 @@ Function RegisterApplication
 	;Register uninstaller into Add/Remove panel (for local user only)
 	WriteRegStr HKCU "${REG_UNINSTALL}" "DisplayName" "CellMotus"
 	WriteRegStr HKCU "${REG_UNINSTALL}" "DisplayIcon" "$\"$INSTDIR\CellMotus.exe$\""
-	WriteRegStr HKCU "${REG_UNINSTALL}" "Publisher" "TimeFlask Co"
+	WriteRegStr HKCU "${REG_UNINSTALL}" "Publisher" "TimeFlask"
 	WriteRegStr HKCU "${REG_UNINSTALL}" "DisplayVersion" "0.9"
 	WriteRegDWord HKCU "${REG_UNINSTALL}" "EstimatedSize" 2048 ;KB
 	WriteRegStr HKCU "${REG_UNINSTALL}" "HelpLink" "${WEBSITE_LINK}"
@@ -94,9 +94,6 @@ Section "!CellMotus" CellMotus
 	
 	;Main installation
 	File "..\..\bin\win32\CellMotus.exe"
-	File "..\..\bin\win32\glew32.dll"
-	File "..\..\bin\win32\lua51.dll"
-	File "..\..\bin\win32\glfw3.dll"
 	
 
         File /r "..\..\assets"
