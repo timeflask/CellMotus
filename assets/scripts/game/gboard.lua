@@ -1683,7 +1683,7 @@ local scroll_accum_x = 0
 local scroll_accum_y = 0
 local last_time  = os.time()
 local function input_scroll(a,b)
-  if on_click or actionManager.is_running('camera') then return end
+    if on_click or actionManager.is_running(nil,'camera') then return end
   local board = a.parent
   local scroll = sen.input_scroll(b)
   local vb = sen.vp_box()

@@ -31,7 +31,7 @@
 #include "glfw3native.h"
 #endif 
 
-#if (SEN_PLATFORM == SEN_PLATFORM_LINUX)
+#if (SEN_PLATFORM == SEN_PLATFORM_LINUX || SEN_PLATFORM == SEN_PLATFORM_MAC)
 #include <time.h>
 #endif
 
@@ -117,6 +117,10 @@ init(const desktop_app_config_t* config)
     if (asset_exists(init_script))
       sen_lua_execFile(init_script);
   }
+  //TODO: FIX ASAAAP
+#if (SEN_PLATFORM == SEN_PLATFORM_LINUX || SEN_PLATFORM == SEN_PLATFORM_MAC)
+  sprintf(g_cfg.title, "CellMotus Puzzle Game");
+#endif
 
   glfwSetErrorCallback( error_callback );
   if (! glfwInit() )
@@ -187,7 +191,7 @@ loop()
   double sdt = 0.0f;
   double max_fps_t = g_cfg.max_fps > 0 ?  1/(double)(g_cfg.max_fps) : 10000;
 
-#if (SEN_PLATFORM == SEN_PLATFORM_LINUX)
+#if (SEN_PLATFORM == SEN_PLATFORM_LINUX || SEN_PLATFORM == SEN_PLATFORM_MAC)
   struct timespec tw;
   struct timespec tr;
 
@@ -204,7 +208,7 @@ loop()
     if (sdt > 0) {
 #if (SEN_PLATFORM == SEN_PLATFORM_WIN32)
       Sleep( (DWORD)(sdt * 1000) );
-#elif (SEN_PLATFORM == SEN_PLATFORM_LINUX)
+#elif (SEN_PLATFORM == SEN_PLATFORM_LINUX  || SEN_PLATFORM == SEN_PLATFORM_MAC)
       tw.tv_sec = 0;
       tw.tv_nsec = sdt * 1000000000;
       nanosleep (&tw, &tr);
