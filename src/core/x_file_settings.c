@@ -7,16 +7,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if SEN_PLATFORM==SEN_PLATFORM_LINUX
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <pwd.h>
+#endif
+
 #undef SEN_LOG_TAG
 #define SEN_LOG_TAG "SEN:Settings"
+
+#if SEN_PLATFORM==SEN_PLATFORM_LINUX
+static char g_apath[4096];
+void
+sen_settings_set_apath(const char* apath)
+{
+  strcpy(g_apath, apath);
+}
+#endif
 
 char*
 sen_settings_get_str(const char* key, const char* defaultValue)
 {
   //UNUSED(key); UNUSED(defaultValue);
-
-  char* path = (char*)key;
+#if SEN_PLATFORM==SEN_PLATFORM_LINUX
+  char path[4096];
+  sprintf(path, "%s/%s", g_apath, key);
   FILE *fp = fopen(path, "rb");
+  if (!fp)
+    fp = fopen(key, "rb");
+#else
+  char* path = (char*)key;  
+  FILE *fp = fopen(path, "rb");
+#endif
+  
   long fsize, fr;
   char *string;
 
@@ -40,8 +65,23 @@ sen_settings_get_str(const char* key, const char* defaultValue)
 void
 sen_settings_set_str(const char* key, const char* value)
 {
-  char* path = (char*)key;
+#if SEN_PLATFORM==SEN_PLATFORM_LINUX
+  char path[4096];
+
+  struct stat st = {0};
+
+  if (stat(g_apath, &st) == -1) {
+      mkdir(g_apath, 0700);
+  }
+  
+  sprintf(path, "%s/%s", g_apath, key);
   FILE *fp = fopen(path, "w");
+  if (!fp)
+    fp = fopen(key, "w");
+#else
+  char* path = (char*)key;  
+  FILE *fp = fopen(path, "w");
+#endif
   if(fp)
   {
     fprintf(fp, "%s", value);

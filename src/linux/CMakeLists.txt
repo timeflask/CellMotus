@@ -13,7 +13,8 @@ include_directories(
  # ${EXT_ROOT}/fmod/include/${ARCH_DIR}
 )
 link_directories(
-  ${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}/${ARCH_DIR}
+  /usr/lib
+  #${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}/${ARCH_DIR}
 #  ${EXT_ROOT}/fmod/libs/${ARCH_DIR}
 )
 
@@ -40,15 +41,22 @@ include_directories(
 
 find_library(LUAJIT_LIB luajit-5.1)
 find_package(PNG REQUIRED)
+#find_package(Luajit REQUIRED)
 find_package(ZLIB REQUIRED)
 find_library(GLFW_LIB glfw3)
-set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/${ARCH_DIR}/libfreetype.a)
 
 if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-set(FMOD_LIB "fmodex64")
+#set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/64-bit/libfreetype.a)
 else()
-set(FMOD_LIB "fmodex")
+#set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/32-bit/libfreetype.a)
 endif()
+#set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/${ARCH_DIR}/libfreetype.a)
+find_package(Freetype REQUIRED)
+include_directories(
+  /usr/include/freetype2  
+  /usr/local/include/freetype2  
+ )
+
 
 set(CORE_LIBS ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${ZLIB_LIBRARY} ${LUAJIT_LIB} ${GLFW_LIB} )
 
@@ -67,6 +75,10 @@ set(PLATFORM_LIBS
   X11 Xrandr Xinerama Xi Xxf86vm Xcursor pthread m
 )
 
+file(GLOB assets
+    "${CMAKE_BINARY_DIR}/assets/*.*"
+)
+
 add_executable(${APP_NAME}
  ${CORE_SOURCES}
  ${PLATFORM_SOURCES}
@@ -82,3 +94,7 @@ add_custom_command(TARGET ${APP_NAME} POST_BUILD
          "$<TARGET_FILE_DIR:${APP_NAME}>/$<TARGET_FILE_NAME:${APP_NAME}>"
          "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/$<TARGET_FILE_NAME:${APP_NAME}>") 
 
+
+install(TARGETS ${APP_NAME} DESTINATION /usr/bin COMPONENT binaries)
+install(FILES ${CMAKE_BINARY_DIR}/install/linux/${APP_NAME}.desktop DESTINATION /usr/share/applications/)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/assets DESTINATION /usr/share/${APP_NAME})

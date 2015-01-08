@@ -64,6 +64,10 @@ sen_platform_locate_assets(const char* alias)
     _assets_check(buffer);
     sprintf(buffer, "../../%s/", alias);
     _assets_check(buffer);
+    sprintf(buffer, "/usr/share/%s/", alias);
+    _assets_check(buffer);
+    sprintf(buffer, "/usr/local/share/%s/", alias);
+    _assets_check(buffer);
   }
 
   return 0;

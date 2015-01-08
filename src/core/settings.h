@@ -9,4 +9,9 @@ sen_settings_get_str(const char* name, const char* default_str);
 SEN_DECL void
 sen_settings_set_str(const char* name, const char* str);
 
+#if SEN_PLATFORM==SEN_PLATFORM_LINUX
+void
+sen_settings_set_apath(const char* apath);
+#endif
+
 #endif
