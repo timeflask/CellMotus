@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=CellMotus
+Version=1.0
+Exec=CellMotus
+Comment=Cell Motus Puzzle Game
+Icon=/usr/share/CellMotus/assets/icon.png
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=LogicGame;Game;

@@ -1,0 +1,12 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: cellmotus
+Source: <http://time-flask.com>
+
+Copyright:
+
+    Copyright (C) 2014-2015 TimeFlask
+
+License:
+
+    All rights reserved.
+
