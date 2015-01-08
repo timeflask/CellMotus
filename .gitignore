@@ -12,3 +12,5 @@ assets/scripts/dev.lua
 .game
 .desktop
 .DS_Store
+nbproject
+

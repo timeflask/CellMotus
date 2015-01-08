@@ -10,25 +10,34 @@ endif()
 
 include_directories(
   ${EXT_ROOT}/glfw3/include/${PLATFORM_FOLDER}
-  ${EXT_ROOT}/fmod/include/${ARCH_DIR}
+ # ${EXT_ROOT}/fmod/include/${ARCH_DIR}
 )
 link_directories(
   ${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}/${ARCH_DIR}
-  ${EXT_ROOT}/fmod/libs/${ARCH_DIR}
+#  ${EXT_ROOT}/fmod/libs/${ARCH_DIR}
 )
 
 set(PLATFORM_SOURCES 
   ${CORE_ROOT}/x_glfw_desktop_app.h
   ${CORE_ROOT}/x_glfw_desktop_app.c
-  ${CORE_ROOT}/x_linux_audio.cpp
+  ${CORE_ROOT}/x_openal_audio.c
   ${CORE_ROOT}/x_posix_timer.c
   ${CORE_ROOT}/x_posix.c
   ${CORE_ROOT}/x_file_settings.c
+  ${CORE_ROOT}/x_file_asset.c
   ${SRC_ROOT}/linux/main.c
 )
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(OpenAL REQUIRED)
+find_library(ALUT_LIB alut)
+
+include_directories(
+  ${OPENAL_INCLUDE_DIR}/../
+  ${OPENAL_INCLUDE_DIR}
+ )
+
 find_library(LUAJIT_LIB luajit-5.1)
 find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED)
@@ -51,7 +60,9 @@ set(PLATFORM_LIBS
   ${GLFW_LIB}
   ${OPENGL_LIBRARIES}
   ${GLEW_LIBRARIES} 
-  ${FMOD_LIB} 
+  #${FMOD_LIB} 
+  ${OPENAL_LIBRARY} 
+  ${ALUT_LIB}
 
   X11 Xrandr Xinerama Xi Xxf86vm Xcursor pthread m
 )
