@@ -10,10 +10,10 @@ endif()
 
 include_directories(
   ${EXT_ROOT}/glfw3/include/${PLATFORM_FOLDER}
- # ${EXT_ROOT}/fmod/include/${ARCH_DIR}
+  ${EXT_ROOT}/glew/include
 )
 link_directories(
-  /usr/lib
+ # /usr/lib
   #${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}/${ARCH_DIR}
 #  ${EXT_ROOT}/fmod/libs/${ARCH_DIR}
 )
@@ -27,10 +27,11 @@ set(PLATFORM_SOURCES
   ${CORE_ROOT}/x_file_settings.c
   ${CORE_ROOT}/x_file_asset.c
   ${SRC_ROOT}/linux/main.c
+  ${EXT_ROOT}/glew/glew.c
 )
 
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
+#find_package(GLEW REQUIRED)
 find_package(OpenAL REQUIRED)
 find_library(ALUT_LIB alut)
 
@@ -67,7 +68,7 @@ set(PLATFORM_LIBS
   ${LUAJIT_LIB} 
   ${GLFW_LIB}
   ${OPENGL_LIBRARIES}
-  ${GLEW_LIBRARIES} 
+  #${GLEW_LIBRARIES} 
   #${FMOD_LIB} 
   ${OPENAL_LIBRARY} 
   ${ALUT_LIB}
