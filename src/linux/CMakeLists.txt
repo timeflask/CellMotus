@@ -77,10 +77,10 @@ set(PLATFORM_LIBS
   GL
   X11 
   Xrandr 
-  Xinerama 
+  #Xinerama 
   Xi 
   Xxf86vm 
-  Xcursor 
+ # Xcursor 
   pthread 
   m
 )
