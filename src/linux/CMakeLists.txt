@@ -13,7 +13,7 @@ include_directories(
   ${EXT_ROOT}/glew/include
 )
 link_directories(
- # /usr/lib
+ /usr/lib
   #${EXT_ROOT}/ft2/libs/${PLATFORM_FOLDER}/${ARCH_DIR}
 #  ${EXT_ROOT}/fmod/libs/${ARCH_DIR}
 )
@@ -43,8 +43,8 @@ include_directories(
 find_library(LUAJIT_LIB luajit-5.1)
 find_package(PNG REQUIRED)
 #find_package(Luajit REQUIRED)
-find_package(ZLIB REQUIRED)
-find_library(GLFW_LIB glfw3)
+#find_package(ZLIB REQUIRED)
+find_library(GLFW_LIB glfw)
 
 if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 #set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/64-bit/libfreetype.a)
@@ -64,16 +64,19 @@ set(CORE_LIBS ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${ZLIB_LIBRARY} ${LUAJIT_LIB} $
 set(PLATFORM_LIBS 
   ${PNG_LIBRARY} 
   ${FREETYPE_LIBRARY} 
-  ${ZLIB_LIBRARY} 
+#  ${ZLIB_LIBRARY} 
   ${LUAJIT_LIB} 
   ${GLFW_LIB}
-  ${OPENGL_LIBRARIES}
+#  ${OPENGL_LIBRARY}
   #${GLEW_LIBRARIES} 
   #${FMOD_LIB} 
   ${OPENAL_LIBRARY} 
   ${ALUT_LIB}
 
-  X11 Xrandr Xinerama Xi Xxf86vm Xcursor pthread m
+  GL
+  #X11 
+  #Xrandr Xinerama Xi Xxf86vm Xcursor 
+#  pthread m
 )
 
 file(GLOB assets
@@ -84,7 +87,7 @@ add_executable(${APP_NAME}
  ${CORE_SOURCES}
  ${PLATFORM_SOURCES}
 )
-
+message(${PLATFORM_LIBS})
 target_link_libraries(${APP_NAME} ${PLATFORM_LIBS})
 
 set_target_properties(${APP_NAME} PROPERTIES
