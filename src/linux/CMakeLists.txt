@@ -44,12 +44,13 @@ find_library(LUAJIT_LIB luajit-5.1)
 find_package(PNG REQUIRED)
 #find_package(Luajit REQUIRED)
 #find_package(ZLIB REQUIRED)
-find_library(GLFW_LIB glfw)
+
+#find_library(GLFW_LIB glfw3)
 
 if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-#set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/64-bit/libfreetype.a)
+set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/64-bit/libglfw3.a)
 else()
-#set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/32-bit/libfreetype.a)
+set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/32-bit/libglfw3.a)
 endif()
 #set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/${ARCH_DIR}/libfreetype.a)
 find_package(Freetype REQUIRED)
@@ -74,9 +75,14 @@ set(PLATFORM_LIBS
   ${ALUT_LIB}
 
   GL
-  #X11 
-  #Xrandr Xinerama Xi Xxf86vm Xcursor 
-#  pthread m
+  X11 
+  Xrandr 
+  Xinerama 
+  Xi 
+  Xxf86vm 
+  Xcursor 
+  pthread 
+  m
 )
 
 file(GLOB assets
