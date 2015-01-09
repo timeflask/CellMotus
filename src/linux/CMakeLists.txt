@@ -17,6 +17,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,relro")
 include_directories(
   ${EXT_ROOT}/glfw3/include/${PLATFORM_FOLDER}
   ${EXT_ROOT}/glew/include
+  ${EXT_ROOT}/luajit/include
 )
 link_directories(
  /usr/lib
@@ -37,7 +38,7 @@ set(PLATFORM_SOURCES
 )
 
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
+#find_package(GLEW REQUIRED)
 find_package(OpenAL REQUIRED)
 find_library(ALUT_LIB alut)
 
@@ -46,7 +47,7 @@ include_directories(
   ${OPENAL_INCLUDE_DIR}
  )
 
-find_library(LUAJIT_LIB luajit-5.1)
+#find_library(LUAJIT_LIB luajit-5.1)
 find_package(PNG REQUIRED)
 #find_package(Luajit REQUIRED)
 #find_package(ZLIB REQUIRED)
@@ -54,9 +55,11 @@ find_package(PNG REQUIRED)
 #find_library(GLFW_LIB glfw3)
 
 if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/64-bit/libglfw3.a)
+  set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/64-bit/libglfw3.a)
+  set (LUAJIT_LIB ${EXT_ROOT}/luajit/libs/linux/64-bit/libluajit.a)
 else()
-set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/32-bit/libglfw3.a)
+  set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/32-bit/libglfw3.a)
+  set (LUAJIT_LIB ${EXT_ROOT}/luajit/libs/linux/32-bit/libluajit.a)
 endif()
 #set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/${ARCH_DIR}/libfreetype.a)
 find_package(Freetype REQUIRED)
@@ -64,7 +67,6 @@ include_directories(
   /usr/include/freetype2  
   /usr/local/include/freetype2  
  )
-
 
 set(CORE_LIBS ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${ZLIB_LIBRARY} ${LUAJIT_LIB} ${GLFW_LIB} )
 

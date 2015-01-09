@@ -1,0 +1,2 @@
+apt-get install build-essential && apt-get install freeglut3-dev && ( apt-get install libopenal0a || apt-get install libopenal1 ) && apt-get install libopenal-dev && apt-get install libalut0 && apt-get install  libalut-dev && apt-get install  libpng-dev  && apt-get install libfreetype6   && apt-get install libfreetype6-dev && apt-get install aptitude  automake libtool && apt-get install libxrandr-dev libxi-dev autotools-dev fakeroot dh-make libxxf86vm-dev
+
