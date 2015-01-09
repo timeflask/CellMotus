@@ -7,5 +7,4 @@ Icon=/usr/share/CellMotus/assets/icon.png
 Type=Application
 Terminal=false
 StartupNotify=true
-Encoding=UTF-8
 Categories=LogicGame;Game;

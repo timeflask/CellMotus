@@ -22,6 +22,7 @@
 #elif SEN_PLATFORM == SEN_PLATFORM_LINUX
   #define GLEW_STATIC
   #include "glew.h"
+//  #include <GL/glew.h>
 #elif SEN_PLATFORM == SEN_PLATFORM_ANDROID
 
   #define GL_DEPTH24_STENCIL8	 GL_DEPTH24_STENCIL8_OES

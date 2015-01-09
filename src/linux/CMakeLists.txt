@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 2.6)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/install/linux/")
+
 
 set(CMAKE_C_FLAGS_DEBUG "-g -Wall -DSEN_DEBUG=1")
 set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-exceptions -std=c99 -D _POSIX_C_SOURCE=200809L")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -std=c++11 -Wno-deprecated-declarations -Wno-reorder")
+set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS} -D_FORTIFY_SOURCE=2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-exceptions -std=c99 -D _POSIX_C_SOURCE=200809L -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -std=c++11 -Wno-deprecated-declarations -Wno-reorder -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2")
 if(CLANG)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif()
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,relro")
+
 
 include_directories(
   ${EXT_ROOT}/glfw3/include/${PLATFORM_FOLDER}
@@ -31,7 +37,7 @@ set(PLATFORM_SOURCES
 )
 
 find_package(OpenGL REQUIRED)
-#find_package(GLEW REQUIRED)
+find_package(GLEW REQUIRED)
 find_package(OpenAL REQUIRED)
 find_library(ALUT_LIB alut)
 
@@ -69,7 +75,7 @@ set(PLATFORM_LIBS
   ${LUAJIT_LIB} 
   ${GLFW_LIB}
 #  ${OPENGL_LIBRARY}
-  #${GLEW_LIBRARIES} 
+#  ${GLEW_LIBRARIES} 
   #${FMOD_LIB} 
   ${OPENAL_LIBRARY} 
   ${ALUT_LIB}
@@ -105,6 +111,6 @@ add_custom_command(TARGET ${APP_NAME} POST_BUILD
          "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/$<TARGET_FILE_NAME:${APP_NAME}>") 
 
 
-install(TARGETS ${APP_NAME} DESTINATION /usr/bin COMPONENT binaries)
+install(TARGETS ${APP_NAME} DESTINATION /usr/games COMPONENT binaries)
 install(FILES ${CMAKE_BINARY_DIR}/install/linux/${APP_NAME}.desktop DESTINATION /usr/share/applications/)
 install(DIRECTORY ${CMAKE_BINARY_DIR}/assets DESTINATION /usr/share/${APP_NAME})
