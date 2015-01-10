@@ -37,17 +37,17 @@ SET(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 
 find_library(PNG_LIB libpng
 PATHS
-  ${EXT_ROOT}/png/libs/win32
+  ${EXT_ROOT}/png/libs/win32/${ARCH_DIR}
 )
 
 find_library(FT2_LIB freetype freetype240MT
 PATHS
-  ${EXT_ROOT}/ft2/libs/win32
+  ${EXT_ROOT}/ft2/libs/win32/${ARCH_DIR}
 )
 
 find_library(LUA_LIB lualib lua51s
 PATHS
-  ${EXT_ROOT}/luajit/libs/win32
+  ${EXT_ROOT}/luajit/libs/win32/${ARCH_DIR}
 )
    
 # find_library(GLEW_LIB glew32mxs
@@ -57,17 +57,18 @@ PATHS
    
 find_package(OpenGL REQUIRED)
 
+
 find_library(Z_LIB zlib
  PATHS
-   ${EXT_ROOT}/zlib/libs
+   ${EXT_ROOT}/zlib/libs/${ARCH_DIR}
 )
 
 find_library(GLFW_LIB glfw3
  PATHS
-   ${EXT_ROOT}/glfw3/libs/win32
+   ${EXT_ROOT}/glfw3/libs/win32/${ARCH_DIR}
 )
 
-set(PLATFORM_LIBS ${Z_LIB} ${PNG_LIB} ${FT2_LIB} ${LUA_LIB} ${OPENGL_LIBRARIES} ${GLFW_LIB})
+set(PLATFORM_LIBS ${Z_LIB} ${PNG_LIB} ${FT2_LIB} ${LUA_LIB} opengl32 ${GLFW_LIB})
 #${GLEW_LIB}
 
 add_executable(${APP_NAME}
@@ -103,4 +104,4 @@ set_target_properties(${APP_NAME} PROPERTIES
 add_custom_command(TARGET ${APP_NAME} POST_BUILD        
      COMMAND ${CMAKE_COMMAND} -E copy_if_different  
          "$<TARGET_FILE_DIR:${APP_NAME}>/$<TARGET_FILE_NAME:${APP_NAME}>"
-         "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/$<TARGET_FILE_NAME:${APP_NAME}>") 
+         "${CMAKE_SOURCE_DIR}/bin/${PLATFORM_FOLDER}/${ARCH_DIR}/$<TARGET_FILE_NAME:${APP_NAME}>") 

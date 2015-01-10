@@ -7,7 +7,7 @@
 
 Name "Cell Motus Puzzle Game"
 InstallDir "$LOCALAPPDATA\CellMotus"
-OutFile "cm-${CM_VERSION}-win32-x86.exe"
+OutFile "cm-${CM_VERSION}-win32-x86_64.exe"
 RequestExecutionLevel user
 
 # REFS
@@ -92,7 +92,7 @@ Section "!CellMotus" CellMotus
 	File ".desktop"
 	File ".game"
 	
-	File "..\..\bin\win32\32-bit\CellMotus.exe"
+	File "..\..\bin\win32\64-bit\CellMotus.exe"
 	
 
         File /r "..\..\assets"
