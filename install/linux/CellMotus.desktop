@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=CellMotus
 Version=1.0
-Exec=CellMotus
+Exec=/usr/games/CellMotus
 Comment=Cell Motus Puzzle Game
 Icon=/usr/share/CellMotus/assets/icon.png
 Type=Application
