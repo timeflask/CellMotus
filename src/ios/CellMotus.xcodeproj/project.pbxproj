@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		CE7152FE1A4C94B4006A92A6 /* x_apple_settings.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7152FD1A4C94B4006A92A6 /* x_apple_settings.m */; };
+		CE748AFD1A64477100CE232C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE748AFB1A64477100CE232C /* LaunchScreen.xib */; };
+		CE748AFE1A64477100CE232C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE748AFC1A64477100CE232C /* Main.storyboard */; };
 		CEB063F51A4B83AC00BEFE20 /* x_ios_audio.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */; };
 		CEC51EFF1A4954E9005D7B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51EFE1A4954E9005D7B6E /* main.m */; };
 		CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F011A4954E9005D7B6E /* AppDelegate.m */; };
@@ -55,6 +57,8 @@
 
 /* Begin PBXFileReference section */
 		CE7152FD1A4C94B4006A92A6 /* x_apple_settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_apple_settings.m; sourceTree = "<group>"; };
+		CE748AFB1A64477100CE232C /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		CE748AFC1A64477100CE232C /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_audio.m; sourceTree = "<group>"; };
 		CEC51EF91A4954E9005D7B6E /* CellMotus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CellMotus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC51EFD1A4954E9005D7B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -143,6 +147,8 @@
 		CEC51EFB1A4954E9005D7B6E /* CellMotus */ = {
 			isa = PBXGroup;
 			children = (
+				CE748AFB1A64477100CE232C /* LaunchScreen.xib */,
+				CE748AFC1A64477100CE232C /* Main.storyboard */,
 				CEC51F281A49D197005D7B6E /* Default-568h@2x.png */,
 				CEC51EFD1A4954E9005D7B6E /* Info.plist */,
 				CEC51EFE1A4954E9005D7B6E /* main.m */,
@@ -267,7 +273,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEC520261A4A14CC005D7B6E /* assets in Resources */,
+				CE748AFD1A64477100CE232C /* LaunchScreen.xib in Resources */,
 				CEC51F291A49D197005D7B6E /* Default-568h@2x.png in Resources */,
+				CE748AFE1A64477100CE232C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +455,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "SEN_TARGET_IOS=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
