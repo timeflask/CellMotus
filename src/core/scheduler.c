@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "logger.h"
 #include "khash.h"
+#include "luas.h"
 #include <stdio.h>
 
 #undef SEN_LOG_TAG
@@ -272,6 +273,55 @@ sen_scheduler_add(scheduler_t*              self,
   kh_insert(hmsp, node->entries, new_entry->key, new_entry);
  // g_update_break = 1;
 }
+
+int scheduler_update_callback_lua(void* self, double dt, const char* key) {
+  lua_State* L = sen_lua_state();
+  double ret;
+  lua_getglobal(L, "LUA_sen_scheduler_callback");
+  if(!lua_isfunction(L,-1))
+  {
+    lua_pop(L,1);
+    _logfw("LUA_sen_scheduler_callback not found!");
+    return 0;
+  }
+  lua_pushlightuserdata(L, (void*)(self));   
+  lua_pushnumber(L, dt);   
+  lua_pushstring(L, key);
+  
+  if (lua_pcall(L, 3, 1, 0) != 0) {
+    _logfe("Error running LUA function 'LUA_sen_scheduler_callback': %s\n", lua_tostring(L, -1));
+    return 0;
+  }
+
+  if (!lua_isnumber(L, -1)) {
+      printf("function 'LUA_sen_scheduler_callback' must return a number\n");
+      return -1;
+  }
+
+  ret = lua_tonumber(L, -1);;
+  lua_pop(L, 1);
+  return (int)ret;  
+}
+
+void
+sen_scheduler_add_lua(scheduler_t*              self,
+                      object_t*                 obj,
+                      const char*               key,
+                      double                    interval,
+                      int                       repeat,
+                      double                    delay,
+                      int                       pause)
+{
+  sen_scheduler_add(self,
+                  obj,
+                  &scheduler_update_callback_lua,
+                  key,
+                  interval,
+                  repeat,
+                  delay,
+                  pause);
+}
+
 
 int sen_scheduler_is_running(scheduler_t* self,
                               object_t* node_self,

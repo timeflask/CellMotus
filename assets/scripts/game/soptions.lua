@@ -561,11 +561,12 @@ local function input_scroll(a,b)
     scroll_accum_y = 0
     return 1
   end  
-  last_time  = os.time()
+  last_time  = os.time()                                                                                                                
   return 0
-end
+end                                                                         
 
-function oboard:start()
+                                                                            
+function oboard:start()                                                     
   prev_settings =   settingsManager.copy()
   self:reset()
   sen.connect("input", "touchesEnd", touches_end, self.node)

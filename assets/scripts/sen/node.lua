@@ -218,7 +218,7 @@ function sen_node_class.inherit(self)
     C.sen_node_Z(ref, z or 0);
   end
   
-  ----[[
+  --[[
   function self.connect(signal_name, func, listener)
     
   

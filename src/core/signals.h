@@ -33,6 +33,12 @@ sen_signal_connect(const char*       emitter_name,
                    const char*       signal_name,
                    signal_callback_t proc,
                    struct object_t*  listener);
+
+SEN_DECL void
+sen_signal_connect_lua(const char*       emitter_name,
+                       const char*       signal_name,
+                       struct object_t*  listener);
+
 SEN_DECL void
 sen_signal_connect_name(const char*       emitter_name,
                         const char*       signal_name,

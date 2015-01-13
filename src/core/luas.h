@@ -20,4 +20,7 @@ sen_lua_init();
 SEN_DECL void
 sen_lua_close();
 
+lua_State*
+sen_lua_state();
+
 #endif

@@ -26,6 +26,14 @@ sen_scheduler_add(scheduler_t*              self,
                   int                       repeat,
                   double                    delay,
                   int                       pause);
+SEN_DECL void
+sen_scheduler_add_lua(scheduler_t*              self,
+                      object_t*                 obj,
+                      const char*               key,
+                      double                    interval,
+                      int                       repeat,
+                      double                    delay,
+                      int                       pause);
 
 SEN_DECL void
 sen_scheduler_remove(scheduler_t*              self,
