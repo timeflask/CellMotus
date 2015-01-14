@@ -2,27 +2,27 @@
 local ffi = require "ffi"
 local inspect = require "sen.inspect"
 ffi.cdef[[
-  void 
+  void
   sen_logi(const char* tag, const char* fmt, ...);
-  
-  void 
+
+  void
   sen_loge(const char* tag, const char* fmt, ...);
-  
+
   void __free (void* ptr);
-  
+
   typedef union
   {
-    float data[2]; 
+    float data[2];
     struct {
-          float x; 
-          float y; 
+          float x;
+          float y;
       };
     struct {
-          float s; 
-          float t; 
+          float s;
+          float t;
       };
   } vec2;
-  
+
   typedef union
   {
     float data[16];
@@ -33,7 +33,7 @@ ffi.cdef[[
           float m30, m31, m32, m33;
       };
   } mat4;
-  
+
   typedef union
   {
     float data[4];
@@ -62,8 +62,8 @@ ffi.cdef[[
           float s1;
           float t1;
       };
-  } vec4;  
-    
+  } vec4;
+
   typedef union
   {
     float data[3];   /**< All compoments at once    */
@@ -83,16 +83,16 @@ ffi.cdef[[
           float blue;  /**< Alias fo third component  */
       };
   } vec3;
-    
+
   typedef struct input_point {
-  
+
     double x;
     double y;
     double z;
     double w;
-  
+
   } input_point;
-    
+
   typedef struct touch_t {
     int    id;
     int    has_start;
@@ -102,49 +102,49 @@ ffi.cdef[[
   }touch_t;
 
   typedef struct scroll_t {double x; double y;} scroll_t;
-  
+
   float sen_fps();
-         
-   void sen_reload();     
+
+   void sen_reload();
    void sen_touch_to_world(touch_t* t, touch_t* res);
-   
+
    int sen_platform_dpi();
-   
+
    const char*
    sen_platform_screen_size_name();
-   
+
    const vec4*
-   sen_view_get_viewport();   
-   
+   sen_view_get_viewport();
+
    void sen_exit();
-   
+
    const char*
    sen_platform_name();
-   
+
 ]]
- 
+
 local SEN_LOG_TAG = "SEN:Lua"
 local C   = ffi.C
 
 local vec4p  = ffi.typeof("vec4*")
 local vec4  = ffi.typeof("vec4")
-  
+
 local function bbox(ref)
   local bbox = ffi.cast(vec4p, ref)
-  return 
-    { 
-      left   = bbox.x, 
+  return
+    {
+      left   = bbox.x,
       bottom = bbox.y,
-      right  = bbox.z, 
+      right  = bbox.z,
       top    = bbox.w,
-       
-      l      = bbox.x, 
+
+      l      = bbox.x,
       b      = bbox.y,
-      r      = bbox.z, 
-      t      = bbox.w, 
-    }  
-end  
-  
+      r      = bbox.z,
+      t      = bbox.w,
+    }
+end
+
 local sen_log =  function (fmt, ...)
   C.sen_logi(SEN_LOG_TAG, fmt, ...)
 end
@@ -155,7 +155,7 @@ print = function(...)
   sen_log(inspect({...}))
 --  for arg,_ in ipairs({...}) do
     -- write arg to any file/stream you want here
-  --end  
+  --end
 end
 
 local function meta_merge(t1, t2)
@@ -164,14 +164,14 @@ local function meta_merge(t1, t2)
        for n,m in pairs(t2.__index) do
            if (t1.__index[n] == nil) then
              t1.__index[n]=m
-           end 
+           end
        end
-     else 
+     else
        if (t1[k] == nil) then
          t1[k]=v
-       end 
-     end 
-   end 
+       end
+     end
+   end
    return t1
 end
 
@@ -247,17 +247,17 @@ local function vp_box()
   v2.y = -h
   v2.z = w
   v2.w = h
-  return bbox(v2)      
+  return bbox(v2)
 end
 
 local function screen()
   local v = C.sen_view_get_viewport()
   local d = C.sen_platform_dpi()
-  local wdp = v.z/d*160 
+  local wdp = v.z/d*160
   local hdp =v.w/d*160
   return {width=v.z, height=v.w, name=sen_size_name(), dpi=d,
-    width_dp = wdp, height_dp =hdp, baby = math.min(wdp,hdp) < 360 
-  }      
+    width_dp = wdp, height_dp =hdp, baby = math.min(wdp,hdp) < 360
+  }
 end
 
 local yield  = coroutine.yield
@@ -271,14 +271,14 @@ local coro_wait = function(dt,secs)
 end
 
 local platform_name = function()
-  
+
   local ret = ffi.string( C.sen_platform_name() )
   local scr = screen()
   if scr.baby then
     ret = ret..' BABY SCREEN'
   end
-  
-  return ret 
+
+  return ret
 end
 
 local level=0
@@ -326,9 +326,9 @@ local function recursive_compare(t1,t2)
     if( not recursive_compare(v1,v2) ) then return false end
   end
 
-  return true  
+  return true
 end
-return 
+return
 {
   printf = sen_log,
   meta_merge = meta_merge,
@@ -340,11 +340,11 @@ return
   input_scroll = to_scroll,
   dpi = C.sen_platform_dpi(),
   screenSizeName = sen_size_name,
-  vp_box = vp_box,  
-  screen = screen,  
+  vp_box = vp_box,
+  screen = screen,
   keyCode = keyToCode,
   doExit = C.sen_exit,
   coro_wait = coro_wait,
   platform_name = platform_name,
   rcmp = recursive_compare,
-} 
+}

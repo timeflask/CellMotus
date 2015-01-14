@@ -12,8 +12,8 @@
   vsprintf (buffer,fmt, args); \
   va_end (args); \
   NSLog(@"%s:%s", tag,buffer);\
-  FileOps *files = [[FileOps alloc] init];\
-  [files WriteToStringFile:[@(buffer) mutableCopy]];
+  //FileOps *files = [[FileOps alloc] init];\
+  //[files WriteToStringFile:[@(buffer) mutableCopy]];
 
 @interface FileOps : NSObject{
   NSFileManager *fileMgr;
@@ -76,7 +76,7 @@
 {
   filepath = [[NSString alloc] init];
   NSError *error;
-  NSString *title;
+  //NSString *title;
   filepath = [self.GetDocumentDirectory stringByAppendingPathComponent:self.setFilename];
   NSString *txtInFile = [[NSString alloc] initWithContentsOfFile:filepath encoding:NSUnicodeStringEncoding error:&error];
 
