@@ -15,6 +15,13 @@
 extern const void* signal_enterBackground;
 extern const void* signal_enterForeground;
 
+static int g_KeepScreenOn = 0;
+void __sen_ios_switch_screen_on (int isKeepScreen)
+{
+  if (g_KeepScreenOn == isKeepScreen) return;
+  [UIApplication sharedApplication].idleTimerDisabled = g_KeepScreenOn!=0;
+}
+
 @interface AppDelegate ()
 
 @end
@@ -37,6 +44,7 @@ extern const void* signal_enterForeground;
   if (signal_enterBackground) {
 
     sen_signal_emit( signal_enterBackground, NULL );
+    if (g_KeepScreenOn) application.idleTimerDisabled = NO;
   }
 }
 
@@ -57,6 +65,7 @@ extern const void* signal_enterForeground;
   _logfi("=====================  applicationDidBecomeActive        =================");
   if (signal_enterForeground) {
     sen_signal_emit( signal_enterForeground, NULL );
+    if (g_KeepScreenOn) application.idleTimerDisabled = YES;
   }
 }
 

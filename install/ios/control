@@ -1,0 +1,24 @@
+Package: com.timeflask.cellmotus
+Name: Cell Motus Puzzle Game
+Section: Games
+Version: 0.9
+Homepage: http://www.time-flask.com/
+Architecture: iphoneos-arm
+Description: Puzzle Game. Tap cells to move them to the right color markers.
+ <!--
+ Description
+ -->
+ <div><p align=justify style="text-align:justify!important">Cell Motus puzzle is a dark themed variation on "Game about Squares" in which you have to find the right way to connect cells with circles of the same color.
+ Cells move only in one of the six directions in which the arrow is pointing. Arrows on board allows you to change directions.</p></div>
+ <p style="text-align:justify!important">As with the original, Cell Motus jumps right in with a series of few very easy
+ levels to get you started, just a few cells and a few possible arrangements.
+ Once you've completed these, you're given a real brain challenge.
+ Some levels are little more than simple "directions gaming", requiring that
+ you brought a special strategy in order to success. It's easy to learn but difficult to master.</p>
+ <p align=justify style="text-align:justify!important;vertical-aligh:top;"><span style="width:32px;height:32px;background:url(http://time-flask.com/image/a32x.png) -160px -2px no-repeat!important;display:inline-block;float:left;"></span><spanstyle="display:inline-block;padding-left:34px;">Free, Open source, visit <a href="timeflask.com">www.timeflask.com</a> for win, mac, ios, android, linux and win phone versions.</span></p>
+ <p align=justify style="text-align:justify!important;vertical-aligh:top;margin-bottom:15px;"><span style="width:32px;height:32px;background:url(http://time-flask.com/image/a32x.png) -194px -2px no-repeat!important;display:inline-block;float:left;"></span><spanstyle="display:inline-block;padding-left:34px;"><a href="https://github.com/timeflask/CellMotus">Cell Motus on GitHub</a></span></p>
+Author: TimeFlask <timeflask@gmail.com>
+Icon: file:///Applications/CellMotus.app/AppIcon57x57.png
+Maintainer: BigBoss <bigboss@thebigboss.org>
+Sponsor: thebigboss.org <http://thebigboss.org>
+dev: timeflask

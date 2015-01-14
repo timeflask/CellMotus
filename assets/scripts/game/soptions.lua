@@ -482,7 +482,9 @@ function oboard:oboard(scene)
   {LabelTitle=rs.osSkipMenus, settings_key="skip_menu", setting_def=false,
    DescLabelTitle=rs.osSkipMenusDesc,
   })
-  if string.match(string.lower(sen.platformName()), "android") then 
+  if string.match(string.lower(sen.platformName()), "android") or
+     string.match(string.lower(sen.platformName()), "ios") 
+  then
     self.oLines[4] = optLine(scene, 
     {LabelTitle=rs.osKeepScreenOn, settings_key="keep_screen_on", setting_def=false,
      DescLabelTitle=rs.osKeepScreenOnDesc,
