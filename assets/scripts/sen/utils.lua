@@ -249,14 +249,22 @@ local function vp_box()
   v2.w = h
   return bbox(v2)
 end
+local FONT_SCALE_FACTOR = 300
+local BABY_SIZE = 360
+local BABY_FONTSCALE = 2
 
 local function screen()
   local v = C.sen_view_get_viewport()
   local d = C.sen_platform_dpi()
   local wdp = v.z/d*160
   local hdp =v.w/d*160
+  local minwh = math.min(wdp,hdp) 
+  local maxwh = math.max(wdp,hdp)
+  local baby = math.min(wdp,hdp) < BABY_SIZE
+  local font_factor = (baby and BABY_FONTSCALE or math.ceil(maxwh/FONT_SCALE_FACTOR))
   return {width=v.z, height=v.w, name=sen_size_name(), dpi=d,
-    width_dp = wdp, height_dp =hdp, baby = math.min(wdp,hdp) < 360
+    width_dp = wdp, height_dp =hdp, baby = baby,
+    minwh = minwh, maxwh = maxwh, font_factor = font_factor
   }
 end
 

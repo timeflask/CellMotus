@@ -3,15 +3,16 @@ local sen    = require "sen.core"
 GAME_VERSION_MAJOR  = 0
 GAME_VERSION_MINOR  = 9
 local src = sen.screen()
+
 return {
 
   atlas_size = 512,
 
   fonts = {
-    mecha_s = {"mecha.ttf", 10 + (src.baby and 2 or 0)},
-    mecha_sm = {"mecha.ttf", 15 + (src.baby and 2 or 0)}, 
-    mecha_m = {"mecha.ttf", 20 + (src.baby and 2 or 0)},
-    mecha_b = {"mecha.ttf", 40},
+    mecha_s = {"mecha.ttf",  10 + src.font_factor*0.8},
+    mecha_sm = {"mecha.ttf", 15 + src.font_factor}, 
+    mecha_m = {"mecha.ttf",  20 + src.font_factor},
+    mecha_b = {"mecha.ttf",  38 + src.font_factor},
     
   }, 
   

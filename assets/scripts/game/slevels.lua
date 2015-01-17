@@ -178,7 +178,7 @@ function lcell:setupLevel(lvl)
   if lb == nil then
     local font_name = "mecha_b"
     if self.board.wcell  < 50 then
-      font_name = "mecha_s"
+      font_name = "mecha_sm"
     elseif self.board.wcell < 90 then
       font_name = "mecha_m"
     end  

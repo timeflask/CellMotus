@@ -26,6 +26,7 @@ class "mcell" ("base_cell")
 
 local rand = math.random
 local pow = math.pow
+local src=sen.screen()
 
 local function get_sprite(image, board, node)
   local s = sen.clsSprite(nil, image)
@@ -382,8 +383,7 @@ function mboard:reset()
     pointerColorT = conf.cell_colors[2],
     qw = 26
   })   
-  
-  ts = ts - 24
+  ts = ts - 24 - src.font_factor
   self.titleLabel2.moveTo(bbox.l+19, ts)
   local scr = sen.screen()
   local w  = (bbox.t-bbox.b)/10 * ( scr.baby and 1.5 or 1 ) 
