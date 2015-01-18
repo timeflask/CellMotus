@@ -381,9 +381,10 @@ function mboard:reset()
     quadColorT = {1,1,1,0},
     labelColorT = {1,1,1,0.5},
     pointerColorT = conf.cell_colors[2],
-    qw = 26
-  })   
-  ts = ts - 24 - src.font_factor
+    qw = (g_screen.fonts.height.mecha_b*2+g_screen.fonts.height.mecha_s-4)
+  })  
+  --print("------------------------------------------------------",g_screen.fonts.height.mecha_b) 
+  ts = ts - g_screen.fonts.height.mecha_b*2 
   self.titleLabel2.moveTo(bbox.l+19, ts)
   local scr = sen.screen()
   local w  = (bbox.t-bbox.b)/10 * ( scr.baby and 1.5 or 1 ) 

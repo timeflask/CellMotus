@@ -177,11 +177,13 @@ function lcell:setupLevel(lvl)
   local lb = self.nodes["lvl"]
   if lb == nil then
     local font_name = "mecha_b"
+    --[[
     if self.board.wcell  < 50 then
       font_name = "mecha_sm"
     elseif self.board.wcell < 90 then
       font_name = "mecha_m"
-    end  
+    end--]]
+      
     --print(font_name)
     lb = sen.clsLabel(nil, font_name, tostring(lvl))
     self.nodes["lvl"] = lb
@@ -1129,7 +1131,7 @@ function lboard:lboard(scene)
    width_p = 20,
    shift_p = 80,
    pquadColor = conf.cell_colors[2],
-   rico="ico_sr"
+   rico= not g_screen.baby and "ico_sr"
   })
   
   self.bLines[2] = buttonLine(scene, 
@@ -1138,7 +1140,7 @@ function lboard:lboard(scene)
    width_p = 40,
    shift_p = 40,
    pquadColor = conf.cell_colors[1],
-   rico="ico_sl"
+   rico= not g_screen.baby and  "ico_sl"
   })
 
   self.bLines[3] = buttonLine(scene, 

@@ -44,7 +44,7 @@ local coro = function (ref, dt)
  
  local is_small = false -- conf.scr_size == 'small'
  
- local qw =  cfg.qw and cfg.qw or ( is_small and 12 or 20)
+ local qw =  cfg.qw and cfg.qw or ( is_small and g_screen.fonts.height.mecha_s+2 or g_screen.fonts.height.mecha_b*1.4)
  
  quad.setColor(tcol)
  quad.setAnchor(0,0.5)
@@ -81,7 +81,7 @@ local coro = function (ref, dt)
  local text = cfg.Text or 'No Title    '
  
  
- local  lb = sen.clsLabel(nil, is_small and "mecha_s" or "mecha_m", pt)
+ local  lb = sen.clsLabel(nil, is_small and "mecha_s" or "mecha_b", pt)
  local lbb = lb.getBBox()
  --lb.setColor(1,1,1,1)
 -- lb.ZOrder(1)
@@ -94,9 +94,9 @@ local coro = function (ref, dt)
 
  local q2 = sen.clsQuad()
  q2.setColor(tcol)
- q2.scale(qts, is_small and 12 or 22)
+ q2.scale(qts, is_small and g_screen.fonts.height.mecha_s*1.4 or g_screen.fonts.height.mecha_b*1.5)
  q2.setAnchor(0.5,0)
- q2.moveTo(0,lbb.b-lbb.t + (is_small and -1 or 2))
+ q2.moveTo(0,-q2.scaleY()/2+1)
  node.q2 = q2
  node.addChild(q2)
 

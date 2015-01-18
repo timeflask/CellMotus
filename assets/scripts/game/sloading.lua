@@ -33,7 +33,7 @@ local ico       = nil
 local lb2       = nil
 local progress  = 0
 local max_objects 
-
+local src=sen.screen()
 local incProgress = function (i)
   progress = progress + (i or 1)
   lb1.setText(format(res.str.lsLoading, 100.0 * progress / max_objects))
@@ -55,7 +55,8 @@ local c_char_anim = 1
 local function lb2_update(self, dt)
   lb2.setText(char_anim[c_char_anim])
   local b = lb1.getBBox()
-  lb2.moveTo(-40, 0)
+ -- print(b.left, b.right)
+  lb2.moveTo((b.left-b.right)/2-10, 0)
   c_char_anim = c_char_anim + 1
   if (c_char_anim > 4) then c_char_anim = 1 end
   return 0
@@ -83,9 +84,15 @@ local loading_func = function (ref, dt)
 
                 
   for k,v in pairs(fonts) do
+    --print(k)
     resManager.loadFont(k, v[1], v[2], res.alphabet)
+    local lb = sen.clsLabel.create(nil, k, "A0IJK")
+    local bb = lb.getBBox()
+    src.fonts.height[k] = (bb.top-bb.bottom)
+    --print('==================================================', src.fonts.height[k],bb.top,bb.bottom)
     incProgress()                 
   end
+   
    
   for k,v in pairs(images) do
     resManager.loadTexture(k, v)
@@ -154,7 +161,7 @@ end
 return
 function()
   local scr = sen.screen()
-  --print ("================================================================", 
+   
   --scr.width, scr.height, scr.name, scr.dpi,  scr.width_dp, scr.height_dp, scr.baby)
   
   audioPlayer.setMusicVol(settingsManager.get('music_vol', 0.1))
@@ -167,7 +174,8 @@ function()
   sen.connect("view", "resize", onResize, scene)
 
   
-  tmpManager.loadFont("mecha16", "mecha.ttf", 10)
+  
+  tmpManager.loadFont("mecha16", "mecha.ttf", src.fonts.small)
   tmpManager.loadLabelShaders()
   tmpManager.loadSpriteShaders()
   
@@ -176,6 +184,7 @@ function()
   lb1.move( floor(  ( lbbox.left - lbbox.right) / 2.0 )  , 0 )
 
   lb2 = sen.clsLabel(nil, "mecha16", "-")
+--  lb2.moveTo(lbbox.left - 5, 0);
 
 
   scene.addChild(lb1)

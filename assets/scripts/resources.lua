@@ -6,13 +6,13 @@ local src = sen.screen()
 
 return {
 
-  atlas_size = 512,
+  atlas_size = 1024,
 
   fonts = {
-    mecha_s = {"mecha.ttf",  10 + src.font_factor*0.8},
-    mecha_sm = {"mecha.ttf", 15 + src.font_factor}, 
-    mecha_m = {"mecha.ttf",  20 + src.font_factor},
-    mecha_b = {"mecha.ttf",  38 + src.font_factor},
+    mecha_s = {"mecha.ttf",  src.fonts.small},
+    --mecha_sm = {"mecha.ttf", 15 + src.font_factor}, 
+    mecha_m = {"mecha.ttf",  src.fonts.medium},
+    mecha_b = {"mecha.ttf",  src.fonts.big},
     
   }, 
   
@@ -95,7 +95,7 @@ return {
     osShowTrailsDesc    = "colored cells trails",
     
     osKeepScreenOn     = "KEEP SCREEN ON",
-    osKeepScreenOnDesc = "Prevent sleep when game active",
+    osKeepScreenOnDesc = "when game on foreground",
     
     osAboutTitle       = "ABOUT",
     osAboutL1          = "CELL MOTUS v."..GAME_VERSION_MAJOR.."."..GAME_VERSION_MINOR.." [c] TIME FLASK 2014", 

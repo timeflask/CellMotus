@@ -48,6 +48,12 @@ function sen_label_class.new(name, font, text)
   local self = sen_label_class.inherit( { ref = ref } )
   return self
 end  
+
+function sen_label_class.create(name, font, text)
+  local ref = ffi.gc(C.sen_label_new(name, font, text or "UNTITLED ["..name.."]"), C.sen_label_delete) 
+  local self = sen_label_class.inherit( { ref = ref } )
+  return self
+end  
       
 setmetatable(sen_label_class, {
   __call = function (cls, ...)

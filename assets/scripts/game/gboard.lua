@@ -1603,7 +1603,7 @@ function gboard:gboard(scene)
    shift_p = 70,
    wait_click = true,
    pquadColor = conf.cell_colors[2],
-    rico="ico_sr"
+    rico= not g_screen.baby and  "ico_sr"
   })
   
   self.bLines[2] = buttonLine(scene, 

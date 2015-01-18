@@ -249,23 +249,43 @@ local function vp_box()
   v2.w = h
   return bbox(v2)
 end
-local FONT_SCALE_FACTOR = 300
+--local FONT_SCALE_FACTOR = 300
 local BABY_SIZE = 360
-local BABY_FONTSCALE = 2
-
-local function screen()
+--local BABY_FONTSCALE = 2
+local FONT_MIDDLE = 30
+g_screen = nil
+local function _lazy_init_screen()
   local v = C.sen_view_get_viewport()
   local d = C.sen_platform_dpi()
+  --print("------------------------------------------------------")
+  --print(d)
+  --print("------------------------------------------------------")
+  
   local wdp = v.z/d*160
   local hdp =v.w/d*160
   local minwh = math.min(wdp,hdp) 
   local maxwh = math.max(wdp,hdp)
   local baby = math.min(wdp,hdp) < BABY_SIZE
-  local font_factor = (baby and BABY_FONTSCALE or math.ceil(maxwh/FONT_SCALE_FACTOR))
+  local max2 = math.min(v.z, v.w)
+ -- local font_factor = (baby and BABY_FONTSCALE or math.ceil(max2/FONT_SCALE_FACTOR))
   return {width=v.z, height=v.w, name=sen_size_name(), dpi=d,
     width_dp = wdp, height_dp =hdp, baby = baby,
-    minwh = minwh, maxwh = maxwh, font_factor = font_factor
+    minwh = minwh, maxwh = maxwh, 
+    --font_factor = font_factor,
+    
+    fonts = {
+      small = math.max(12, math.ceil(max2 / FONT_MIDDLE * 0.6 + d/80)), 
+      medium = math.max(16,math.ceil(max2 / FONT_MIDDLE  + d/80)), 
+      big =  math.max(30,math.ceil(max2 / FONT_MIDDLE * 1.5  + d/80)),
+      height = {} 
+    }
   }
+end
+local function screen()
+  if g_screen == nil then
+    g_screen = _lazy_init_screen()
+  end  
+  return g_screen
 end
 
 local yield  = coroutine.yield

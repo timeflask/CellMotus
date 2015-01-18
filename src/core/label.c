@@ -30,6 +30,10 @@ void update_text( label_t* self )
           a = color->a;
 
     vec4* bbox = & ( node->bbox );
+    bbox->x=0;
+    bbox->y=0;
+    bbox->z=0;
+    bbox->w=0;
 
     vertex_buffer_t* buffer  = self->buff;
     const font_t *font       = self->font;
@@ -123,18 +127,32 @@ void update_text( label_t* self )
             vector_push_back_data(verts, vertices, 4);
             pen.x += glyph->advance_x;
 
-            if (i==0) {
-              bbox->x = (float) x0;
-              bbox->y = (float) y1;
-              bbox->width  = x1-bbox->x;
-              bbox->height = y0-bbox->y;
-            }
-            else {
-              if  (x0 < bbox->x)                 bbox->x = (float) x0;
-              if  (y1 < bbox->y)                 bbox->y = (float) y1;
-              if ((x1 - bbox->x) > bbox->width)  bbox->width  = x1-bbox->x;
-              if ((y0 - bbox->y) > bbox->height) bbox->height = y0-bbox->y;
-            }
+           // if (i==0) {
+         //     bbox->x = (float) x0;
+         //     bbox->y = (float) y1;
+         //     bbox->width  = x1-bbox->x;
+        //      bbox->height = y0-bbox->y;
+         //   }
+         //   else {
+              //if  (x0 < bbox->x)                 bbox->x = (float) x0;
+              //if  (y1 < bbox->y)                 bbox->y = (float) y1;
+              //if  (x1 > bbox->z)                 bbox->z  = (float)x1;
+              //if ((y0 - bbox->y) > bbox->height) bbox->height = y0-bbox->y;
+           // }
+
+            if  (x0 < bbox->x) bbox->x = (float) x0;
+            if  (x0 > bbox->z) bbox->z = (float) x0;
+            if  (x1 < bbox->x) bbox->x = (float) x1;
+            if  (x1 > bbox->z) bbox->z = (float) x1;
+
+            if  (y0 < bbox->y) bbox->y = (float) y0;
+            if  (y0 > bbox->w) bbox->w = (float) y0;
+            if  (y1 < bbox->y) bbox->y = (float) y1;
+            if  (y1 > bbox->w) bbox->w = (float) y1;
+            //if  (y1 < bbox->y)                 bbox->y = (float) y1;
+            //if  (x1 > bbox->z)                 bbox->z  = (float)x1;
+            //if ((y0 - bbox->y) > bbox->height) bbox->height = y0-bbox->y;
+
         }
     }
     ((node_t*)self)->updated &= ~ (SEN_NODE_UPDATE_BBOX | SEN_NODE_UPDATE_COLOR );

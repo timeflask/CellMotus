@@ -39,18 +39,20 @@ local optLineCoro = function (node, dt)
   
   node.quad = quad
   node.addChild(quad)
+  
+  local sm = g_screen.fonts.height.mecha_m*2
 
   local q1 = sen.clsQuad()
   q1.setColor({0.15,0.15,0.15,1})
   --q1.setColor({a=0.05})
-  q1.moveTo(bbox.r, 0 )
-  q1.scale(20,20)
+  q1.moveTo(bbox.r+sm/2, 0 )
+  q1.scale(sm,sm)
   node.q1 = q1
   node.addChild(q1)
 
   local q2 = sen.clsQuad()
-  q2.moveTo(bbox.r, 0 )
-  q2.scale(16,16)
+  q2.moveTo(bbox.r+sm/2, 0 )
+  q2.scale(sm-2,sm-2)
   q2.setColor(conf.lvl_colors[3])
   q2.setColor({a=sv and 1 or 0})
   node.q2 = q2
@@ -58,7 +60,7 @@ local optLineCoro = function (node, dt)
 
  
   local text = (cfg.LabelTitle or "some option")
-  local  lb = sen.clsLabel(nil, "mecha_sm", text)
+  local  lb = sen.clsLabel(nil, "mecha_m", text)
   lb.setColor({a=0})
   local lba = sv and 0.75 or 0.4
   node.lb = lb
@@ -67,7 +69,7 @@ local optLineCoro = function (node, dt)
   local  lb2 = sen.clsLabel(nil, "mecha_s", cfg.DescLabelTitle or '')
   lb2.setColor({a=0})
   local lbbox = lb.getBBox()
-  local lb2y = (lbbox.b-lbbox.t)/2 - math.max(6,scr.font_factor*1.5)
+  local lb2y = - g_screen.fonts.height.mecha_m
   node.lb2 = lb2
   node.addChild(lb2)
  
@@ -83,10 +85,10 @@ local optLineCoro = function (node, dt)
         local dx = conf.btime(math.pow(dt,cf.rate))
         self.scale(dx*hsz, lh)
         self.setColor({a = cf.amax * pow(dt,cf.rate)})
-        lb.moveTo(bbox.r-dx*hsz + 32,  0)
-        lb2.moveTo(bbox.r-dx*hsz + 32, lb2y )
-        q1.moveTo(bbox.r-dx*hsz + 17, 0 )
-        q2.moveTo(bbox.r-dx*hsz + 17, 0 )
+        lb.moveTo(bbox.r-dx*hsz + sm*1.4,  0)
+        lb2.moveTo(bbox.r-dx*hsz + sm*1.4, lb2y )
+        q1.moveTo(bbox.r-dx*hsz + sm/1.5, 0 )
+        q2.moveTo(bbox.r-dx*hsz + sm/1.5, 0 )
         lb.setColor({a=pow(dt,cf.rate)*lba})
         lb2.setColor({a=pow(dt,cf.rate)*lba-0.2})
       end,
@@ -308,7 +310,7 @@ local buttonLineCoro = function (node, dt)
   if cfg.rico then 
     q2 = sen.clsSprite(nil, cfg.rico)
     --local qb = q2.getBBox()
-    local f = math.min((lh - 8),scr.baby and 16 or 20) / math.max(q2.height(), q2.width())
+    local f = math.min((lh - 8), 2*g_screen.fonts.height.mecha_m) / math.max(q2.height(), q2.width())
     q2.scale(f,f) 
     node.q2 = q2
     q2.moveTo(bbox.r-q2.width()*f, scr.baby and -lh/5 or 0)
@@ -318,7 +320,7 @@ local buttonLineCoro = function (node, dt)
 --]]
  
   local text = (cfg.LabelTitle or "some option")
-  local  lb = sen.clsLabel(nil, "mecha_sm", text)
+  local  lb = sen.clsLabel(nil, "mecha_m", text)
   lb.setColor(cfg.titleColor or {1,1,1,0.5})
   lb.setColor({a=0})
   local lba1 = cfg.titleColor and cfg.titleColor[4] or 0.5
@@ -329,7 +331,7 @@ local buttonLineCoro = function (node, dt)
   lb2.setColor(cfg.titleColor2 or {1,1,1,0.2})
   lb2.setColor({a=0})
   local lbbox = lb.getBBox()
-  local lb2y = (lbbox.b-lbbox.t)/2 - math.max(7,scr.font_factor*1.5)
+  local lb2y = -g_screen.fonts.height.mecha_m-2 --  (lbbox.b-lbbox.t)/2 - math.max(7,scr.font_factor*1.5)
     
   local lba2 = cfg.titleColor2 and cfg.titleColor2[4] or 0.2
   node.lb2 = lb2

@@ -372,9 +372,9 @@ function oboard:reset()
     labelColorT = {1,1,1,0.5},
     pointerColorT = conf.cell_colors[1],    
   })                           
-local scr = sen.screen()
+  local scr = sen.screen()
   local w  = (bbox.t-bbox.b)/11  * ( scr.baby and 1.5 or 1 )  --self.hcell*0.7
-   ts = ts-24-w/2 --bbox.t - self.hcell
+  ts = ts-g_screen.fonts.height.mecha_b*2-w/2 --bbox.t - self.hcell
   local i = 0
   for _,v in pairs(self.oLines) do
     v:moveTo(0,ts)
@@ -498,7 +498,7 @@ function oboard:oboard(scene)
    width_p = 33.3,
    shift_p = 66.6,
    pquadColor = conf.cell_colors[4],
-   rico = "ico_sr"
+   rico = not g_screen.baby and "ico_sr"
    
   })
   
@@ -508,7 +508,7 @@ function oboard:oboard(scene)
    width_p = 33.3,
    shift_p = 33.3,
    pquadColor = conf.cell_colors[2],
-   rico = "ico_sd"
+   rico = not g_screen.baby and "ico_sd"
   })
 
   self.bLines[3] = buttonLine(scene, 
@@ -517,7 +517,7 @@ function oboard:oboard(scene)
    width_p = 33.3,
    shift_p = 0,
    pquadColor = conf.cell_colors[3],
-    rico = "ico_sl"
+    rico = not g_screen.baby and  "ico_sl"
    
   })
     
