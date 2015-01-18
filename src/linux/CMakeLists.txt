@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 2.6)
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/install/linux/")
 
+option(LUA_STATIC "LUA_STATIC" ON)
 
 set(CMAKE_C_FLAGS_DEBUG "-g -Wall -DSEN_DEBUG=1")
 set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS} -D_FORTIFY_SOURCE=2")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-exceptions -std=c99 -D _POSIX_C_SOURCE=200809L -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -std=c++11 -Wno-deprecated-declarations -Wno-reorder -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2")
+
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-exceptions -std=c99 -D _POSIX_C_SOURCE=200809L -g -O2")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -std=c++11 -Wno-deprecated-declarations -Wno-reorder -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2")
+
+
 if(CLANG)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif()
@@ -17,7 +23,6 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,relro")
 include_directories(
   ${EXT_ROOT}/glfw3/include/${PLATFORM_FOLDER}
   ${EXT_ROOT}/glew/include
-  ${EXT_ROOT}/luajit/include
 )
 link_directories(
  /usr/lib
@@ -47,7 +52,6 @@ include_directories(
   ${OPENAL_INCLUDE_DIR}
  )
 
-#find_library(LUAJIT_LIB luajit-5.1)
 find_package(PNG REQUIRED)
 #find_package(Luajit REQUIRED)
 #find_package(ZLIB REQUIRED)
@@ -56,11 +60,30 @@ find_package(PNG REQUIRED)
 
 if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/64-bit/libglfw3.a)
-  set (LUAJIT_LIB ${EXT_ROOT}/luajit/libs/linux/64-bit/libluajit.a)
 else()
-  set (GLFW_LIB ${EXT_ROOT}/glfw3/libs/linux/32-bit/libglfw3.a)
   set (LUAJIT_LIB ${EXT_ROOT}/luajit/libs/linux/32-bit/libluajit.a)
 endif()
+
+if(LUA_STATIC)
+	if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+	  set (LUAJIT_LIB ${EXT_ROOT}/luajit/libs/linux/32-bit/libluajit.a)
+	else()
+	  set (LUAJIT_LIB ${EXT_ROOT}/luajit/libs/linux/32-bit/libluajit.a)
+	endif()
+include_directories(
+  ${EXT_ROOT}/luajit/include
+)
+
+else(LUA_STATIC)
+  find_library(LUAJIT_LIB luajit-5.1)
+include_directories(
+  ${EXT_ROOT}/luajit/include
+)
+
+endif(LUA_STATIC)
+
+
+
 #set(FREETYPE_LIBRARY   ${EXT_ROOT}/ft2/libs/linux/${ARCH_DIR}/libfreetype.a)
 find_package(Freetype REQUIRED)
 include_directories(

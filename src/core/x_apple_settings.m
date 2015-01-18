@@ -36,10 +36,15 @@ sen_settings_get_str(const char* key, const char* defaultValue)
   return ret;
   
 }
-
+#if SEN_PLATFORM==SEN_PLATFORM_IOS
+extern void __sen_ios_switch_screen_on (int isKeepScreen);
+#endif
 void
 sen_settings_set_str(const char* key, const char* value)
 {
+#if SEN_PLATFORM==SEN_PLATFORM_IOS
+  __sen_ios_switch_screen_on (value && strstr(value, "keep_screen_on = true"));
+#endif
 [[NSUserDefaults standardUserDefaults] setObject:[[NSString alloc] initWithUTF8String:value] forKey:[[NSString alloc] initWithUTF8String:key]];
 [[NSUserDefaults standardUserDefaults] synchronize];
 }

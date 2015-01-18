@@ -164,7 +164,7 @@ function()
   
   scene = sen.clsScene("sloading")
   scene.setColor(conf.smenu_bg_color)
-  scene.connect("resize", onResize, scene)
+  sen.connect("view", "resize", onResize, scene)
 
   
   tmpManager.loadFont("mecha16", "mecha.ttf", 10)

@@ -260,3 +260,9 @@ lua_load_buffer(const char* chunk,
   }
   return ret;
 }
+
+lua_State*
+sen_lua_state()
+{
+  return g_Lua;
+}

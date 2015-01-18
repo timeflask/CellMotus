@@ -86,8 +86,8 @@ static void init_signals()
         self.context = nil;
     }
   
-  sen_textures_collect(NULL);
-  sen_shaders_collect();
+  //sen_textures_collect(NULL);
+  //sen_shaders_collect();
 
     // Dispose of any resources that can be recreated.
 }

@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "khash.h"
 #include "utils.h"
+#include "luas.h"
 
 
 #undef SEN_LOG_TAG
@@ -361,6 +362,46 @@ sen_signal_connect_name(const char*       emitter_name,
 {
   _sen_signal_connect(emitter_name, signal_name, proc, NULL, listener_name);
 }
+
+static int lua_callback(object_t* self, void* data, object_t* em, const char* signame)
+{
+  lua_State* L = sen_lua_state();
+  double ret;
+  lua_getglobal(L, "LUA_sen_signals_callback");
+  if(!lua_isfunction(L,-1))
+  {
+    lua_pop(L,1);
+    _logfw("LUA_sen_signals_callback not found!");
+    return 0;
+  }
+  lua_pushlightuserdata(L, (void*)(self));   
+  lua_pushlightuserdata(L, (void*)(data));   
+  lua_pushlightuserdata(L, (void*)(em));   
+  lua_pushstring(L, signame);
+  
+  if (lua_pcall(L, 4, 1, 0) != 0) {
+    _logfe("Error running LUA function 'LUA_sen_signals_callback': %s\n", lua_tostring(L, -1));
+    return 0;
+  }
+
+  if (!lua_isnumber(L, -1)) {
+      printf("function 'LUA_sen_signals_callback' must return a number\n");
+      return -1;
+  }
+
+  ret = lua_tonumber(L, -1);;
+  lua_pop(L, 1);
+  return (int)ret;
+}
+
+void
+sen_signal_connect_lua(const char*       emitter_name,
+                       const char*       signal_name,
+                       struct object_t*  listener)
+{
+  _sen_signal_connect(emitter_name, signal_name, &lua_callback, listener, NULL);
+}
+
 
 static void
 _sen_signal_disconnect(object_t*         listener,

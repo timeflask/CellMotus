@@ -31,6 +31,7 @@
 #include "platform.h"
 #include "audio.h"
 #include "settings.h"
+#include "utils.h"
 
 
 

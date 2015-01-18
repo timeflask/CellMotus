@@ -26,6 +26,16 @@ ffi.cdef[[
                     int                       pause);
   
   void
+  sen_scheduler_add_lua(scheduler_t*              self,
+                        object_t*                 obj,
+                        const char*               key,
+                        double                    interval,
+                        int                       repeat,
+                        double                    delay,
+                        int                       pause);
+
+
+  void
   sen_scheduler_remove(scheduler_t*              self,
                        object_t*                 obj,
                        const char*               key);
@@ -49,6 +59,31 @@ ffi.cdef[[
 
 ]]
  
+local m_procs = {}
+local m_coros = {} 
+
+function LUA_sen_scheduler_callback(self, dt, key)
+    
+  local data = m_procs[key]
+  local ret = 1
+  if (data ~= nil) then
+    ret = data.func(data.node, dt)
+    if ret > 0 then
+      m_procs[key] = nil
+    end
+  else
+    data = m_coros[key]
+    if (data ~= nil) then
+      ret =  data.coro.Update(data.node, dt)
+      if ret and ret > 0 then
+        m_coros[key] = nil
+      end
+    end  
+    ret = ret==nil and 0 or ret
+  end  
+  
+  return ret
+end
  
 local function SchedulerClosure()
   -- private
@@ -63,9 +98,7 @@ local function SchedulerClosure()
     return {node = node, coro=coro}
   end
   
-  local m_procs = {}
-  local m_coros = {} 
-  
+--[[ 
   local sfunc_wrapper = ffi.cast("scheduler_update_callback", function(ref, dt, key)
     local key = ffi.string(key)
     
@@ -94,7 +127,7 @@ local function SchedulerClosure()
     end  
     return ret==nil and 0 or ret
   end)
-
+--]]
   -- public
   local _ = {}
   
@@ -104,14 +137,14 @@ local function SchedulerClosure()
     end
    
     m_procs[key] = pack_node(node, func)                         
-    C.sen_scheduler_add(m_scheduler,
-                        clsObject.cast( node.ref ),
-                        sfunc_wrapper,
-                        key or nil,
-                        interval or -1,
-                        repeatTimes or -1 ,
-                        delay or -1,
-                        pause or 0)
+    C.sen_scheduler_add_lua(m_scheduler,
+                            clsObject.cast( node.ref ),
+                            --sfunc_wrapper,
+                            key or nil,
+                            interval or -1,
+                            repeatTimes or -1 ,
+                            delay or -1,
+                            pause or 0)
                           
   end
   
@@ -120,9 +153,9 @@ local function SchedulerClosure()
       _.Remove(node,key)
     end
     m_coros[key] = pack_node_coro(node, coro)                         
-    C.sen_scheduler_add(m_scheduler,
+    C.sen_scheduler_add_lua(m_scheduler,
                         clsObject.cast( node.ref ),
-                        scoro_wrapper,
+                        --scoro_wrapper,
                         key or nil,
                         interval or -1,
                         repeatTimes or -1 ,

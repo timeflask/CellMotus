@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE0E8E311A64B50F00C0F84F /* x_ios_logger.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0E8E301A64B50F00C0F84F /* x_ios_logger.m */; };
+		CE0E8E371A650B7A00C0F84F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE0E8E361A650B7A00C0F84F /* Images.xcassets */; };
 		CE7152FE1A4C94B4006A92A6 /* x_apple_settings.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7152FD1A4C94B4006A92A6 /* x_apple_settings.m */; };
+		CE748AFE1A64477100CE232C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE748AFC1A64477100CE232C /* Main.storyboard */; };
 		CEB063F51A4B83AC00BEFE20 /* x_ios_audio.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */; };
+		CEBD19DE1A6474F400CB5D73 /* CellMotus.app in Copy Files */ = {isa = PBXBuildFile; fileRef = CEC51EF91A4954E9005D7B6E /* CellMotus.app */; };
 		CEC51EFF1A4954E9005D7B6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51EFE1A4954E9005D7B6E /* main.m */; };
 		CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F011A4954E9005D7B6E /* AppDelegate.m */; };
 		CEC51F091A4954E9005D7B6E /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F081A4954E9005D7B6E /* GameViewController.m */; };
-		CEC51F291A49D197005D7B6E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC51F281A49D197005D7B6E /* Default-568h@2x.png */; };
 		CEC51F2B1A49F0C1005D7B6E /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F2A1A49F0C1005D7B6E /* libpng.a */; };
 		CEC51F2D1A49F0F6005D7B6E /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F2C1A49F0F6005D7B6E /* libluajit.a */; };
 		CEC51F2F1A49F120005D7B6E /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F2E1A49F120005D7B6E /* libfreetype.a */; };
@@ -45,7 +48,6 @@
 		CEC51F6A1A49F253005D7B6E /* vertex-attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4C1A49F253005D7B6E /* vertex-attribute.c */; };
 		CEC51F6B1A49F253005D7B6E /* vertex-buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4D1A49F253005D7B6E /* vertex-buffer.c */; };
 		CEC51F6C1A49F253005D7B6E /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4E1A49F253005D7B6E /* view.c */; };
-		CEC51F6D1A49F253005D7B6E /* x_stdio_logger.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */; };
 		CEC51F6F1A49F8F1005D7B6E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC51F6E1A49F8F1005D7B6E /* libz.dylib */; };
 		CEC51F731A49F970005D7B6E /* x_posix_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = CEC51F711A49F970005D7B6E /* x_posix_timer.c */; };
 		CEC51FEE1A4A019E005D7B6E /* x_ios_asset.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */; };
@@ -53,8 +55,25 @@
 		CEC520281A4A1746005D7B6E /* x_ios.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC520271A4A1746005D7B6E /* x_ios.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CEBD19DD1A6474A300CB5D73 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "~/projects/CellMotus/bin/ios";
+			dstSubfolderSpec = 0;
+			files = (
+				CEBD19DE1A6474F400CB5D73 /* CellMotus.app in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		CE0E8E301A64B50F00C0F84F /* x_ios_logger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_logger.m; sourceTree = "<group>"; };
+		CE0E8E361A650B7A00C0F84F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CellMotus/Images.xcassets; sourceTree = "<group>"; };
 		CE7152FD1A4C94B4006A92A6 /* x_apple_settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_apple_settings.m; sourceTree = "<group>"; };
+		CE748AFC1A64477100CE232C /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		CEB063F41A4B83AC00BEFE20 /* x_ios_audio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_audio.m; sourceTree = "<group>"; };
 		CEC51EF91A4954E9005D7B6E /* CellMotus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CellMotus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC51EFD1A4954E9005D7B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -63,7 +82,6 @@
 		CEC51F011A4954E9005D7B6E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		CEC51F071A4954E9005D7B6E /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
 		CEC51F081A4954E9005D7B6E /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
-		CEC51F281A49D197005D7B6E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		CEC51F2A1A49F0C1005D7B6E /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../ext/png/libs/ios/libpng.a; sourceTree = "<group>"; };
 		CEC51F2C1A49F0F6005D7B6E /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../ext/luajit/libs/ios/libluajit.a; sourceTree = "<group>"; };
 		CEC51F2E1A49F120005D7B6E /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../ext/ft2/libs/ios/libfreetype.a; sourceTree = "<group>"; };
@@ -96,7 +114,6 @@
 		CEC51F4C1A49F253005D7B6E /* vertex-attribute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "vertex-attribute.c"; sourceTree = "<group>"; };
 		CEC51F4D1A49F253005D7B6E /* vertex-buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "vertex-buffer.c"; sourceTree = "<group>"; };
 		CEC51F4E1A49F253005D7B6E /* view.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view.c; sourceTree = "<group>"; };
-		CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_stdio_logger.c; sourceTree = "<group>"; };
 		CEC51F6E1A49F8F1005D7B6E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		CEC51F711A49F970005D7B6E /* x_posix_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_posix_timer.c; sourceTree = "<group>"; };
 		CEC51FED1A4A019E005D7B6E /* x_ios_asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = x_ios_asset.m; sourceTree = "<group>"; };
@@ -143,13 +160,14 @@
 		CEC51EFB1A4954E9005D7B6E /* CellMotus */ = {
 			isa = PBXGroup;
 			children = (
-				CEC51F281A49D197005D7B6E /* Default-568h@2x.png */,
+				CE748AFC1A64477100CE232C /* Main.storyboard */,
 				CEC51EFD1A4954E9005D7B6E /* Info.plist */,
 				CEC51EFE1A4954E9005D7B6E /* main.m */,
 				CEC51F001A4954E9005D7B6E /* AppDelegate.h */,
 				CEC51F011A4954E9005D7B6E /* AppDelegate.m */,
 				CEC51F071A4954E9005D7B6E /* GameViewController.h */,
 				CEC51F081A4954E9005D7B6E /* GameViewController.m */,
+				CE0E8E361A650B7A00C0F84F /* Images.xcassets */,
 			);
 			name = CellMotus;
 			sourceTree = SOURCE_ROOT;
@@ -202,7 +220,7 @@
 				CEC51F4C1A49F253005D7B6E /* vertex-attribute.c */,
 				CEC51F4D1A49F253005D7B6E /* vertex-buffer.c */,
 				CEC51F4E1A49F253005D7B6E /* view.c */,
-				CEC51F4F1A49F253005D7B6E /* x_stdio_logger.c */,
+				CE0E8E301A64B50F00C0F84F /* x_ios_logger.m */,
 			);
 			name = core;
 			path = ../core;
@@ -218,6 +236,7 @@
 				CEC51EF51A4954E9005D7B6E /* Sources */,
 				CEC51EF61A4954E9005D7B6E /* Frameworks */,
 				CEC51EF71A4954E9005D7B6E /* Resources */,
+				CEBD19DD1A6474A300CB5D73 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -267,7 +286,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEC520261A4A14CC005D7B6E /* assets in Resources */,
-				CEC51F291A49D197005D7B6E /* Default-568h@2x.png in Resources */,
+				CE0E8E371A650B7A00C0F84F /* Images.xcassets in Resources */,
+				CE748AFE1A64477100CE232C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,7 +316,6 @@
 				CEC51F531A49F253005D7B6E /* engine.c in Sources */,
 				CEC520281A4A1746005D7B6E /* x_ios.m in Sources */,
 				CEC51F591A49F253005D7B6E /* lmath.c in Sources */,
-				CEC51F6D1A49F253005D7B6E /* x_stdio_logger.c in Sources */,
 				CEC51F021A4954E9005D7B6E /* AppDelegate.m in Sources */,
 				CEC51F6A1A49F253005D7B6E /* vertex-attribute.c in Sources */,
 				CEC51F091A4954E9005D7B6E /* GameViewController.m in Sources */,
@@ -316,6 +335,7 @@
 				CEC51F651A49F253005D7B6E /* texture-atlas.c in Sources */,
 				CEC51F541A49F253005D7B6E /* font.c in Sources */,
 				CEC51EFF1A4954E9005D7B6E /* main.m in Sources */,
+				CE0E8E311A64B50F00C0F84F /* x_ios_logger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,7 +359,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = Jailbreak;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -364,12 +384,12 @@
 					../ext/ft2/include/ios,
 					../core,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = armv7;
 			};
 			name = Debug;
 		};
@@ -390,7 +410,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = Jailbreak;
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -409,12 +429,13 @@
 					../ext/ft2/include/ios,
 					../core,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = armv7;
 			};
 			name = Release;
 		};
@@ -422,6 +443,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEAD_CODE_STRIPPING = NO;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"SEN_TARGET_IOS=1",
 					"SEN_DEBUG=1",
@@ -429,6 +454,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -438,6 +464,8 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				STRIP_STYLE = all;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -446,8 +474,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEAD_CODE_STRIPPING = NO;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "SEN_TARGET_IOS=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -455,7 +490,10 @@
 					/Users/user/projects/CellMotus/src/ext/luajit/libs/ios,
 					/Users/user/projects/CellMotus/src/ext/ft2/libs/ios,
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

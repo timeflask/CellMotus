@@ -1,0 +1,25 @@
+Package: com.timeflask.cellmotus
+Name: Cell Motus Puzzle Game
+Section: Games
+Version: 0.9
+Homepage: http://www.time-flask.com
+Architecture: iphoneos-arm
+Depiction:http://www.time-flask.com/cydia_depiction.html
+Description: Puzzle Game. Tap cells to move them to the right color markers.
+ Cell Motus puzzle is a dark themed variation on
+ Andrey Shevchuk Game about Squares in which you have to find
+ the right way to connect cells with circles of the same color.
+ Cells move only in one of the six directions in which the
+ arrow is pointing. Arrows on board allows you to change directions.
+ .
+ As with the original, Cell Motus jumps right in with a series of
+ few very easy levels to get you started, just a few cells and a
+ few possible arrangements. Once you've completed these, you're
+ given a real brain challenge. Some levels are little more than
+ simple "directions gaming", requiring that you brought a special
+ strategy in order to success. It's easy to learn but difficult to master.
+Author: TimeFlask <timeflask@gmail.com>
+Icon: file:///Applications/CellMotus.app/AppIcon57x57.png
+Maintainer: BigBoss <bigboss@thebigboss.org>
+Sponsor: thebigboss.org <http://thebigboss.org>
+dev: timeflask

@@ -40,6 +40,11 @@ sen_signal_disconnect_name(const char*       listener_name,
                            const char*       signal_name,
                            const char*       emitter_name);                        
                           
+void
+sen_signal_connect_lua(const char*       emitter_name,
+                       const char*       signal_name,
+                       struct object_t*  listener);
+
 ]]
  
 local CT   = ffi.typeof("object_t")
@@ -84,7 +89,7 @@ setmetatable(sen_object_class, {
 
 
 local slots = utils.auto_table(2)
-
+--[[
 local singal_wprapper = ffi.cast("signal_callback_t", function (listener, data, emitter, sig)
   local slot = slots[ffi.string(listener.name)][ffi.string(sig)]
   local ret = 0
@@ -93,13 +98,31 @@ local singal_wprapper = ffi.cast("signal_callback_t", function (listener, data, 
   end
   return ret or 0  
 end)
+--]]
+
+--local CTP  = ffi.typeof("object_t*")
+
+function LUA_sen_signals_callback(self, data, emitter, sig)
+  local listener = ffi.cast(CTP,self)
+  local slot = slots[ffi.string(listener.name)][sig]
+  local ret = 0
+  if (slot ~= nil) then
+    ret = slot.func(  slot.self, data, emitter )
+  end
+  return ret or 0  
+--  print(ffi.string(listener.name))
+  --return 1
+end
 
 local function connect(emitter, signal, func, listener)
   if ( slots[listener.name()][signal] == nil) then
     slots[listener.name()][signal] = {self=listener, func=func} 
-    C.sen_signal_connect(emitter, signal, singal_wprapper, CAST(listener.ref))
-  end    
-end
+    --C.sen_signal_connect(emitter, signal, singal_wprapper, CAST(listener.ref))
+    C.sen_signal_connect_lua(emitter, signal, CAST(listener.ref))
+  end                              
+end                                
+                                   
+                                   
 
 local function dc(listener, signal, emitter)
   if ( slots[listener.name()][signal] ~= nil) then
