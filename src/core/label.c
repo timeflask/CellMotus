@@ -30,10 +30,6 @@ void update_text( label_t* self )
           a = color->a;
 
     vec4* bbox = & ( node->bbox );
-    bbox->x=0;
-    bbox->y=0;
-    bbox->z=0;
-    bbox->w=0;
 
     vertex_buffer_t* buffer  = self->buff;
     const font_t *font       = self->font;
@@ -44,6 +40,11 @@ void update_text( label_t* self )
 
     vertex_buffer_clear(buffer);
     vector_clear(verts);
+
+    bbox->x=0;
+    bbox->y=0;
+    bbox->z=0;
+    bbox->w=0;
 
     vector_reserve( verts, len*4 );
     for( i=0; i<len; ++i )
