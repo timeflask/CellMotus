@@ -61,7 +61,8 @@ public class SENSound {
   }
     
     
-  private void init() {
+  @SuppressWarnings("deprecation")
+private void init() {
     m_pool = new SoundPool(
     		Build.MODEL.indexOf("GT-I9100") != -1 ? 3 : 5, 
     		AudioManager.STREAM_MUSIC, 

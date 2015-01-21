@@ -70,6 +70,7 @@ void sen_reload()
   sen_shapes_reload();
   sen_scenes_reload();
   sen_render_reload();
+  g_drop_dt = 1;
 }
 
 static int on_reload(object_t* _null, void* _null1, object_t* _null2, const char* sig)

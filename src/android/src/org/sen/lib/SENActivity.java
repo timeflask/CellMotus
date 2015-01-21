@@ -21,7 +21,7 @@ import android.view.WindowManager;
 //import android.view.Display;
 
 //import android.widget.Toast;
-
+//import com.splunk.mint.Mint;
 public class SENActivity extends Activity {
 
 	private final static String __class = SENActivity.class.getSimpleName();
@@ -55,7 +55,7 @@ public class SENActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-
+		//Mint.initAndStartSession(SENActivity.this, "9df46a6d");
 		m_context = this;
         
         SENHandler.init(this);
@@ -94,6 +94,53 @@ public class SENActivity extends Activity {
         class ConfigChooser implements GLSurfaceView.EGLConfigChooser
         {
             public int[] attribs;
+            
+            
+			@SuppressWarnings("unused")
+			public ConfigChooser(int redSize, int greenSize, int blueSize, int alphaSize, int depthSize, int stencilSize)
+			{
+				attribs = new int[] {redSize, greenSize, blueSize, alphaSize, depthSize, stencilSize};
+			}
+			public ConfigChooser(int[] _attribs)
+			{
+				attribs = _attribs;
+			}
+            
+			public EGLConfig selectConfig(EGL10 egl, EGLDisplay display, EGLConfig[] configs, int[] attribs)
+			{
+			    for (EGLConfig config : configs) {
+			        int d = findConfigAttrib(egl, display, config,
+			                EGL10.EGL_DEPTH_SIZE, 0);
+			        int s = findConfigAttrib(egl, display, config,
+			                EGL10.EGL_STENCIL_SIZE, 0);
+			        if ((d >= attribs[4]) && (s >= attribs[5])) {
+			            int r = findConfigAttrib(egl, display, config,
+			                    EGL10.EGL_RED_SIZE, 0);
+			            int g = findConfigAttrib(egl, display, config,
+			                     EGL10.EGL_GREEN_SIZE, 0);
+			            int b = findConfigAttrib(egl, display, config,
+			                      EGL10.EGL_BLUE_SIZE, 0);
+			            int a = findConfigAttrib(egl, display, config,
+			                    EGL10.EGL_ALPHA_SIZE, 0);
+			            if ((r >= attribs[0]) && (g >= attribs[1])
+			                    && (b >= attribs[2]) && (a >= attribs[3])) {
+			                return config;
+			            }
+			        }
+			    }
+			    return null;
+			}
+			
+			private int findConfigAttrib(EGL10 egl, EGLDisplay display,
+			        EGLConfig config, int attribute, int defaultValue) {
+				int[] value = new int[1];
+			    if (egl.eglGetConfigAttrib(display, config, attribute, value)) {
+			        return value[0];
+			    }
+			    return defaultValue;
+			}
+			
+			
             @Override
             public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) 
             {
@@ -108,6 +155,8 @@ public class SENActivity extends Activity {
                             EGL10.EGL_ALPHA_SIZE, attribs[3],
                             EGL10.EGL_DEPTH_SIZE, attribs[4],
                             EGL10.EGL_STENCIL_SIZE,attribs[5],
+                            EGL10.EGL_RENDERABLE_TYPE, 4, 
+                            
                             EGL10.EGL_NONE
                                         };
                     int[] choosedConfigNum = new int[1];
@@ -126,8 +175,11 @@ public class SENActivity extends Activity {
                                 EGL10.EGL_ALPHA_SIZE, 0,
                                 EGL10.EGL_DEPTH_SIZE, 0,
                                 EGL10.EGL_STENCIL_SIZE,0,
+                                EGL10.EGL_RENDERABLE_TYPE, 4, //EGL_OPENGL_ES2_BIT
                                 EGL10.EGL_NONE
-                                            };
+                        
+                        };
+                        
                         int[] defaultEGLattribsAlpha = {
                                 EGL10.EGL_RED_SIZE, 4, 
                                 EGL10.EGL_GREEN_SIZE, 4,
@@ -135,31 +187,39 @@ public class SENActivity extends Activity {
                                 EGL10.EGL_ALPHA_SIZE, 4,
                                 EGL10.EGL_DEPTH_SIZE, 0,
                                 EGL10.EGL_STENCIL_SIZE,0,
+                                EGL10.EGL_RENDERABLE_TYPE, 4, //EGL_OPENGL_ES2_BIT
                                 EGL10.EGL_NONE
-                                            };
 
-                        if(this.attribs[3] == 0)
+                        };
+                        
+                        int[] attrs = null;
+
+                        if(this.attribs[3] == 0) {
                             egl.eglChooseConfig(display, defaultEGLattribs, configs, numConfigs[0], choosedConfigNum);
-                        else
-                            egl.eglChooseConfig(display, defaultEGLattribsAlpha, configs, numConfigs[0], choosedConfigNum);
-                        if(choosedConfigNum[0] > 0)
-                        {
-                            Log.w(DEVICE_POLICY_SERVICE, "The EGLConfig can not be used for rendering, use a default one");
-                            return configs[0];
+                            attrs=new int[]{5,6,5,0,0,0};
                         }
                         else
                         {
-                            Log.e(DEVICE_POLICY_SERVICE, "Can not select an EGLConfig for rendering.");
+                            egl.eglChooseConfig(display, defaultEGLattribsAlpha, configs, numConfigs[0], choosedConfigNum);
+                            attrs=new int[]{4,4,4,4,0,0};
+                        }
+                        
+                        if(choosedConfigNum[0] > 0)
+                        {
+                            return selectConfig(egl, display, configs, attrs);
+                        }
+                        else
+                        {
+                            Log.e(DEVICE_POLICY_SERVICE, "Can not select an EGLConfig.");
                             return null;
                         }
                     }
                 }
-                Log.e(DEVICE_POLICY_SERVICE, "Can not select an EGLConfig for rendering.");
+                Log.e(DEVICE_POLICY_SERVICE, "Can not select an EGLConfig.");
                 return null;
             }
         }
-        ConfigChooser chooser = new ConfigChooser();
-        chooser.attribs = this.m_glContextAttrs;
+        ConfigChooser chooser = new ConfigChooser(this.m_glContextAttrs);
         surf.setEGLConfigChooser(chooser);
         return surf;
     }

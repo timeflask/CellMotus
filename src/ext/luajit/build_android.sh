@@ -1,7 +1,7 @@
 #!/bin/sh
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 host_os=`uname -s | tr "[:upper:]" "[:lower:]"`
-NDK_ROOT=/home/dmitry/Downloads/android-ndk-r10d
+NDK_ROOT=/home/dmitry/android-ndk-r10d
 SRCDIR=$DIR/src
 cd "$SRCDIR"
 
@@ -22,6 +22,10 @@ if [ -f $SRCDIR/src/libluajit.a ]; then
 fi;
 
 # Android/ARM, armeabi-v7a (ARMv7 VFP), Android 4.0+ (ICS)
+NDKABI=14
+NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
+NDKP=$NDKVER/prebuilt/${host_os}-x86_64/bin/arm-linux-androideabi-
+NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-arm"
 NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
 DESTDIR=$DIR/libs/android/armeabi-v7a
 rm "$DESTDIR"/*.a

@@ -522,7 +522,11 @@ end
 
 function gcell:is_outscreen()
   local board = self.board
+ -- print ('----------------------------------', board.bLines[1].height)
+ -- print ('----------------------------------', board.scene_bbox.b)
+  --print(self.y,self.y - board.hcell*0.5 , board.scene_bbox.b)
   --[[
+  
   if (self.y - board.hcell*0.5 < board.scene_bbox.b+board.bLines[1].height) then
     print (board.bLines[1].height)
     print(self.y - board.hcell*0.5 , board.scene_bbox.b+board.bLines[1].height)
@@ -532,7 +536,7 @@ function gcell:is_outscreen()
   local scr = sen.screen()
   --print(  self.y - board.hcell*0.5, board.bLines[1].height + board.scene_bbox.b )
   return 
-     not board:cell_full_visible(self, 0.0)
+     not board:cell_full_visible(self, 0.1)
      --[[
          or
          (self.y - board.hcell*0.5)*board.scale < board.scene_bbox.b+
@@ -1603,7 +1607,8 @@ function gboard:gboard(scene)
    shift_p = 70,
    wait_click = true,
    pquadColor = conf.cell_colors[2],
-    rico= not g_screen.baby and  "ico_sr"
+    --rico= not g_screen.baby and  "ico_sr"
+    rico=  "ico_sr"
   })
   
   self.bLines[2] = buttonLine(scene, 
@@ -1652,7 +1657,7 @@ end
 function gboard:resetButtons()
   local bbox = sen.vp_box()
   local scr = sen.screen()
-  local w  = (bbox.t-bbox.b)/16 * ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
+  local w  = (bbox.t-bbox.b)/16 * 1.3 --( scr.baby and 1.3 or 1 ) --self.hcell*0.6
   
   --local w  = (bbox.t-bbox.b)/16 ---self.hcell*0.5
  --print(vpb,w)

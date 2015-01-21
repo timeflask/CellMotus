@@ -37,7 +37,9 @@ sen_shapes_destroy()
 void
 sen_shapes_reload()
 {
+  _logfi("*** RELOADING SHAPES *** ");
   vertex_buffer_invalidate(g_buffer);
+  _logfi("*** DONE *** ");
 }
 
 void

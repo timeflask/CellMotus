@@ -141,9 +141,13 @@ static int invalidate_nodes_cb (void* self, node_t* node)
 void
 sen_scenes_reload()
 {
+
   scene_t* scene;
+  _logfi("*** RELOADING SCENES *** ");
   if (g_scenes == NULL) return;
   kh_foreach_value(g_scenes, scene, sen_node_visit(scene, NULL, &invalidate_nodes_cb) );
+
+  _logfi("*** SCENES DONE *** ");
 }
 
 void

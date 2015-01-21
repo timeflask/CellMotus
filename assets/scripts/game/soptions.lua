@@ -373,7 +373,7 @@ function oboard:reset()
     pointerColorT = conf.cell_colors[1],    
   })                           
   local scr = sen.screen()
-  local w  = (bbox.t-bbox.b)/11  * ( scr.baby and 1.5 or 1 )  --self.hcell*0.7
+  local w  = (bbox.t-bbox.b)/11  * 1.5 -- ( scr.baby and 1.5 or 1 )  --self.hcell*0.7
   ts = ts-g_screen.fonts.height.mecha_b*2-w/2 --bbox.t - self.hcell
   local i = 0
   for _,v in pairs(self.oLines) do
@@ -415,7 +415,7 @@ function oboard:reset()
   actionManager.run(lb, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
    --]]
    
-  local w  = (bbox.t-bbox.b)/16 * ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
+  local w  = (bbox.t-bbox.b)/16 * 1.3 -- ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
   local bs = bbox.b + w/2+2
   local i = 0
   for _,v in ipairs(self.bLines) do
@@ -498,7 +498,8 @@ function oboard:oboard(scene)
    width_p = 33.3,
    shift_p = 66.6,
    pquadColor = conf.cell_colors[4],
-   rico = not g_screen.baby and "ico_sr"
+   --rico = not g_screen.baby and "ico_sr"
+   rico = "ico_sr"
    
   })
   
@@ -508,7 +509,8 @@ function oboard:oboard(scene)
    width_p = 33.3,
    shift_p = 33.3,
    pquadColor = conf.cell_colors[2],
-   rico = not g_screen.baby and "ico_sd"
+   --rico = not g_screen.baby and "ico_sd"
+   rico = "ico_sd"
   })
 
   self.bLines[3] = buttonLine(scene, 
@@ -517,7 +519,8 @@ function oboard:oboard(scene)
    width_p = 33.3,
    shift_p = 0,
    pquadColor = conf.cell_colors[3],
-    rico = not g_screen.baby and  "ico_sl"
+--   rico = not g_screen.baby and  "ico_sl"
+   rico =  "ico_sl"
    
   })
     

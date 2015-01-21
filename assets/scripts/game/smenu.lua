@@ -387,7 +387,7 @@ function mboard:reset()
   ts = ts - g_screen.fonts.height.mecha_b*2 
   self.titleLabel2.moveTo(bbox.l+19, ts)
   local scr = sen.screen()
-  local w  = (bbox.t-bbox.b)/10 * ( scr.baby and 1.5 or 1 ) 
+  local w  = (bbox.t-bbox.b)/10 * 1.5-- ( scr.baby and 1.5 or 1 ) 
   --local w  = self.hcell/2
   ts = ts - w/2-self.hcell/12
   local bs =  bbox.b + w/2 + 2

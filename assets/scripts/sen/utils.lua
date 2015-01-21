@@ -256,13 +256,15 @@ local FONT_MIDDLE = 30
 g_screen = nil
 local function _lazy_init_screen()
   local v = C.sen_view_get_viewport()
-  local d = C.sen_platform_dpi()
+  local d = C.sen_platform_dpi() 
+  if (d==0) then d = 160  end
+  --d=450
   --print("------------------------------------------------------")
   --print(d)
   --print("------------------------------------------------------")
-  
-  local wdp = v.z/d*160
-  local hdp =v.w/d*160
+ -- d=440
+  local wdp = v.z*d/160
+  local hdp =v.w*d/160
   local minwh = math.min(wdp,hdp) 
   local maxwh = math.max(wdp,hdp)
   local baby = math.min(wdp,hdp) < BABY_SIZE
@@ -274,9 +276,9 @@ local function _lazy_init_screen()
     --font_factor = font_factor,
     
     fonts = {
-      small = math.max(12, math.ceil(max2 / FONT_MIDDLE * 0.6 + d/80)), 
-      medium = math.max(16,math.ceil(max2 / FONT_MIDDLE  + d/80)), 
-      big =  math.max(30,math.ceil(max2 / FONT_MIDDLE * 1.5  + d/80)),
+      small = math.max(12, math.ceil(max2 / FONT_MIDDLE * 0.6 + d/160)), 
+      medium = math.max(16,math.ceil(max2 / FONT_MIDDLE  + d/160)), 
+      big =  math.max(30,math.ceil(max2 / FONT_MIDDLE * 1.5  + d/160)),
       height = {} 
     }
   }

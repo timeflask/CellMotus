@@ -47,9 +47,15 @@ function base_board:cell_full_visible(c, eps)
 end
 
 function base_board:xy_full_visible(x, y, eps)
-  local sw =  self.wcell/(2+(eps or 0.1)) 
-  local sh =  self.hcell/(2+(eps or 0.1)) 
+  local sw =  self.wcell/(2+(eps or 0.1)) / self.node.scaleX()
+  local sh =  self.hcell/(2+(eps or 0.1)) / self.node.scaleY()
   local bbox = self.scene_bbox
+--  local bbox = sen.vp_box()
+  --bbox.b =  bbox.b + 62 + self.node.posY()
+--  bbox.t =  bbox.t + self.node.posY()
+--  bbox.l =  bbox.l - self.node.posX()
+  --bbox.r =  bbox.r - self.node.posX()
+  
   --print (bbox.b/self.scale, y, sh, y > bbox.b + sh )
   return   x > bbox.l + sw and 
            x < bbox.r - sw and 

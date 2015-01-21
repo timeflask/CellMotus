@@ -430,6 +430,7 @@ sen_render_reload()
   tex_group_t* tg;
   khash_t(hmsp)*  sgs;
   shader_group_t* sg;
+  _logfi("**** RELOADING RENDER *** ");
 
   for (k = kh_begin(g_bgs); k != kh_end(g_bgs); ++k)
   {
@@ -454,6 +455,7 @@ sen_render_reload()
       }
     }
   }
+  _logfi("**** DONE *** ");
 }
 
 void

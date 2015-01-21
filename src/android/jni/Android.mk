@@ -9,7 +9,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := game
 LOCAL_CFLAGS    := -Wall -Wextra
-
+LOCAL_CPPFLAGS += -fexceptions
  
 LOCAL_SRC_FILES :=\
 jni.cpp \

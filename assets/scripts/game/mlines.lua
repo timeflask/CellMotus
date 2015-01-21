@@ -306,17 +306,6 @@ local buttonLineCoro = function (node, dt)
 --]]
 
 ----[[
-  local q2 =nil 
-  if cfg.rico then 
-    q2 = sen.clsSprite(nil, cfg.rico)
-    --local qb = q2.getBBox()
-    local f = math.min((lh - 8), 2*g_screen.fonts.height.mecha_m) / math.max(q2.height(), q2.width())
-    q2.scale(f,f) 
-    node.q2 = q2
-    q2.moveTo(bbox.r-q2.width()*f, scr.baby and -lh/5 or 0)
-    q2.setColor{a=0}
-    node.addChild(q2)
- end   
 --]]
  
   local text = (cfg.LabelTitle or "some option")
@@ -331,11 +320,27 @@ local buttonLineCoro = function (node, dt)
   lb2.setColor(cfg.titleColor2 or {1,1,1,0.2})
   lb2.setColor({a=0})
   local lbbox = lb.getBBox()
-  local lb2y = -g_screen.fonts.height.mecha_m-2 --  (lbbox.b-lbbox.t)/2 - math.max(7,scr.font_factor*1.5)
+  local lb2y = -g_screen.fonts.height.mecha_m-4 --  (lbbox.b-lbbox.t)/2 - math.max(7,scr.font_factor*1.5)
     
   local lba2 = cfg.titleColor2 and cfg.titleColor2[4] or 0.2
   node.lb2 = lb2
   node.addChild(lb2)
+
+  local q2 =nil 
+ --print('-------------------------------------------',lbbox.r-lbbox.l)
+  --print('-------------------------------------------',hsz)
+  if cfg.rico and (lbbox.r-lbbox.l)<hsz/1.4-15 then 
+    
+    q2 = sen.clsSprite(nil, cfg.rico)
+    --local qb = q2.getBBox()
+    local f = math.min((lh - 8), 2*g_screen.fonts.height.mecha_m) / math.max(q2.height(), q2.width())
+    q2.scale(f,f) 
+    node.q2 = q2
+    --q2.moveTo(bbox.r-q2.width()*f, scr.baby and -lh/5 or 0)
+    q2.moveTo(bbox.r-q2.width()*f, 0)
+    q2.setColor{a=0}
+    node.addChild(q2)
+ end   
  
    actionManager.run(quad,
    {
@@ -351,7 +356,7 @@ local buttonLineCoro = function (node, dt)
         self.setColor({a = cf.amax * pow(dt,cf.rate)})
         node.moveTo(dx*(-hshift), node.posY())
         --self.moveTo(dx*(bbox.r-hshift), 0)
-        lb.moveTo(bbox.r-dx*hsz + (cfg.labelLshift or 20)    ,  cfg.labelTshift1 or -2)
+        lb.moveTo(bbox.r-dx*hsz + (cfg.labelLshift or 20)    ,  cfg.labelTshift1 or -4)
         lb2.moveTo(bbox.r-dx*hsz + (cfg.labelLshift2 or 20) , cfg.labelTshift2 or lb2y )
         q1.moveTo(bbox.r-dx*hsz, 0 )
        -- q2.moveTo(bbox.r-dx*hsz + 17, 0 )

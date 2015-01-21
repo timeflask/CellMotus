@@ -192,11 +192,12 @@ function lcell:setupLevel(lvl)
     self.board.node.addChild(lb)
   end  
 
+  lb.scale(1.5,1.5)
   local lbbox = lb.getBBox()
   lb.moveTo(self.x, self.y)
   lb.move( 
-    math.floor(  ( lbbox.left - lbbox.right) / 2.0 )  , 
-    -math.floor(  ( lbbox.top - lbbox.bottom) / 2.0 )  
+    math.floor(  ( lbbox.left - lbbox.right) * lb.scaleX()/ 2.0 )  , 
+    -math.floor(  ( lbbox.top - lbbox.bottom)* lb.scaleY() / 2.0 )  
     )
   
   lb.setText(tostring(lvl))
@@ -1114,7 +1115,7 @@ function lboard:lboard(scene)
   local last_bbox = scene.getBBox()
   local scr = sen.screen()
     
-  local sf = math.min (last_bbox.r - last_bbox.l, last_bbox.t - last_bbox.b ) / (128*(scr.baby and 4.5 or 6))
+  local sf = math.min (last_bbox.r - last_bbox.l, last_bbox.t - last_bbox.b ) / (128*(scr.baby and 4.5 or 5))
   lcell_scale_x = lcell_scale_x * sf
   lcell_scale_y = lcell_scale_y * sf
   self:base_board(scene, "l_board", lcell, conf.image("cellbg"), 0.7655, 1.005, sf)
@@ -1131,7 +1132,8 @@ function lboard:lboard(scene)
    width_p = 20,
    shift_p = 80,
    pquadColor = conf.cell_colors[2],
-   rico= not g_screen.baby and "ico_sr"
+   --rico= not g_screen.baby and "ico_sr"
+   rico= "ico_sr"
   })
   
   self.bLines[2] = buttonLine(scene, 
@@ -1140,7 +1142,8 @@ function lboard:lboard(scene)
    width_p = 40,
    shift_p = 40,
    pquadColor = conf.cell_colors[1],
-   rico= not g_screen.baby and  "ico_sl"
+   --rico= not g_screen.baby and  "ico_sl"
+   rico= "ico_sl"
   })
 
   self.bLines[3] = buttonLine(scene, 
@@ -1170,12 +1173,12 @@ function lboard:lboard(scene)
    local sd = sen.clsSprite("scroll_down", "ico_sd")
    su.ZOrder(0.96)
    su.setColor{a=0}
-   local f = 20/su.height()
+   local f = g_screen.fonts.height.mecha_m/su.height() * 1.5
    su.scale(f,f)
     
    sd.ZOrder(0.96)
    sd.setColor{a=0}
-   local f = 20/sd.height()
+   local f = g_screen.fonts.height.mecha_m/su.height() * 1.5
    sd.scale(f,f)
   
    scene.img_su = su
@@ -1200,7 +1203,7 @@ function lboard:showTitle()
   )
  vpb        = sen.vp_box()
   local scr = sen.screen()
-  local w  = (bbox.t-bbox.b)/16 * ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
+  local w  = (bbox.t-bbox.b)/16 * 1.3 -- ( scr.baby and 1.3 or 1 ) --self.hcell*0.6
  
   --local w  = (bbox.t-bbox.b)/16,32 ---self.hcell*0.5
  --print(vpb,w)
