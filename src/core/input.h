@@ -30,6 +30,12 @@ typedef struct touch_t {
   input_point prev;
 }touch_t;
 
+typedef struct scroll_t 
+{
+  double x; 
+  double y;
+} scroll_t;
+
 SEN_DECL touch_t*
 sen_touch_new();
 
