@@ -3,6 +3,7 @@ local base_cell     = require "game.cell"
 local base_board    = require "game.board"
 local lvlmanager    = require "game.lvlmanager"
 local conf          = require "game.conf"
+local conf_ = conf
 local scheduler     = sen.Scheduler()
 local actionManager = sen.ActionManager
 local audioPlayer   = sen.AudioPlayer
@@ -19,6 +20,7 @@ local last_curr_maxn = 5
 local optShowTrails = settingsManager.get('trails', true)
 
 class "gcell" ("base_cell")
+
 
 local rand = math.random
 local pow = math.pow
@@ -67,11 +69,134 @@ function gcell:update_area_effect(dist,maxf, delay)
   end  
 end
 
+local xy_map = {
+  {0.0,-0.0},
+  {0.0,-0.05},
+  {0.0,-0.0},
+  {0.0,-0.0},
+  {0.0,0.05},
+  {0.0,-0.0},
+
+  {0.1,-0.015},
+  {0,0.03},
+  {-0.08,-0.02},
+  {-0.1,0.021},
+  {0.004,-0.001},
+  {0.08,0.02},
+}
+
+local xy_bounce = function(x1,y1, x2, y2, dist, end_f)
+   return {
+       name = "speed",
+       speed = 4, 
+       action = {
+         name = "seq",
+         actions = {
+           {       
+              name = "interval",
+              duration = 1,
+              rate = 1/7,
+              trigger = function(self, dt, conf)
+                local dx = conf_.btime(dt)
+                self.moveTo(conf.x1+conf.deltaX*dx, 
+                            conf.y1+conf.deltaY*dx)
+              end,
+              start_trigger=function(self,conf)
+                conf.x1 = x1
+                conf.y1 = y1
+                conf.deltaX = (x2-x1)*(dist and 1/6*dist or 1/3)
+                conf.deltaY = (y2-y1)*(dist and 1/6*dist or 1/3)
+              end
+           },
+           {       
+              name = "interval",
+              duration = 1,
+              rate =  2,
+              trigger = function(self, dt, conf)
+                local dx = math.pow((1-dt), conf.rate) 
+                self.moveTo(conf.x1+conf.deltaX*dx, 
+                            conf.y1+conf.deltaY*dx)
+              end,
+              start_trigger=function(self,conf)
+                conf.x1 = x1
+                conf.y1 = y1
+                conf.deltaX = (x2-x1)*(dist and 1/6*dist or 1/3)
+                conf.deltaY = (y2-y1)*(dist and 1/6*dist or 1/3)
+              end
+           }
+         }
+       }
+     }
+end
+
+ local scale_to = function(ssx, ssy, speed, rate) 
+   return {
+    name = "speed",
+    speed = speed or 1, 
+    action = {
+      name = "interval",
+      duration = 1,
+      rate = rate or 2,
+      ssx = ssx,
+      ssy = ssy,
+      trigger = function(self, dt, conf)
+        local dx = conf_.btime(pow(dt, 1/2)) 
+        self.scale(conf.sx + conf.ssx*(1-dx), 
+                   conf.sy + conf.ssy*(1-dx))
+                      
+      end,
+      start_trigger = function(self, conf)
+        if self then
+          conf.sx = self.scaleX() 
+          conf.sy = self.scaleY() 
+          self.scale( conf.ssx , conf.ssy, true )
+          conf.ssx = self.scaleX() - conf.sx
+          conf.ssy = self.scaleY() - conf.sy 
+        end  
+      end
+       
+     }
+   }
+end
+
+local function get_opp_dir(dir)
+  local opp_dir = (dir+3)%6
+  if (opp_dir == 0) then opp_dir = 6 end 
+  return opp_dir
+end
+
 function gcell:do_bounce(cell, dir, speed_rate)
+
   if (cell and level.is_item(cell.state)) then
-     actionManager.run(cell.sprites["item"], conf.effect_dir_bounce(cell, dir,speed_rate))
-     actionManager.run(cell.sprites["dir"], conf.effect_dir_bounce(cell, dir,speed_rate))
-     cell:side_bounce(cell, dir, speed_rate+1)
+     local it = cell.sprites["item"]
+     --if actionManager.is_running(it, 'bounceEffect') then return end
+     
+     actionManager.run(it, conf.effect_dir_bounce(cell, dir,speed_rate))
+
+     local hc = self.board.hcell
+     local wc = self.board.wcell
+     local xy = xy_map[cell.state.dir]
+     local sx = wc*xy[1]
+     local sy = hc*xy[2]
+     local dir_cell = cell:get_neighbor(dir)
+
+--     actionManager.run(cell.sprites["dir"], conf.effect_dir_bounce(cell, dir,speed_rate))
+--     cell.sprites["dirB"].setColor({a=0})
+    local sdir = cell.sprites["dir"]
+    local bdir = cell.sprites["dirB"]
+    actionManager.run(sdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate))
+    actionManager.run(bdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate))
+    for i=1,6 do 
+      local s = cell.sprites["dir"..i]
+      if s then
+          --actionManager.run(s, xy_bounce(cell.x+sx, cell.y+sy,  dir_cell.x+sx, dir_cell.y+sy,speed_rate))
+          if not s.xx then s.xx = s.posX() end
+          if not s.yy then s.yy = s.posY() end
+          actionManager.run(s, xy_bounce(s.xx, s.yy,  dir_cell.x+sx, dir_cell.y+sy,speed_rate))
+      end  
+    end  
+    
+    cell:side_bounce(cell, dir, speed_rate+1)
   end
 end
 
@@ -85,33 +210,163 @@ function gcell:side_bounce(cell, dir, speed_rate)
   self:do_bounce(cell:get_neighbor(dir), dir, speed_rate)
 end
 
+local rotate_map = {
+ 
 
+  58, 0, -58, -122, -180, -238,
+
+
+ 64, 0, -64, -116, -180, -244
+}
+
+local wh_anchor_map = {
+  {0,0.55},
+  {0,0.69},
+  {0,0.69},
+  {0,0.8},
+  {0,0.8},
+  {0,0.8},
+  {0,0.8},
+}
+
+
+ local rotate_to = function(angel, speed) 
+     return {
+      name = "speed",
+      speed = speed or 1, 
+      action = {
+        name = "interval",
+        duration = 1,
+        trigger = function(self, dt, conf)
+          self.rotate( conf.delta*conf_.btime(dt))
+        end,
+        start_trigger = function(self, conf)
+           conf.startAngle = self.rot()
+           conf.delta = self.rot() - angel
+        end,
+       
+      }
+    }
+ end
+ 
 function gcell:setupItem(state, dir, bounce, prev_dir, from)
   local s = get_sprite(conf.image("cell"), self.board)
   local a = get_sprite(conf.image("arrow"), self.board) 
+  local b = get_sprite(conf.image("arrowB"), self.board) 
   
 
   s.setColor(state.color)
   s.moveTo( self.x , self.y )
+  s.scale(0.936, 0.946, true)
+  s.setAnchor(0,1)
   s.ZOrder(0.03)
 
+--[[ OLD ARROW
   a.setColor(state.color)
   a.moveTo( self.x, self.y)
   a.ZOrder(0.05)
   a.rotate((2-state.dir)*60)
   a.scale(1.34,1.37,true)
   a.setAnchor(0,10)
-  --[[
-  a.setAnchor(0,30)
-  --]]
-  
- -- a.ZOrder(0.5)
+--]]
+  local hc = self.board.hcell
+  local wc = self.board.wcell
+  local xy = xy_map[state.dir]
+--  local as = 1.2
+  local sx = wc*xy[1]
+  local sy = hc*xy[2]
+  local MYX = self.x
+  local MYY = self.y
+
+  a.setColor(state.color)
+  a.setAnchor(0,60)
+  a.ZOrder(0.04)
+ -- a.scale(1.2,1.2,true)
+  a.moveTo( self.x+sx, self.y+sy )
+  a.rotate( rotate_map[state.dir] )
+
+
+  local dir_cell = self:get_neighbor(state.dir)
+--[[
+  if dir_cell and level.is_item( dir_cell.state )  then
+    b.setColor(dir_cell.state.color) 
+  else
+    b.setColor(state.color) 
+  end--]]
+--  local b = get_sprite(conf.image("arrowB"), self.board) 
+  b.setColor(state.color) 
+  b.setAnchor(0,60)
+  b.moveTo( self.x+sx, self.y+sy)
+  b.ZOrder(0.025)
+  b.scale(1.1,1.1,true)
+  b.rotate( rotate_map[state.dir] )
     
+  local slide_to = function(x1,y1, x2,y2, speed, rate) 
+     return {
+      name = "speed",
+      speed = speed or 1, 
+      action = {
+        name = "interval",
+        duration = 1,
+        deltaX = x2 - x1,
+        deltaY = y2 - y1,
+        rate = rate or 2,
+        trigger = function(self, dt, conf)
+         --local dx = pow(dt, conf.rate)
+          local dx = conf_.btime(pow(dt, 1/2)) 
+          self.moveTo(x1+conf.deltaX*dx, 
+                      y1+conf.deltaY*dx)
+                        
+        end,
+        start_trigger = function(self, conf)
+          if self then
+            self.moveTo( x1 , y1 )
+          end  
+        end
+         
+       }
+     }
+ end
+
+
+ local effect_direction_change = function(from, to, speed, rate) 
+     local xys = xy_map[from]
+
+     return {
+      name = "speed",
+      speed = speed or 1, 
+      action = {
+        name = "interval",
+        duration = 1,
+        startAngle = rotate_map[from],
+        deltaAngle = rotate_map[to] - rotate_map[from],
+        rate = rate or 1/2,
+        trigger = function(self, dt, conf)
+          self.rotate(conf.startAngle + conf.deltaAngle*conf_.btime(dt))
+        end,
+        start_trigger = function(self, conf)
+          self.rotate(conf.startAngle) 
+    --      self.scale(0.7,0.7, true)
+--          self.moveTo(MYX+wc*xys[1], MYY+hc*xys[2])
+        end,
+        end_trigger = function(self, conf)
+  --        self.scale(1/0.7,1/0.7, true)
+--          self.moveTo(MYX+wc*xys[1], MYY+hc*xys[2])
+--          self.moveTo(MYX+sx, MYY+sy)
+        end
+
+        
+      }
+    }
+ end
+
+
   if (dir == nil) then
 ----[[
 
     actionManager.run(s,conf.effect_fade_in())
     actionManager.run(a,conf.effect_fade_in())
+    actionManager.run(b,conf.effect_fade_in())
     --]] 
   else
     local speed_rate = bounce and bounce*3 or 2
@@ -124,13 +379,34 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
       opp_cell =  self:get_neighbor(opp_dir)
     end
 
+    local xys = nil
+    local rate = math.random(3)
     if (prev_dir ~= nil and prev_dir~=state.dir) then
-      actionManager.run(a, conf.effect_direction_change(prev_dir, state.dir, 1, 1/2))
+      xys = xy_map[prev_dir]
+      actionManager.run(a, effect_direction_change(prev_dir, state.dir, 1.5, 1/2))
+      actionManager.run(b, effect_direction_change(prev_dir, state.dir, 1.4, 1/2))
+      rate = 3-0.3
       audioPlayer.playSound("rotate0.wav")
+    --  local sw = self.sprites["swapper"]
+  --    if sw then
+--        actionManager.run(sw,  rotate_to(shifter, 1) )
+      --end  
     end 
           
+    
+    local sxx = xys and  wc*xys[1] or sx
+    local syy = xys and  hc*xys[2] or sy
     actionManager.run(s, conf.effect_slide_to(opp_cell, self, speed_rate ))
-    actionManager.run(a, conf.effect_slide_to(opp_cell, self, speed_rate ))
+    actionManager.run(s, scale_to(1+rate/3, 1+rate/3, 1, rate))
+    actionManager.run(a, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate))
+
+     actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate,1/rate))
+    if dir_cell and level.is_item(dir_cell.state) then
+     -- actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, 8,1/rate))
+    else
+     -- actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate,1/rate))
+    end
+--    actionManager.run(b, conf.effect_slide_to(opp_cell, self, speed_rate ))
    
     self:side_bounce(opp_cell, dir,speed_rate)    
   -- print(opp_cell.col)
@@ -142,19 +418,22 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
   self.board.node.addChild(s)
   self.sprites["dir"] = a 
   self.board.node.addChild(a)
+  self.sprites["dirB"] = b
+  self.board.node.addChild(b)
 end
 
 function gcell:setupPinned(state)
    local s = get_sprite(conf.image("pin"), self.board)
    s.moveTo( self.x , self.y )
-   s.scale(1.1,1.1, true)
-   s.setColor(1,1,1,0)
-   s.ZOrder(0.06)
-   --s.blend(3)
+   s.scale(1.7,1.7, true)
+   s.setColor(self.state.color)
+   s.ZOrder(0.1)
+   --s.ZOrder(0.06)
+   s.blend(3)
 
    self.sprites["pinned"] = s
    self.board.node.addChild(s)
-   actionManager.run(s, conf.effect_blink(1.5,0.2,true))
+   actionManager.run(s, conf.effect_blink(1.5,0.4,true))
 end
 
 local total_pinned = 0
@@ -174,6 +453,7 @@ function gcell:addToBoardItems()
      if v == self then found =true break end
    end
    if not found then
+     self.tag = self.board.current_level.tag
      table.insert(items, self)
      self.clear = false
    end  
@@ -233,6 +513,8 @@ function gcell:setItem(state, dir, bounce, from)
          self.board:playDone()
          --self.board:nextLevel(1)
        end
+     else
+       actionManager.run( self.sprites["pin"]  , scale_to( 1.5, 1.5, 0.5) )
      end
      
    elseif level.is_arrow(self.state) then
@@ -250,15 +532,16 @@ function gcell:setItem(state, dir, bounce, from)
    self:addToBoardItems()
     --self:update_area_effect(1)
   if bounce == nil then
+    self.board:update_b_colors()
     self.board:items_adjust() 
-    self.board:updateTrails();
+    self.board:updateTrails()
   end 
 end
 
 function gcell:setPin(state, init)
    self:removeSprites()
    local s_item = get_sprite(conf.image("pin"), self.board) 
-   s_item.moveTo( self.x , self.y )
+   s_item.moveTo( self.x+0.5 , self.y )
    s_item.setColor(state.color)
    s_item.ZOrder(0.02)
 
@@ -280,6 +563,7 @@ function gcell:setArrow(state, init)
    s.moveTo( self.x , self.y )
    s.rotate((2-state.dir)*60)
    s.setColor(conf.swapper_color)
+   --s.scale(1.1,1.05,true)
    s.ZOrder(0.02)
 
    self.sprites["swapper"] = s
@@ -447,7 +731,7 @@ function gcell:setupTouchEffect(dist, st)
   s.bcol = col
   s.setColor({a=sel_state and 0 or 1})
   s.scale(scale,scale, true)
-  s.ZOrder(0.1)
+  s.ZOrder(0.001)
   self.sprites["@touch"] = s
   self.board.node.addChild(s)
   
@@ -902,6 +1186,8 @@ function gboard:undo()
   if sdiff ~= 0 then
     self:rescale(false, sdiff)
   end
+  
+  --self:update_b_colors()
   --print "aaaaaaaaaaaaaaaaaa"
 end
 
@@ -956,6 +1242,129 @@ function gboard:tap(td)
   end  
 end
 
+local function color_compare(c1, c2)
+  local EPS = 0.0001
+  local r_eps = c1.r * EPS
+  local g_eps = c1.g * EPS
+  local b_eps = c1.b * EPS
+  return ((c1.r - r_eps < c2.r) and (c1.r + r_eps > c2.r)) and 
+         ((c1.g - g_eps < c2.g) and (c1.g + g_eps > c2.g)) and
+         ((c1.b - b_eps < c2.b) and (c1.b + b_eps > c2.b))
+
+end
+
+function gboard:update_b_colors()
+  --if true then return end
+  local items = self.items
+  local start =  actionManager.is_running(nil, 'matrixEffect')
+  local n = 0
+  if start then
+    for _,item in ipairs(items) do
+      if item and level.is_item(item.state) then n = n + 1 end
+    end
+    if n < self.current_level.nitems then return end
+  end
+
+  for _,item in ipairs(items) do
+    if item and level.is_item(item.state) then
+      for i=1,6 do 
+        local it =  item:get_neighbor(i) 
+        if item.sprites["dir"..i]  and (
+           (not (it and level.is_item(it.state))) 
+           or (level.is_item(it.state) and i~=get_opp_dir(it.state.dir)) 
+           --or(start)
+        )
+        then  
+          item:removeSprites("dir"..i)
+        end
+      end
+    end
+  end
+  
+  local shift_map1 = {
+    3.5, 0,
+    -3.5,3.5,
+    0,-5
+  }
+
+  local shift_map2 = {
+    -20.7,-18,21.5,-20.7,-17,21.5
+  }
+  
+  for _,item in ipairs(items) do
+    if item and level.is_item(item.state) then
+      local ncell = item:get_neighbor(item.state.dir)
+      
+      local a1 = item.sprites["dir"]
+      local DIR = item.state.dir
+      local OPP = get_opp_dir(DIR)
+      if ncell and ncell.tag == item.tag and  level.is_item(ncell.state) then
+        local hc = self.hcell
+        local wc = self.wcell
+        local xy = xy_map[DIR]
+        local sx = wc*xy[1]
+        local sy = hc*xy[2]
+        local ex = ncell.sprites["dir"..OPP]
+        --print(ncell.sprites)
+        item.sprites['dirB'].setColor({a=0})
+        
+        if not ex then        
+          print("111111111111111")   
+          local b = get_sprite(conf.image("arrowB"), self) 
+          b.setColor(ncell.state.color) 
+          b.ZOrder(0.035)
+          b.scale(0.75,0.75,true)
+          
+          b.setAnchor(shift_map1[DIR],-52 -((DIR==2 or DIR==5) and 6 or 0))
+          --print(shift)
+          b.rotate( rotate_map[item.state.dir]  )
+          b.moveTo( ncell.x, ncell.y)
+          ncell.sprites["dir"..get_opp_dir(item.state.dir)] = b
+          if item.state.arrow then
+            actionManager.run(b, scale_to(3,1,0.8,1))
+            actionManager.run(b, conf.effect_fadeIn(1,4))
+          else
+            actionManager.run(b, scale_to(3,1,1,1))
+            actionManager.run(b, conf.effect_fadeIn(1.5,3))
+          end          
+          self.node.addChild(b)
+          ex = b
+        else  
+          print("222222222222222222")   
+          ex.setColor(ncell.state.color) 
+        end  
+        
+        if item.state.dir == get_opp_dir(ncell.state.dir) then
+          if not a1.scaled then
+            a1.scaled = true
+            a1.scale(0.85 - ((DIR==2 or DIR==5) and 0.05 or 0),1,true)
+          end  
+          a1.setAnchor(shift_map2[item.state.dir],65-((DIR==2 or DIR==5) and 5 or 0))
+          ex.setAnchor(shift_map2[item.state.dir],-49-((DIR==2 or DIR==5) and 12 or 0))
+          print ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        else
+          if a1.scaled then
+            a1.scale(1/ (0.85 - ((DIR==2 or DIR==5) and 0.05 or 0)),1,true)
+            a1.scaled = false
+          end  
+          a1.setAnchor(0,60)
+          ex.setAnchor(shift_map1[DIR],-52 -((DIR==2 or DIR==5) and 6 or 0))
+        end
+          
+      else
+        if a1.scaled then
+          a1.scale(1/ (0.85 - ((DIR==2 or DIR==5) and 0.05 or 0)),1,true)
+          a1.scaled = false
+        end  
+        a1.setAnchor(0,60)
+        item.sprites['dirB'].setColor(item.state.color)
+
+       -- ex.setAnchor(shift_map1[DIR],-52 -((DIR==2 or DIR==5) and 6 or 0))
+       -- ex.setAnchor(shift_map2[item.state.dir],-49-((DIR==2 or DIR==5) and 12 or 0))
+      end
+    end  
+  end
+end
 
 function gboard:_update_area_effect(delay)
   local bbox = self.scene_bbox
@@ -1322,7 +1731,7 @@ function gboard:updateTrails()
       local c = v:get_neighbor(dir)
       local br = 0
       local col = v.state.color
-      local alph = 0.2
+      local alph = 0.1
       local grad = 0
       while true do
         while c and level.is_item(c.state) and c.state.dir~=dir do
@@ -1341,16 +1750,17 @@ function gboard:updateTrails()
         
         local p1 = self.trails_cache:pop_right()
         if not p1 then p1= get_sprite(conf.image("cell11"), self) 
-          p1.scale(0.95,0.95,true)
+          p1.scale(0.8,0.8,true)
           --p1.setColor({a=alph})
           p1.blend(4)
-          p1.ZOrder(0.1)
+          p1.ZOrder(0.001)
           self.node.addChild(p1)
           p1.setColor(0,0,0,0)
+         
         end
         p1.moveTo( c.x , c.y )
         p1.tail_col = col
-        
+         
         
         if self.trails_reset then
           actionManager.run(p1, 
@@ -1369,27 +1779,15 @@ function gboard:updateTrails()
         else
           --p1.setColor(p1.tail_col)
           p1.setColor(col.r*alph,col.g*alph,col.b*alph,col.a*alph)
+          
         end        
         
-        --p1.setColor(col.r*alph,col.g*alph,col.b*alph,col.a*alph)
-        
         table.insert(self.trails,p1)
-        
+        local ddd = math.random()*2
 
-        --if grad >0 then
-           --alph = alph / grad
-      --  end
-        
         if br > 0 then break end
-   
-        --
-         -- print('PIN OR EMPTY', c.col, c.row)
-        --
         c = c:get_neighbor(dir)
       end
-      if br > 0 then
-       -- print((br>1 and 'ARROW' or 'ITEM'), c.col, c.row)
-      end      
     end  
   end 
    self.trails_reset = false
@@ -1646,7 +2044,9 @@ local function key_down(a,b)
   end
   
   if code==49 then
-    board:_setLevel(board.lvls:dev())
+     xy_map, rotate_map =  dofile('../../../CellMotus/assets/scripts/dev.lua') 
+     board:nextLevel(0)
+  --  board:_setLevel(board.lvls:dev())
   end
 
   if code == 0x52 then
