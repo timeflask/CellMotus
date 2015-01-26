@@ -55,7 +55,7 @@ function gcell:update_area_effect(dist,maxf, delay)
   local a = s.color().a
 
   if dist and maxf then 
-    s.amax = (optShowTrails and 0.5 or 1)*conf.cell_color_bg[4]*(1-dist/maxf) -- self.areaCount > 0 and conf.cell_color_bg[4] or 0
+    s.amax = (optShowTrails and 0.8 or 1)*conf.cell_color_bg[4]*(1-dist/maxf) -- self.areaCount > 0 and conf.cell_color_bg[4] or 0
   end
   
   if delay then return end   
@@ -171,7 +171,7 @@ function gcell:do_bounce(cell, dir, speed_rate)
      local it = cell.sprites["item"]
      --if actionManager.is_running(it, 'bounceEffect') then return end
      
-     actionManager.run(it, conf.effect_dir_bounce(cell, dir,speed_rate))
+     actionManager.run(it, conf.effect_dir_bounce(cell, dir,speed_rate),'bounceEffect')
 
      local hc = self.board.hcell
      local wc = self.board.wcell
@@ -397,7 +397,8 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
     local sxx = xys and  wc*xys[1] or sx
     local syy = xys and  hc*xys[2] or sy
     actionManager.run(s, conf.effect_slide_to(opp_cell, self, speed_rate ))
-    actionManager.run(s, scale_to(1+rate/3, 1+rate/3, 1, rate))
+    local rrr=rand()
+    actionManager.run(s, scale_to(1+rrr, 1+rrr, 0.6+rrr, rate))
     actionManager.run(a, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate))
 
      actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate,1/rate))
@@ -1309,7 +1310,7 @@ function gboard:update_b_colors()
         item.sprites['dirB'].setColor({a=0})
         
         if not ex then        
-          print("111111111111111")   
+         -- print("111111111111111")   
           local b = get_sprite(conf.image("arrowB"), self) 
           b.setColor(ncell.state.color) 
           b.ZOrder(0.035)
@@ -1320,17 +1321,19 @@ function gboard:update_b_colors()
           b.rotate( rotate_map[item.state.dir]  )
           b.moveTo( ncell.x, ncell.y)
           ncell.sprites["dir"..get_opp_dir(item.state.dir)] = b
+          
           if item.state.arrow then
-            actionManager.run(b, scale_to(3,1,0.8,1))
-            actionManager.run(b, conf.effect_fadeIn(1,4))
+            actionManager.run(b, scale_to(1.5,1.3,0.8,1))
+            actionManager.run(b, conf.effect_fadeIn(1,3))
           else
-            actionManager.run(b, scale_to(3,1,1,1))
-            actionManager.run(b, conf.effect_fadeIn(1.5,3))
+            local is_bounce = actionManager.is_running(ncell.sprites["item"], 'bounceEffect')
+            actionManager.run(b, scale_to(1.5,1.3,1,1))
+            actionManager.run(b, conf.effect_fadeIn(1,is_bounce and 3 or 1))
           end          
           self.node.addChild(b)
           ex = b
         else  
-          print("222222222222222222")   
+      --    print("222222222222222222")   
           ex.setColor(ncell.state.color) 
         end  
         
@@ -1341,7 +1344,7 @@ function gboard:update_b_colors()
           end  
           a1.setAnchor(shift_map2[item.state.dir],65-((DIR==2 or DIR==5) and 5 or 0))
           ex.setAnchor(shift_map2[item.state.dir],-49-((DIR==2 or DIR==5) and 12 or 0))
-          print ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+          --print ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         else
           if a1.scaled then
             a1.scale(1/ (0.85 - ((DIR==2 or DIR==5) and 0.05 or 0)),1,true)

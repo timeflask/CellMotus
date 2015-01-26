@@ -399,10 +399,18 @@ function oboard:reset()
     quadColorT = {1,1,1,0}
   })                           
 --]]
-  local lb = self.node.abl1
-  lb.moveTo(self.scene_bbox.l+10, ts) -- ts-35
-  lb.setColor({a=0})
-  actionManager.run(lb, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
+  local p = self.node.tfi
+  p.moveTo(self.scene_bbox.l+25, ts+g_screen.fonts.height.mecha_b*0.75) -- ts-35
+  p.setColor({a=0})
+  actionManager.run(p, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
+  p = self.node.abl1
+  p.moveTo(self.scene_bbox.l+10+32, ts+g_screen.fonts.height.mecha_b) -- ts-35
+  p.setColor({a=0})
+  actionManager.run(p, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
+  p = self.node.abl2
+  p.moveTo(self.scene_bbox.l+10+32, ts) -- ts-35
+  p.setColor({a=0})
+  actionManager.run(p, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
   --[[
   lb = self.node.abl2
   lb.moveTo(self.scene_bbox.l+10, ts-45)
@@ -445,10 +453,20 @@ function oboard:oboard(scene)
   self.titleLabel = atLabel(self.node)
   --self.aboutLabel = atLabel(self.node)
   
+
+  local  tfi = sen.clsSprite(nil,"ico_tf")
+  
   local  lb1 = sen.clsLabel(nil, "mecha_s", rs.osAboutL1)
   lb1.setColor({a=0})
+  local  lb2 = sen.clsLabel(nil, "mecha_s", rs.osAboutL2)
+  lb2.setColor({a=0})
+  
   self.node.abl1 = lb1
+  self.node.abl2 = lb2
+  self.node.tfi = tfi
   self.node.addChild(lb1)
+  self.node.addChild(lb2)
+  self.node.addChild(tfi)
   --[[
   local  lb2 = sen.clsLabel(nil, "mecha_s", rs.osAboutL2)
   lb2.setColor({a=0})

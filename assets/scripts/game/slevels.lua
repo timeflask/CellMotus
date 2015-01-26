@@ -1066,8 +1066,8 @@ function lboard:fill_levels()
 
   local su = scene.img_su
   local sd = scene.img_sd  
-  su.moveTo(scene.getBBox().r-8, su.height()/2)
-  sd.moveTo(scene.getBBox().r-8, -sd.height()/2)
+  su.moveTo(scene.getBBox().r-su.width()/2-2, su.height()/1.5)
+  sd.moveTo(scene.getBBox().r-sd.width()/2-2, -sd.height()/1.5)
 
   cam_lock = true
   if not scrLock then
@@ -1173,12 +1173,12 @@ function lboard:lboard(scene)
    local sd = sen.clsSprite("scroll_down", "ico_sd")
    su.ZOrder(0.96)
    su.setColor{a=0}
-   local f = g_screen.fonts.height.mecha_m/su.height() * 1.5
+   local f = g_screen.fonts.height.mecha_b/su.height() * 1.5
    su.scale(f,f)
     
    sd.ZOrder(0.96)
    sd.setColor{a=0}
-   local f = g_screen.fonts.height.mecha_m/su.height() * 1.5
+   local f = g_screen.fonts.height.mecha_b/su.height() * 1.5
    sd.scale(f,f)
   
    scene.img_su = su

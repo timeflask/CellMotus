@@ -45,7 +45,7 @@ local config = {
    return img .. tostring(128)
  end,
  
- cell_color_bg = {1,1,1,0.055},
+ cell_color_bg = {1,1,1,0.05},
   
  cell_colors  = { 
    {0x9b,0x59,0xb6,1},

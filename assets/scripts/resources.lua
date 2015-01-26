@@ -34,6 +34,7 @@ return {
     ico_su = "ico_su.png",
     ico_sr = "ico_sr.png",
     ico_sd = "ico_sd.png",
+    ico_tf = "TF-32x32.png",
   },
   
   shaders = {
@@ -99,8 +100,8 @@ return {
     osKeepScreenOnDesc = "when game on foreground",
     
     osAboutTitle       = "ABOUT",
-    osAboutL1          = "CELL MOTUS v."..GAME_VERSION_MAJOR.."."..GAME_VERSION_MINOR.." [c] TIME FLASK 2014", 
-    --osAboutL2          = "COPYRIGHT [c] TIME FLASK 2014",
+    osAboutL1          = "CELL MOTUS PUZZLE GAME v."..GAME_VERSION_MAJOR.."."..GAME_VERSION_MINOR, 
+    osAboutL2          = "COPYRIGHT [c] 2014-2015 TIME FLASK",
     --osAboutL3          = "PLATFORM: ",
     
     utf8test = "",
