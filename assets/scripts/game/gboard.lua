@@ -179,13 +179,14 @@ function gcell:do_bounce(cell, dir, speed_rate)
      local sx = wc*xy[1]
      local sy = hc*xy[2]
      local dir_cell = cell:get_neighbor(dir)
+--     local dir_cell2 = cell:get_neighbor(get_opp_dir( cell.state.dir ))
 
 --     actionManager.run(cell.sprites["dir"], conf.effect_dir_bounce(cell, dir,speed_rate))
 --     cell.sprites["dirB"].setColor({a=0})
     local sdir = cell.sprites["dir"]
     local bdir = cell.sprites["dirB"]
-    actionManager.run(sdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate))
-    actionManager.run(bdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate))
+    actionManager.run(sdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate*1.2))
+    actionManager.run(bdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate*1.2))
     for i=1,6 do 
       local s = cell.sprites["dir"..i]
       if s then

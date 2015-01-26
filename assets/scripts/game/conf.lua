@@ -355,8 +355,14 @@ local config = {
         start_trigger = function(self, conf)
           if self then
             self.moveTo( conf.startX , conf.startY )
+            self.ZOrder(self.posZ()-0.001)
           end  
-        end
+        end,
+        end_trigger = function(self, conf)
+          if self then
+            self.ZOrder(self.posZ()+0.001)
+          end  
+        end        
         
      }
      }
