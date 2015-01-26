@@ -94,15 +94,15 @@ return {
     osSkipMenusDesc    = "switch to game screen after loading",
     
     osShowTrails        = "SHOW TRAILS",
-    osShowTrailsDesc    = "colored cells trails",
+    osShowTrailsDesc    = "mark possible waypoints",
     
     osKeepScreenOn     = "KEEP SCREEN ON",
-    osKeepScreenOnDesc = "when game on foreground",
+    osKeepScreenOnDesc = "...when game on foreground",
     
     osAboutTitle       = "ABOUT",
     osAboutL1          = "CELL MOTUS PUZZLE GAME v."..GAME_VERSION_MAJOR.."."..GAME_VERSION_MINOR, 
     osAboutL2          = "COPYRIGHT [c] 2014-2015 TIME FLASK",
-    --osAboutL3          = "PLATFORM: ",
+    osAboutL3          = "win, mac, linux, ios, android > time-flask.com",
     
     utf8test = "",
   },

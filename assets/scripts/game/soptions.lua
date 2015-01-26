@@ -400,17 +400,27 @@ function oboard:reset()
   })                           
 --]]
   local p = self.node.tfi
-  p.moveTo(self.scene_bbox.l+25, ts+g_screen.fonts.height.mecha_b*0.75) -- ts-35
+  p.scale(w/48*0.4, w/48*0.4)
+  local iw=48*p.scaleX()
+  local ih=48*p.scaleY()
+
+  local lsw = self.scene_bbox.l+iw
+  p.moveTo(lsw, ts+ih*0.3) -- ts-35
   p.setColor({a=0})
-  actionManager.run(p, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
+  actionManager.run(p, conf.effect_fadeIn(0.5+rand(),1+rand(),0.1))
+
   p = self.node.abl1
-  p.moveTo(self.scene_bbox.l+10+32, ts+g_screen.fonts.height.mecha_b) -- ts-35
+  p.moveTo(lsw+iw/2, ts+g_screen.fonts.height.mecha_b*1.2) -- ts-35
   p.setColor({a=0})
-  actionManager.run(p, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
+  actionManager.run(p, conf.effect_fadeIn(0.5+rand(),1+rand(),0.1))
   p = self.node.abl2
-  p.moveTo(self.scene_bbox.l+10+32, ts) -- ts-35
+  p.moveTo(lsw+iw/2, ts+g_screen.fonts.height.mecha_b*0.4) -- ts-35
   p.setColor({a=0})
-  actionManager.run(p, conf.effect_fadeIn(1+rand(),rand()*2,0.4))
+  actionManager.run(p, conf.effect_fadeIn(0.5+rand(),1+rand(),0.1))
+  p = self.node.abl3
+  p.moveTo(lsw+iw/2, ts-g_screen.fonts.height.mecha_b*0.4) -- ts-35
+  p.setColor({a=0})
+  actionManager.run(p, conf.effect_fadeIn(0.5+rand(),1+rand(),0.1))
   --[[
   lb = self.node.abl2
   lb.moveTo(self.scene_bbox.l+10, ts-45)
@@ -455,17 +465,20 @@ function oboard:oboard(scene)
   
 
   local  tfi = sen.clsSprite(nil,"ico_tf")
-  
   local  lb1 = sen.clsLabel(nil, "mecha_s", rs.osAboutL1)
   lb1.setColor({a=0})
   local  lb2 = sen.clsLabel(nil, "mecha_s", rs.osAboutL2)
   lb2.setColor({a=0})
+  local  lb3 = sen.clsLabel(nil, "mecha_s", rs.osAboutL3)
+  lb3.setColor({a=0})
   
   self.node.abl1 = lb1
   self.node.abl2 = lb2
+  self.node.abl3 = lb3
   self.node.tfi = tfi
   self.node.addChild(lb1)
   self.node.addChild(lb2)
+  self.node.addChild(lb3)
   self.node.addChild(tfi)
   --[[
   local  lb2 = sen.clsLabel(nil, "mecha_s", rs.osAboutL2)
@@ -502,6 +515,7 @@ function oboard:oboard(scene)
   })
   if string.match(string.lower(sen.platformName()), "android") or
      string.match(string.lower(sen.platformName()), "ios") 
+--     or true
   then
     self.oLines[4] = optLine(scene, 
     {LabelTitle=rs.osKeepScreenOn, settings_key="keep_screen_on", setting_def=false,

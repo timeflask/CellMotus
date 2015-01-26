@@ -14,6 +14,9 @@ local levels = require "levels"
 
 function lvlmanager:lvlmanager()
   local progress = settingsManager.get('progress',1)
+  if progress > #levels then
+    settingsManager.set('progress',#levels)
+  end
   self.curr = settingsManager.get('curr',1)
   if self.curr > progress then
     self.curr = progress
@@ -36,8 +39,8 @@ function lvlmanager:count()
   return #levels
 end
 
-function lvlmanager:dev()
-  return level ( dofile('../CellMotus/assets/scripts/dev.lua') )
+function lvlmanager:dev(path)
+  return level ( dofile(path) )
 end
 
 function lvlmanager:next(step)

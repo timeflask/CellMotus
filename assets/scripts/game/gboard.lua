@@ -140,7 +140,7 @@ end
       ssx = ssx,
       ssy = ssy,
       trigger = function(self, dt, conf)
-        local dx = conf_.btime(pow(dt, 1/2)) 
+        local dx = conf_.btime(pow(dt, conf.rate)) 
         self.scale(conf.sx + conf.ssx*(1-dx), 
                    conf.sy + conf.ssy*(1-dx))
                       
@@ -185,8 +185,8 @@ function gcell:do_bounce(cell, dir, speed_rate)
 --     cell.sprites["dirB"].setColor({a=0})
     local sdir = cell.sprites["dir"]
     local bdir = cell.sprites["dirB"]
-    actionManager.run(sdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate*1.2))
-    actionManager.run(bdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate*1.2))
+    actionManager.run(sdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate))
+    actionManager.run(bdir, xy_bounce(cell.x+sx, cell.y+sy, dir_cell.x+sx, dir_cell.y+sy,speed_rate))
     for i=1,6 do 
       local s = cell.sprites["dir"..i]
       if s then
@@ -285,6 +285,11 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
  -- a.scale(1.2,1.2,true)
   a.moveTo( self.x+sx, self.y+sy )
   a.rotate( rotate_map[state.dir] )
+  a.setColor({a=0})
+
+--    actionManager.run(a,conf.effect_fade_in())
+ --   actionManager.run(b,conf.effect_fade_in())
+
 
 
   local dir_cell = self:get_neighbor(state.dir)
@@ -296,6 +301,7 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
   end--]]
 --  local b = get_sprite(conf.image("arrowB"), self.board) 
   b.setColor(state.color) 
+  b.setColor({a=0}) 
   b.setAnchor(0,60)
   b.moveTo( self.x+sx, self.y+sy)
   b.ZOrder(0.025)
@@ -366,7 +372,7 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
 ----[[
 
     actionManager.run(s,conf.effect_fade_in())
-    actionManager.run(a,conf.effect_fade_in())
+--    actionManager.run(a,scale_to(0,0.8,1,2))
     actionManager.run(b,conf.effect_fade_in())
     --]] 
   else
@@ -398,8 +404,8 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
     local sxx = xys and  wc*xys[1] or sx
     local syy = xys and  hc*xys[2] or sy
     actionManager.run(s, conf.effect_slide_to(opp_cell, self, speed_rate ))
-    local rrr=rand()
-    actionManager.run(s, scale_to(1+rrr, 1+rrr, 0.6+rrr, rate))
+    local rrr=rand()*0.5
+    actionManager.run(s, scale_to(0.9+rrr, 0.9+rrr, 1.2+rrr, 0.3+rate))
     actionManager.run(a, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate))
 
      actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate,1/rate))
@@ -1260,10 +1266,12 @@ function gboard:update_b_colors()
   local items = self.items
   local start =  actionManager.is_running(nil, 'matrixEffect')
   local n = 0
+   
   if start then
     for _,item in ipairs(items) do
       if item and level.is_item(item.state) then n = n + 1 end
     end
+    --print(self.current_level)
     if n < self.current_level.nitems then return end
   end
 
@@ -1294,12 +1302,25 @@ function gboard:update_b_colors()
   }
   
   for _,item in ipairs(items) do
-    if item and level.is_item(item.state) then
+  --    print("1111111111111111111111111111111111111111111111")
+    if item and item.tag == self.current_level.tag and level.is_item(item.state) then
       local ncell = item:get_neighbor(item.state.dir)
       
-      local a1 = item.sprites["dir"]
       local DIR = item.state.dir
       local OPP = get_opp_dir(DIR)
+      local a1 = item.sprites["dir"]
+--      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+      if start then
+          
+          a1.setColor(item.state.color) 
+--        a1.setColor({a=item.sprites["item"].color().a})
+  --      actionManager.run(a1,conf.effect_fadeTransition(1,2,1), 'fin')
+      else
+    --    if not actionManager.is_running(a1,'fin') then
+          a1.setColor(item.state.color) 
+      --  end
+      end
+
       if ncell and ncell.tag == item.tag and  level.is_item(ncell.state) then
         local hc = self.hcell
         local wc = self.wcell
@@ -1471,6 +1492,7 @@ function gboard:runMatrixEffect(dir, updade, type, max_index)
   
   if dir == 2 or dir == 5 then
     local mj = max_index or (dir==2 and self.max_j-1) or (dir==5 and self.min_j+1)
+--    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',mj)
     local cs = dir==2 and 1 or -1
     for i,column in pairs(self.cells) do
       local cell  = column[mj]
@@ -1489,7 +1511,11 @@ function gboard:runMatrixEffect(dir, updade, type, max_index)
     local mi = max_index or (dir==4 and self.min_i+1) or (dir==6 and self.max_i-1)
     local col = self.cells[mi]
     if col then
-      for j=self.max_j-1,self.min_j+1,-1 do
+      local t= self.max_j-1
+      while col[t] do t=t+1 end t=t-1
+      local b= self.min_j+1
+      while col[b] do b=b-1 end b=b+1
+      for j=t,b,-1 do
         local cell = col[j]
         if cell then
           cell:runMatrixEffect(dir, updade, 1)
@@ -2048,9 +2074,11 @@ local function key_down(a,b)
   end
   
   if code==49 then
-     xy_map, rotate_map =  dofile('../../../CellMotus/assets/scripts/dev.lua') 
-     board:nextLevel(0)
-  --  board:_setLevel(board.lvls:dev())
+     --xy_map, rotate_map =  dofile('../../../CellMotus/assets/scripts/dev.lua') 
+   --  board:nextLevel(0)
+--     board:_setLevel(board.lvls:dev('../../../CellMotus/assets/scripts/dev.lua'))
+     package.loaded["dev"]=false
+     board:_setLevel(level(require "dev"))
   end
 
   if code == 0x52 then
