@@ -91,29 +91,24 @@ include_directories(
   /usr/local/include/freetype2  
  )
 
-set(CORE_LIBS ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${ZLIB_LIBRARY} ${LUAJIT_LIB} ${GLFW_LIB} )
+#set(CORE_LIBS ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${ZLIB_LIBRARY} ${LUAJIT_LIB} ${GLFW_LIB} )
 
 set(PLATFORM_LIBS 
+  ${LUAJIT_LIB} 
   ${PNG_LIBRARY} 
   ${FREETYPE_LIBRARY} 
-#  ${ZLIB_LIBRARY} 
-  ${LUAJIT_LIB} 
   ${GLFW_LIB}
-#  ${OPENGL_LIBRARY}
-#  ${GLEW_LIBRARIES} 
-  #${FMOD_LIB} 
   ${OPENAL_LIBRARY} 
   ${ALUT_LIB}
 
   GL
   X11 
   Xrandr 
-  #Xinerama 
   Xi 
   Xxf86vm 
- # Xcursor 
   pthread 
   m
+  dl
 )
 
 file(GLOB assets
