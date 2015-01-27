@@ -21,5 +21,5 @@ sleep 2
 ./dpkg-deb-fat -b "${PNAME}"
 ls -la "${PNAME}.deb"
 rm -rf "${PNAME}"
-scp -r "${PNAME}.deb" root@192.168.1.22:~/
+#scp -r "${PNAME}.deb" root@192.168.1.22:~/
 exit
