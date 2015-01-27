@@ -28,11 +28,13 @@ return {
     arrow128        = "arrow128.png",
     selector128     = "selector128.png",
     cell11128     = "cell11.png",
+    arrowB128     = "arrowB128.png",
 
     ico_sl = "ico_sl.png",
     ico_su = "ico_su.png",
     ico_sr = "ico_sr.png",
     ico_sd = "ico_sd.png",
+    ico_tf = "TF-32x32.png",
   },
   
   shaders = {
@@ -92,15 +94,15 @@ return {
     osSkipMenusDesc    = "switch to game screen after loading",
     
     osShowTrails        = "SHOW TRAILS",
-    osShowTrailsDesc    = "colored cells trails",
+    osShowTrailsDesc    = "mark possible waypoints",
     
     osKeepScreenOn     = "KEEP SCREEN ON",
-    osKeepScreenOnDesc = "when game on foreground",
+    osKeepScreenOnDesc = "...when game on foreground",
     
     osAboutTitle       = "ABOUT",
-    osAboutL1          = "CELL MOTUS v."..GAME_VERSION_MAJOR.."."..GAME_VERSION_MINOR.." [c] TIME FLASK 2014", 
-    --osAboutL2          = "COPYRIGHT [c] TIME FLASK 2014",
-    --osAboutL3          = "PLATFORM: ",
+    osAboutL1          = "CELL MOTUS PUZZLE GAME v."..GAME_VERSION_MAJOR.."."..GAME_VERSION_MINOR, 
+    osAboutL2          = "COPYRIGHT [c] 2014-2015 TIME FLASK",
+    osAboutL3          = "win, mac, linux, ios, android > time-flask.com",
     
     utf8test = "",
   },

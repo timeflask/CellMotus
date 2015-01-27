@@ -170,6 +170,10 @@ function sen_node_class.inherit(self)
     return ref.posY
   end
 
+  function self.posZ()
+    return ref.posZ
+  end
+
   function self.width()
     return ref.bbox.z - ref.bbox.x 
   end

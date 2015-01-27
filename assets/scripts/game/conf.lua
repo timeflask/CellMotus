@@ -45,17 +45,19 @@ local config = {
    return img .. tostring(128)
  end,
  
- cell_color_bg = {1,1,1,0.045},
+ cell_color_bg = {1,1,1,0.05},
   
  cell_colors  = { 
-   {0x6e,0x1c,0x86,1},
-   {0x2C,0x9E,0xCC,1},
-   {0x1F,0xBB,0x73,1},
-   {0xDD,0x68,0x5F,1},
-   {0xFF,0xC7,0x34,1},
-   {0xA7,0x9A,0x92,1},
-   {0xF0,0x95,0xAE,1},
+   {0x9b,0x59,0xb6,1},
+   {0x34,0x98,0xdb,1},
+   {0x2e,0xcc,0x71,1},
+   {0xe6,0x7e,0x22,1},
+   {0xF1,0xC4,0x0F,1},
+   {0xC0,0x39,0x2B,1},
+--   {0xA7,0x9A,0x92,1},
+   {0x62,0x48,0x57,1},
    {0x40,0x34,0x96,1},
+   {0xEC,0xF0,0xF1,1},
  },
  
  scroll_block_color = {0xDD,0x68,0x5F,1},
@@ -85,6 +87,7 @@ local config = {
    {0x20,0xAA,0x00,1},
    {0x36,0x9F,0x59,1},
  },
+
  btime = bounce_time,
 
  atLabel_colors = {
@@ -352,8 +355,14 @@ local config = {
         start_trigger = function(self, conf)
           if self then
             self.moveTo( conf.startX , conf.startY )
+            self.ZOrder(self.posZ()-0.001)
           end  
-        end
+        end,
+        end_trigger = function(self, conf)
+          if self then
+            self.ZOrder(self.posZ()+0.001)
+          end  
+        end        
         
      }
      }
@@ -419,28 +428,6 @@ local config = {
      }
      }
  end,  
- effect_direction_change = function(from, to, speed, rate) 
-     return {
-      name = "speed",
-      speed = speed or 1, 
-      action = {
-        name = "interval",
-        duration = 1,
-        startAngle = (2-from)*60,
-        deltaAngle = (from-to)*60,
-        rate = rate or 1/2,
-        trigger = function(self, dt, conf)
-          --self.rotate(conf.startAngle + conf.deltaAngle*pow(dt, conf.rate))
-          self.rotate(conf.startAngle + conf.deltaAngle*bounce_time(dt))
-          
-        end,
-        start_trigger = function(self, conf)
-          self.rotate(conf.startAngle) 
-        end
-        
-     }
-     }
- end,
  
  effect_dir_bounce = function(cell, dir, dist)
   -- print("DIST "..(dist or 'nil'))
@@ -541,7 +528,7 @@ local config = {
     action = {
       name = "interval",
       duration = 1,
-      rate = 1/math.random(7),
+      rate = 1/5,
       trigger = function(self, dt, conf)
         self.setColor( {a= math.pow(dt,conf.rate)} )
       end,

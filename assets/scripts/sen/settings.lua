@@ -42,7 +42,7 @@ local function SettingsrClosure(name)
   }
   ]]))()
     
-  
+ 
   local function commit()
      local str = inspect(m_settings)
      setString(m_name, str)    
@@ -73,6 +73,20 @@ local function SettingsrClosure(name)
     end  
   end
                           
+
+
+--------------------------------------------------------------- PATCHES
+--- p0931b
+  local p0931b = _.get('p0931b', false)
+  if not p0931b then
+    local p = _.get('progress', 1)
+    if p > 19 then p=p+1 end
+    if p > 26 then p=p+1 end
+
+    _.set('p0931b', true)
+    _.set('progress', p)
+  end
+---------------------------------------------------------------
                      
   return _;
 end

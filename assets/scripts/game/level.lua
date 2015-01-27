@@ -122,6 +122,8 @@ function level:fillData(data)
   end  
 end
 
+local tag = 1
+
 function level:level(cfg)
   self.map = sen.auto_table(2)
   
@@ -129,6 +131,8 @@ function level:level(cfg)
   self.npins = 0
   self.narrows = 0
   self.ntotal = 0
+  self.tag = tag
+  tag = tag + 1
   
   local map = self.map
   
