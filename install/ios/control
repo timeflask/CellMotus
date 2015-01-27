@@ -1,13 +1,12 @@
 Package: com.timeflask.cellmotus
 Name: Cell Motus Puzzle Game
 Section: Games
-Version: 0.9
+Version: 0.9.3
 Homepage: http://www.time-flask.com
 Architecture: iphoneos-arm
 Depiction:http://www.time-flask.com/cydia_depiction.html
 Description: Puzzle Game. Tap cells to move them to the right color markers.
 Author: TimeFlask <timeflask@gmail.com>
 Icon: file:///Applications/CellMotus.app/AppIcon57x57.png
-Maintainer: BigBoss <bigboss@thebigboss.org>
-Sponsor: thebigboss.org <http://thebigboss.org>
+Maintainer: TimeFlask <timeflask@gmail.com>
 dev: timeflask
