@@ -402,7 +402,7 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
 --    actionManager.run(a,scale_to(0,0.8,1,2))
 --    run_color_link(a, s)
     --actionManager.run(s, rotate_to(360))
-    actionManager.run(b,conf.effect_fade_in(0.6,2))
+    actionManager.run(b,conf.effect_fade_in(0.6,2),'startFade')
     --]] 
   else
   -- run_color_link(a, s)
@@ -1368,6 +1368,7 @@ function gboard:update_b_colors()
         local sy = hc*xy[2]
         local ex = ncell.sprites["dir"..OPP]
         --print(ncell.sprites)
+        actionManager.stop(item.sprites['dirB'], 'startFade')
         item.sprites['dirB'].setColor({a=0})
         
         if not ex then        

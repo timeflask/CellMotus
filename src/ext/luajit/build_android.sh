@@ -39,12 +39,12 @@ fi;
 # Android/x86, x86 (i686 SSE3), Android 4.0+ (ICS)
 NDKABI=14
 DESTDIR=$DIR/libs/android/x86
-NDKVER=$NDK/toolchains/x86-4.9
+NDKVER=$NDK/toolchains/x86-4.6
 NDKP=$NDKVER/prebuilt/${host_os}-x86_64/bin/i686-linux-android-
 NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-x86"
 rm "$DESTDIR"/*.a
 make clean
-make HOST_CC="gcc -m32" CROSS=$NDKP TARGET_SYS=Linux TARGET_FLAGS="$NDKF"
+make HOST_CC="gcc -m32" CROSS=$NDKP TARGET_FLAGS="$NDKF"
 
 if [ -f $SRCDIR/src/libluajit.a ]; then
     mv $SRCDIR/src/libluajit.a $DESTDIR/libluajit.a
