@@ -249,7 +249,32 @@ local wh_anchor_map = {
       }
     }
  end
- 
+
+ local color_link = function(obj) 
+     return {
+      name = "speed",
+      speed = speed or 0.5, 
+      action = {
+        name = "interval",
+        duration = 1,
+        obj = obj,
+        trigger = function(self, dt, conf)
+          self.setColor(conf.obj.color())
+        end,
+        start_trigger = function(self, conf)
+          conf.obj = obj
+          self.setColor(conf.obj.color())
+        end,
+      }
+    }
+ end
+
+ local run_color_link = function(obj, link_to) 
+   if not actionManager.is_running(obj, 'color_link') then
+     actionManager.run(obj, color_link(link_to),'color_link')
+   end
+ end
+  
 function gcell:setupItem(state, dir, bounce, prev_dir, from)
   local s = get_sprite(conf.image("cell"), self.board)
   local a = get_sprite(conf.image("arrow"), self.board) 
@@ -286,6 +311,7 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
   a.moveTo( self.x+sx, self.y+sy )
   a.rotate( rotate_map[state.dir] )
   a.setColor({a=0})
+  --a.blend(3)
 
 --    actionManager.run(a,conf.effect_fade_in())
  --   actionManager.run(b,conf.effect_fade_in())
@@ -357,6 +383,7 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
 --          self.moveTo(MYX+wc*xys[1], MYY+hc*xys[2])
         end,
         end_trigger = function(self, conf)
+          self.blend(2)
   --        self.scale(1/0.7,1/0.7, true)
 --          self.moveTo(MYX+wc*xys[1], MYY+hc*xys[2])
 --          self.moveTo(MYX+sx, MYY+sy)
@@ -370,12 +397,15 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
 
   if (dir == nil) then
 ----[[
-
-    actionManager.run(s,conf.effect_fade_in())
+  --print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
+    --actionManager.run(s,conf.effect_fadeIn(1,1))
 --    actionManager.run(a,scale_to(0,0.8,1,2))
-    actionManager.run(b,conf.effect_fade_in())
+--    run_color_link(a, s)
+    --actionManager.run(s, rotate_to(360))
+    actionManager.run(b,conf.effect_fade_in(0.6,2))
     --]] 
   else
+  -- run_color_link(a, s)
     local speed_rate = bounce and bounce*3 or 2
     local opp_cell
     if from then
@@ -390,8 +420,11 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
     local rate = math.random(3)
     if (prev_dir ~= nil and prev_dir~=state.dir) then
       xys = xy_map[prev_dir]
-      actionManager.run(a, effect_direction_change(prev_dir, state.dir, 1.5, 1/2))
-      actionManager.run(b, effect_direction_change(prev_dir, state.dir, 1.4, 1/2))
+      --a.blend(3) 
+      actionManager.run(a, effect_direction_change(prev_dir, state.dir, 1.6, 1/2))
+      actionManager.run(a, conf.effect_fade_in(2,1.5))
+      actionManager.run(b, effect_direction_change(prev_dir, state.dir, 1.5, 1/2))
+      --actionManager.run(a, scale_to(1.2, 1.2, 1, 1))
       rate = 3-0.3
       audioPlayer.playSound("rotate0.wav")
     --  local sw = self.sprites["swapper"]
@@ -404,11 +437,12 @@ function gcell:setupItem(state, dir, bounce, prev_dir, from)
     local sxx = xys and  wc*xys[1] or sx
     local syy = xys and  hc*xys[2] or sy
     actionManager.run(s, conf.effect_slide_to(opp_cell, self, speed_rate ))
-    local rrr=rand()*0.5
-    actionManager.run(s, scale_to(0.9+rrr, 0.9+rrr, 1.2+rrr, 0.3+rate))
+    local rrr=rand()*0.4
+    actionManager.run(s, scale_to(0.95+rrr, 0.95+rrr, 1.2+rrr, 0.3+rate))
+    --actionManager.run(s, scale_to(1.1, 1.1, 1.2+rrr, 0.3+rate))
     actionManager.run(a, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate))
 
-     actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate,1/rate))
+     actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, speed_rate)) --,1/rate
     if dir_cell and level.is_item(dir_cell.state) then
      -- actionManager.run(b, slide_to(opp_cell.x+sx,opp_cell.y+sy, self.x+sx,self.y+sy, 8,1/rate))
     else
@@ -1310,17 +1344,22 @@ function gboard:update_b_colors()
       local OPP = get_opp_dir(DIR)
       local a1 = item.sprites["dir"]
 --      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+   --   run_color_link(a1, item.sprites["item"])
+   a1.setColor(item.state.color) 
+      --[[
       if start then
           
-          a1.setColor(item.state.color) 
+          --actionManager.run(a1,color_link(a1)
+        a1.setColor(item.state.color) 
 --        a1.setColor({a=item.sprites["item"].color().a})
-  --      actionManager.run(a1,conf.effect_fadeTransition(1,2,1), 'fin')
+        actionManager.run(a1,color_link(item.sprites["item"]))
       else
     --    if not actionManager.is_running(a1,'fin') then
-          a1.setColor(item.state.color) 
+        actionManager.run(a1,color_link(item.sprites["item"]))
+--          a1.setColor(item.state.color) 
       --  end
       end
-
+--]]
       if ncell and ncell.tag == item.tag and  level.is_item(ncell.state) then
         local hc = self.hcell
         local wc = self.wcell
@@ -1345,12 +1384,12 @@ function gboard:update_b_colors()
           ncell.sprites["dir"..get_opp_dir(item.state.dir)] = b
           
           if item.state.arrow then
-            actionManager.run(b, scale_to(1.5,1.3,0.8,1))
-            actionManager.run(b, conf.effect_fadeIn(1,3))
+            actionManager.run(b, scale_to(1,1.3,0.8,1))
+            actionManager.run(b, conf.effect_fade_in(0.5,1))
           else
             local is_bounce = actionManager.is_running(ncell.sprites["item"], 'bounceEffect')
-            actionManager.run(b, scale_to(1.5,1.3,1,1))
-            actionManager.run(b, conf.effect_fadeIn(1,is_bounce and 3 or 1))
+            actionManager.run(b, scale_to(1,1.3,1,1))
+            actionManager.run(b, conf.effect_fade_in(0.5,is_bounce and 2 or 1))
           end          
           self.node.addChild(b)
           ex = b

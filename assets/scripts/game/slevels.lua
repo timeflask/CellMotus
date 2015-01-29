@@ -3,6 +3,7 @@ local base_cell     = require "game.cell"
 local base_board    = require "game.board"
 local lvlmanager    = require "game.lvlmanager"
 local conf          = require "game.conf"
+local conf_          = conf
 local scheduler     = sen.Scheduler()
 local actionManager = sen.ActionManager
 local audioPlayer   = sen.AudioPlayer
@@ -79,7 +80,7 @@ function lcell:setLvlAlpha(a)
   end
   if self.nodes["lh"] then
     self.nodes["lh"].setColor(
-    { a= lvl < progress and 0.2*a or 0.06*a 
+    { a= lvl < progress and 0.5*a or 0.04*a 
     })
   end
 end
@@ -152,15 +153,17 @@ function lcell:setupLevel(lvl)
   end  
   
   s.moveTo( self.x , self.y )
-  s.setColor({1,1,1,0.1})
+  s.setColor({1,1,1,0.2})
   s.scale(lcell_scale_x,lcell_scale_y)
   
   local bg = self.nodes["bg"]
   if bg == nil then
     bg = sen.clsSprite(nil, conf.image("cellbg"))
+    --bg = sen.clsSprite(nil, conf.image("cell11"))
+    --bg.blend(4)
     self.nodes["bg"] = bg
     bg.ZOrder(-0.02)  
-    self.board.node.addChild(bg)
+    self.board.node.addChild(bg)  
   end  
   
   bg.moveTo( self.x , self.y )
@@ -192,7 +195,7 @@ function lcell:setupLevel(lvl)
     self.board.node.addChild(lb)
   end  
 
-  lb.scale(1.5,1.5)
+  lb.scale(1.3,1.3)
   local lbbox = lb.getBBox()
   lb.moveTo(self.x, self.y)
   lb.move( 
@@ -225,17 +228,21 @@ function lcell:setupLevel(lvl)
   local lh = self.nodes["lh"]
   if lh == nil then
     lh = sen.clsQuad()
+    --lh = sen.clsSprite(nil, 'lvlconn')
     self.nodes["lh"] = lh
     self.board.node.addChild(lh)
   end  
   
   lh.moveTo( self.x+self.board.wcell*1.1/2-1, self.y )
-  
+  --lh.moveTo( self.x+self.board.wcell*0.765, self.y )
+  --lh.scale(self.board.wcell*0.0077,1,true)
   lh.setColor({1,1,1,0})
+  lh.ZOrder(-0.025)
   --lh.setColor(conf.lvl_finished_bg)
   --lh.setColor({a=0})
   
-  lh.scale(self.board.wcell*0.44+1,2)
+  lh.scale(self.board.wcell*0.44+1,3)
+  --lh.scale(self.board.wcell, 2)
   lh.setAnchor(-0.5,0)
   
   self:setLvlAlpha(0)
@@ -388,6 +395,36 @@ local function trim_scroll(s)
       
 end
 
+local scale_to = function(ssx, ssy, speed, rate) 
+   return {
+    name = "speed",
+    speed = speed or 1, 
+    action = {
+      name = "interval",
+      duration = 1,
+      rate = rate or 2,
+      ssx = ssx,
+      ssy = ssy,
+      trigger = function(self, dt, conf)
+        local dx = conf_.btime(pow(dt, conf.rate)) 
+        self.scale(conf.sx + conf.ssx*(1-dx), 
+                   conf.sy + conf.ssy*(1-dx))
+                      
+      end,
+      start_trigger = function(self, conf)
+        if self then
+          conf.sx = self.scaleX() 
+          conf.sy = self.scaleY() 
+          self.scale( conf.ssx , conf.ssy, true )
+          conf.ssx = self.scaleX() - conf.sx
+          conf.ssy = self.scaleY() - conf.sy 
+        end  
+      end
+       
+     }
+   }
+end
+
 local function touches_begin(node, data)
 
   if not scrLock then
@@ -398,6 +435,8 @@ local function touches_begin(node, data)
   if scene.on_click then return 1 end
   local board = node.parent
 
+--  actionManager.run(node, scale_to(0.8,0.8,0.2)) 
+  
   local td = sen.input_touch(data)
 
   local cell = board:touchToCell( td )
@@ -408,7 +447,6 @@ local function touches_begin(node, data)
   
   return 0
 end
-
 
 local function move_camera(x,y,speed,rate,on_end)
   if cam_lock then return end
@@ -436,6 +474,7 @@ local function move_camera(x,y,speed,rate,on_end)
         conf.startY = camera.posY()
         conf.deltaX = (-conf.x - camera.posX())
         conf.deltaY = (-conf.y - camera.posY())
+        
       end,
       end_trigger = function(self,conf)
         if conf.on_end then
@@ -502,7 +541,7 @@ local function LevelChoosenCoro(node, dt)
   actionManager.run ( nil, 
   {
     name = "speed",
-    speed =  1.8, 
+    speed =  1.7, 
     action = {
       name = "interval",
       duration = 1,
@@ -560,7 +599,7 @@ local click_coro = function (node, dt)
   local bbox = node.board.scene_bbox
   --scene.delChild("scroll_up")
   --scene.delChild("scroll_down")
-   
+  
   b:doClick()
   scheduler.Wait(b.node)
   sen.CoroWait(dt,0.2)

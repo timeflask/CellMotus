@@ -75,9 +75,14 @@ local config = {
   {0x48,0xB6,0x6D,0},
  },
  
- lvl_finished_bg = {0x2C,0xA0,0xB5, 0.3},
- lvl_curr_bg = {0x6e,0x1c,0x86,0.5},
- lvl_progress_bg = {0xDD,0x68,0x5F,0.5},
+-- lvl_finished_bg = {0x2C,0xA0,0xB5, 0.3},
+ lvl_finished_bg = {0x34,0x98,0xdb,0.4},
+ lvl_curr_bg = {0x9b,0x59,0xb6,0.8},
+-- lvl_curr_bg = {0x6e,0x1c,0x86,0.5},
+-- lvl_progress_bg = {0xDD,0x68,0x5F,0.5},
+
+ lvl_progress_bg = {0x2e,0xcc,0x71,0.8},
+ 
  lvl_locked_bg = {1,1,1,0.012},
  
  lvl_colors = {
@@ -208,7 +213,7 @@ local config = {
   }
   end,  
   
- effect_colorTransition = function (col, speed, rate)
+ effect_colorTransition = function (col, speed, rate, on_end)
   return 
   {
     name = "speed",
@@ -240,6 +245,9 @@ local config = {
         conf.cs = cs
       end,
       end_trigger = function(self, conf)
+        if on_end then
+          on_end(self)
+        end
       end
     },
   }    
@@ -521,14 +529,14 @@ local config = {
      }
  end,
 
-  effect_fade_in = function() 
+  effect_fade_in = function(speed, rate) 
   return {
     name = "speed",
-    speed = 1.5, 
+    speed = speed or 1.5, 
     action = {
       name = "interval",
       duration = 1,
-      rate = 1/5,
+      rate = rate or 1/5,
       trigger = function(self, dt, conf)
         self.setColor( {a= math.pow(dt,conf.rate)} )
       end,

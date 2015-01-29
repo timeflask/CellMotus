@@ -500,7 +500,7 @@ function oboard:oboard(scene)
     })
     
   self.oLines[1] = optLine(scene, 
-    {LabelTitle=rs.osRandomColors, settings_key="random_colors", setting_def=true,
+    {LabelTitle=rs.osRandomColors, settings_key="random_colors", setting_def=false,
      DescLabelTitle=rs.osRandomColorsDesc,
     })
 
