@@ -88,6 +88,7 @@ sen_node_clean(void* _self)
         node->vt->destroy(node);
     }
     vector_delete(self->children);
+    self->children = NULL;
   }
   g_total_nodes--;
 }
@@ -302,12 +303,14 @@ sen_node_remove_child(void* _self, const char* name, void *obj, uint32_t child_i
   if (!self->children) return;
 
   if (name == NULL && obj == NULL && child_id == 0) {
+    _logfi("Node clear [%s]", ((object_t*)_self)->name );
     for (i = 0; i<self->children->size; ++i) {
       node_t* child =   *(node_t**)vector_get(self->children, i) ;
       if (((object_t*)child)->parent == (object_t*)self )
           child->vt->destroy(child);
     }
     vector_clear(self->children);
+    _logfi("Done clearing [%s]", ((object_t*)_self)->name );
     //self->children = NULL;
   }
   else

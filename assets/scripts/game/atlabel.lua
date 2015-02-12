@@ -18,42 +18,50 @@ local coro_wait = function(dt,secs)
 end
 
 local coro = function (ref, dt)
+
  local node = ref
  if node.quad then
    actionManager.stop(node.quad)
    node.quad = nil
- end  
+ end
+
 
  if node.lb then
    actionManager.stop(node.lb)
    node.lb = nil
- end  
+ end
+
 
  if node.q2 then
    actionManager.stop(node.q2)
    node.q2 = nil
- end  
- 
+ end
+
+
  node.clear()
 
+
  local cfg = node.cfg
- 
+
  local quad = sen.clsQuad()
  --local tcol = conf.lvl_colors[node.type]
  local tcol = conf.atLabel_colors[cfg.pointerColorIndex or 1]
- 
- local is_small = false -- conf.scr_size == 'small'
- 
- local qw =  cfg.qw and cfg.qw or ( is_small and g_screen.fonts.height.mecha_s+2 or g_screen.fonts.height.mecha_b*1.4)
- 
+
+ local is_small = cfg.small ~= nil -- conf.scr_size == 'small'
+
+ local qw =  cfg.qw and cfg.qw or ( is_small and g_screen.fonts.height.mecha_s*2 or g_screen.fonts.height.mecha_b*1.4)
+ node.qw = qw
+
  quad.setColor(tcol)
  quad.setAnchor(0,0.5)
- 
+
  node.quad = quad
  node.addChild(quad)
- 
+
+
  actionManager.run(quad, conf.effect_blink(3,1,true), 'quad_blink')
- 
+
+
  actionManager.run(quad,
  {
     name = "interval",
@@ -61,26 +69,27 @@ local coro = function (ref, dt)
     rate = 2,
     amax = 0.5,
     period = 1,
-      
+
     trigger = function(self, dt, conf)
       quad.scale(4,dt*qw)
     end,
  }, 'quad_show')
- 
- 
- 
+
+
+
+
  while actionManager.is_running(quad, 'quad_show') do
    yield()
  end
-   
- actionManager.stop(quad, 'quad_blink')  
+
+ actionManager.stop(quad, 'quad_blink')
  quad.setColor(tcol)
- 
+
  local pt = cfg.pointerText or '22'-- tostring(board.lvls.curr)
  --if #pt == 1 then pt='  '..pt end
  local text = cfg.Text or 'No Title    '
- 
- 
+ --print("--------------------------", text)
+
  local  lb = sen.clsLabel(nil, is_small and "mecha_s" or "mecha_b", pt)
  local lbb = lb.getBBox()
  --lb.setColor(1,1,1,1)
@@ -94,13 +103,13 @@ local coro = function (ref, dt)
 
  local q2 = sen.clsQuad()
  q2.setColor(tcol)
- q2.scale(qts, is_small and g_screen.fonts.height.mecha_s*1.4 or g_screen.fonts.height.mecha_b*1.5)
+ q2.scale(qts, is_small and g_screen.fonts.height.mecha_s*2 or g_screen.fonts.height.mecha_b*1.5)
  q2.setAnchor(0.5,0)
  q2.moveTo(0,-q2.scaleY()/2+1)
  node.q2 = q2
  node.addChild(q2)
 
- 
+
  local len = #text
  local q2s =(lbb.r-lbb.l)/len*0.96
  local i = 1
@@ -112,18 +121,18 @@ local coro = function (ref, dt)
   -- coro_wait(dt, rand()*0.05)
   yield()
  end
- 
- 
- actionManager.run(lb, 
+
+
+ actionManager.run(lb,
  conf.effect_colorTransition(cfg.labelColorT or {1,1,1,0.2}, 0.3+rand(), 1/2)
  ,'color_transition')
- actionManager.run(q2, 
+ actionManager.run(q2,
  conf.effect_colorTransition(cfg.quadColorT or{0.5,0.5,0.5,0.2}, 0.6+rand(), 1/2)
  ,'color_transition')
- actionManager.run(quad, 
+ actionManager.run(quad,
  conf.effect_colorTransition(cfg.pointerColorT or{0.5,0.5,0.5,0.2}, 0.4+rand(), 1/2)
  ,'color_transition')
-  
+
  return 1
 end
 
@@ -131,24 +140,60 @@ function atLabel:moveTo(x, y)
   self.node.moveTo(x, y)
 end
 
+function atLabel:nheight()
+  return g_screen.fonts.height.mecha_b*1.4
+end
+
+
+function atLabel:sheight()
+  return g_screen.fonts.height.mecha_s*3.3
+end
+
+
 function atLabel:restart(cfg)
   if cfg then
     for k,v in pairs(cfg) do self.node.cfg[k] = v end
-  end  
-  scheduler.Remove(self.node, self.coro_name)
-  scheduler.ScheduleCoro(self.node, 
-                         self.coro, 
-                         self.coro_name,0.05)   
+  end
+  self:clear()
+  self.coro = sen.clsCoro(coro)
+  scheduler.ScheduleCoro(self.node,
+                         self.coro,
+                         self.coro_name,0.05)
+end
+
+function atLabel:clear()
+  scheduler.Remove(self.node,self.coro_name)
+
+  local node = self.node
+  if node.quad then
+    actionManager.stop(node.quad)
+    node.quad = nil
+  end
+
+  if node.lb then
+    actionManager.stop(node.lb)
+    node.lb = nil
+  end
+
+  if node.q2 then
+    actionManager.stop(node.q2)
+    node.q2 = nil
+  end
+  actionManager.stop(node)
+
+  node.clear()
+
+
 end
 
 function atLabel:atLabel(node, cfg)
   cid = cid + 1
   self.coro_name = 'atLabelCoro'..tostring(cid)
-  
+
   self.node = sen.clsNode()
   self.node.ZOrder(0.8)
   node.addChild(self.node)
-    
+
   self.node.cfg = cfg or {}
   self.coro = sen.clsCoro(coro)
 end

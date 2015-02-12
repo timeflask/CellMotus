@@ -30,6 +30,9 @@ set(PLATFORM_SOURCES
   ${SRC_ROOT}/win32/main.c
   ${SRC_ROOT}/win32/main.rc
   ${EXT_ROOT}/glew/glew.c
+
+  ${SRC_ROOT}/win32/ai.c
+  ${SRC_ROOT}/win32/ai.h
 )
   
 SET(CMAKE_FIND_LIBRARY_PREFIXES "")

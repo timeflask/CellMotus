@@ -9,24 +9,24 @@ local settingsManager = sen.SettingsManager
 class "level"
 
 function level.is_empty(state)
-  return state == nil  
+  return state == nil
 end
 
 function level.is_item(state)
-  return state and state.type and state.type == "item"  
+  return state and state.type and state.type == "item"
 end
 
 function level.is_arrow(state)
-  return state and state.type and state.type == "arrow"  
+  return state and state.type and state.type == "arrow"
 end
 
 function level.is_pin(state)
-  return state and state.type and state.type == "pin"  
+  return state and state.type and state.type == "pin"
 end
 
 function level.is_pinned(state)
-  return state and state.type and state.type == "item" and 
-         state.pin and state.pin.color == state.color  
+  return state and state.type and state.type == "item" and
+         state.pin and state.pin.color == state.color
 end
 
 function level.copy_state(state)
@@ -35,18 +35,18 @@ function level.copy_state(state)
   for k,v in pairs(state) do
     r[k]=v
   end
-  return r  
+  return r
 end
 
 function level.cmp_colors(s1,s2)
   if s1.color == nil and s2.color then return false end
   if s2.color == nil and s1.color then return false end
   if s2.color == nil and s1.color==nil then return true end
-  
+
   return s1.color[1]  == s2.color[1] and
          s1.color[2]  == s2.color[2] and
          s1.color[3]  == s2.color[3]
-          
+
 end
 
 
@@ -56,29 +56,29 @@ function level.cmp_state(s1,s2)
 end
 
 function level:make_item(color, direction, internal)
- self.nitems = self.nitems + 1 
+ self.nitems = self.nitems + 1
  local ret = { type="item", color=color, dir = direction,  }
- 
+
  if level.is_pin(internal)  then
-  -- self.npins = self.npins + 1 
-   ret.pin = internal 
+  -- self.npins = self.npins + 1
+   ret.pin = internal
  elseif (level.is_arrow(internal))   then
-  -- self.narrows = self.narrows + 1 
-   ret.arrow = internal 
- end  
+  -- self.narrows = self.narrows + 1
+   ret.arrow = internal
+ end
 
  return ret
 end
 
 function level:make_pin(color)
-  self.npins = self.npins + 1 
- return { type="pin", color=color,  }  
+  self.npins = self.npins + 1
+ return { type="pin", color=color,  }
 end
 
 
 function level:make_arrow(dir)
-  self.narrows = self.narrows + 1 
- return { type="arrow", dir=dir,  }  
+  self.narrows = self.narrows + 1
+ return { type="arrow", dir=dir,  }
 end
 
 function table.shallow_copy(t)
@@ -105,50 +105,52 @@ local function shuffle(array)
 end
 
 function level:fillData(data)
-  
-  
+
+
   local content = nil
   if data.t == "item" then
     local internal = data.a and self:make_arrow(data.a) or data.p and self:make_pin(colors[data.p])
     content = self:make_item(colors[data.c], data.d, internal)
+    content.color_index = data.c
   elseif data.t == "pin" then
     content = self:make_pin(colors[data.c])
+    content.color_index = data.c
   elseif data.t == "arrow" then
     content = self:make_arrow(data.d)
   end
   if content then
     self.map[data.i][data.j] = content
     self.ntotal = self.ntotal  + 1
-  end  
+  end
 end
 
 local tag = 1
 
 function level:level(cfg)
   self.map = sen.auto_table(2)
-  
+
   self.nitems = 0
   self.npins = 0
   self.narrows = 0
   self.ntotal = 0
   self.tag = tag
   tag = tag + 1
-  
+
   local map = self.map
-  
+
   if settingsManager.get("random_colors", true) then
     shuffle(colors)
   else
     colors =table.shallow_copy(conf.cell_colors)
-  end 
-  
-  for i,v in ipairs(cfg) do
-    self:fillData(v)  
   end
-  self.scale = 7 / (cfg.maxn or 5) 
-  self.maxn =  (cfg.maxn or 5) 
-  self.sx = cfg.sx or 0 
-  self.sy = cfg.sy or 0 
+
+  for i,v in ipairs(cfg) do
+    self:fillData(v)
+  end
+  self.scale = 7 / (cfg.maxn or 5)
+  self.maxn =  (cfg.maxn or 5)
+  self.sx = cfg.sx or 0
+  self.sy = cfg.sy or 0
 end
 
 function level:max_items()
@@ -162,10 +164,10 @@ function level:is_done()
       if level.is_pinned(v.state) then
         --print(sen.inspect(v.state))
         pinned  = pinned  + 1
-      end    
+      end
     end
-  end  
-  return pinned == self.nitems  
+  end
+  return pinned == self.nitems
 end
 --]]
 

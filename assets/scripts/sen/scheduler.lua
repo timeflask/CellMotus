@@ -8,13 +8,13 @@ local clsCoro = require "sen.rcoro"
 ffi.cdef[[
 
   typedef int (*scheduler_update_callback)(void*, double, const char*);
-  
+
   typedef struct scheduler_t {
     object_t super;
     float    scale;
     void     *nodes;
   }scheduler_t;
-  
+
   void
   sen_scheduler_add(scheduler_t*              self,
                     object_t*                 obj,
@@ -24,7 +24,7 @@ ffi.cdef[[
                     int                       repeat,
                     double                    delay,
                     int                       pause);
-  
+
   void
   sen_scheduler_add_lua(scheduler_t*              self,
                         object_t*                 obj,
@@ -39,31 +39,31 @@ ffi.cdef[[
   sen_scheduler_remove(scheduler_t*              self,
                        object_t*                 obj,
                        const char*               key);
-  
+
   extern
   scheduler_t* sen_scheduler();
-  
-  void 
+
+  void
   sen_scheduler_pause(scheduler_t* self,
                       object_t* obj,
                       const char* key);
-  
-  void 
+
+  void
   sen_scheduler_resume(scheduler_t* self,
                        object_t* obj,
-                       const char* key);  
-                       
+                       const char* key);
+
   int sen_scheduler_is_running(scheduler_t* self,
                               object_t* obj,
-                              const char* key);                       
+                              const char* key);
 
 ]]
- 
+
 local m_procs = {}
-local m_coros = {} 
+local m_coros = {}
 
 function LUA_sen_scheduler_callback(self, dt, key)
-    
+
   local data = m_procs[key]
   local ret = 1
   if (data ~= nil) then
@@ -78,18 +78,18 @@ function LUA_sen_scheduler_callback(self, dt, key)
       if ret and ret > 0 then
         m_coros[key] = nil
       end
-    end  
+    end
     ret = ret==nil and 0 or ret
-  end  
-  
+  end
+
   return ret
 end
- 
+
 local function SchedulerClosure()
   -- private
-  
+
   local m_scheduler = C.sen_scheduler()
-  
+
   local function pack_node(node, func)
     return {node = node, func=func}
   end
@@ -97,11 +97,11 @@ local function SchedulerClosure()
   local function pack_node_coro(node, coro)
     return {node = node, coro=coro}
   end
-  
---[[ 
+
+--[[
   local sfunc_wrapper = ffi.cast("scheduler_update_callback", function(ref, dt, key)
     local key = ffi.string(key)
-    
+
     local data = m_procs[key]
     local ret = 1
     if (data ~= nil) then
@@ -109,12 +109,12 @@ local function SchedulerClosure()
       if ret > 0 then
         m_procs[key] = nil
       end
-    end  
+    end
     return ret
   end)
-  
-   
-  
+
+
+
   local scoro_wrapper = ffi.cast("scheduler_update_callback", function(ref, dt, key)
     local key = ffi.string(key)
     local data = m_coros[key]
@@ -124,19 +124,19 @@ local function SchedulerClosure()
       if ret and ret > 0 then
         m_coros[key] = nil
       end
-    end  
+    end
     return ret==nil and 0 or ret
   end)
 --]]
   -- public
   local _ = {}
-  
+
   function _.Schedule(node, func, key, interval, repeatTimes, delay, pause)
     if (m_procs[key] ) then
       _.Remove(node,key)
     end
-   
-    m_procs[key] = pack_node(node, func)                         
+
+    m_procs[key] = pack_node(node, func)
     C.sen_scheduler_add_lua(m_scheduler,
                             clsObject.cast( node.ref ),
                             --sfunc_wrapper,
@@ -145,14 +145,14 @@ local function SchedulerClosure()
                             repeatTimes or -1 ,
                             delay or -1,
                             pause or 0)
-                          
+
   end
-  
+
   function _.ScheduleCoro(node, coro, key, interval, repeatTimes, delay, pause)
     if (m_coros[key]) then
       _.Remove(node,key)
     end
-    m_coros[key] = pack_node_coro(node, coro)                         
+    m_coros[key] = pack_node_coro(node, coro)
     C.sen_scheduler_add_lua(m_scheduler,
                         clsObject.cast( node.ref ),
                         --scoro_wrapper,
@@ -161,34 +161,28 @@ local function SchedulerClosure()
                         repeatTimes or -1 ,
                         delay or -1,
                         pause or 0)
-                          
+
   end
 
   function _.Remove(node, key)
     if m_coros[key] == nil and m_procs[key] == nil then
       return
     end
-      
+
     C.sen_scheduler_remove(m_scheduler,
                            clsObject.cast(node.ref),
                            key or nil)
-                           
-    if (m_coros[key] ~= nil) then
-      
-      m_coros[key] = nil                       
-    end
-    if (m_procs[key] ~= nil) then
-                             
-      m_procs[key] = nil                       
-    end
+
+    m_coros[key] = nil
+    m_procs[key] = nil
   end
-                    
+
   function _.Pause(node, key)
     C.sen_scheduler_pause(m_scheduler,
                           clsObject.cast(node.ref),
                           key or nil)
   end
-  
+
   function _.Resume(node, key)
     C.sen_scheduler_resume(m_scheduler,
                           clsObject.cast(node.ref),
@@ -198,14 +192,14 @@ local function SchedulerClosure()
   function _.is_running(target, key)
     return C.sen_scheduler_is_running (m_scheduler, clsObject.cast(target.ref), key ) > 0
   end
-  
+
   function _.Wait(node, key)
     while _.is_running(node, key) do
       coroutine.yield()
     end
   end
-  
+
   return _;
 end
- 
-return SchedulerClosure  
+
+return SchedulerClosure
