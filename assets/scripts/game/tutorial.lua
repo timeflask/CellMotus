@@ -373,7 +373,7 @@ local tutorial_data = {
      show_text(x,y,nil,"Tap cell to move it\ntowards the target circle.",true)
 
      x,y=show_caption_item(0,-32,nil,"DIRECTION",{1,1,1,0.3})
-     x,y=show_text(x,y,nil, "Cell moves in one direction\nalong a straight. The direction\nis indicated by an arrow\npointing from the cell.",true)
+     x,y=show_text(x,y,nil, "A cell moves in one direction\nalong a straight line.\nThe direction is indicated by\nan arrow pointing from the cell.",true)
      --x,y=show_text(x,y,nil, "Cell moves in one direction\nalong a straight.",true)
      --x,y=show_text(x,y,nil, "The direction is indicated by\nan arrow pointing from the cell.",true)
 
@@ -447,7 +447,8 @@ local tutorial_data = {
      x,y=show_caption_item(0.4,-0.35,i2,"PUSH ME",i2.state.color)
 
      x,y=show_caption_item(0,-32,nil,"About positioning", {1,1,1,0.4})
-     x,y=show_text(x,y,nil, 'more often than not,\ncell can not reach\nit\'s target, otherwise\nthe game would be trivial.\nYou have to find a way ...' ,true)
+
+     x,y=show_text(x,y,nil, 'More often than not Cells\ncannot reach their target,\notherwise the game would be trivial.\nYou have to find a way ...' ,true)
   end,
 
   [31] = function(i1,i2,i3)
