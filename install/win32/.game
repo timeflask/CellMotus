@@ -1,0 +1,10 @@
+{
+  curr = 1,
+  music_vol = 0.1,
+  progress = 1,
+  random_colors = false,
+  skip_menu = false,
+  sounds_enabled = true,
+  sounds_vol = 0.3,
+  trails = true
+}
