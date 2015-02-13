@@ -374,8 +374,6 @@ local tutorial_data = {
 
      x,y=show_caption_item(0,-32,nil,"DIRECTION",{1,1,1,0.3})
      x,y=show_text(x,y,nil, "A cell moves in one direction\nalong a straight line.\nThe direction is indicated by\nan arrow pointing from the cell.",true)
-     --x,y=show_text(x,y,nil, "Cell moves in one direction\nalong a straight.",true)
-     --x,y=show_text(x,y,nil, "The direction is indicated by\nan arrow pointing from the cell.",true)
 
 
      local vb = sen.vp_box()
@@ -629,7 +627,7 @@ local tutorial_data = {
      local sf =  (vb.r-vb.l) < 460
      local x,y
      show_ico(i1,6,"TAP", true)
-     x,y=show_caption_item(0.5,sf and 2 or 1,i2,"FACT (5/6)",{1,1,1,0.1})
+     x,y=show_caption_item(sf and 0.5 or 1.4,sf and 2 or 1,i2,"FACT (5/6)",{1,1,1,0.1})
      x,y=show_text(x,y,nil, "usually, there are no useless\narrows. you'll need to use all\nof them somehow." ,true)
   end,
 
