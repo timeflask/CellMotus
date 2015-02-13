@@ -343,7 +343,7 @@ local tutorial_data = {
       y = ys
     end
 
-    x,y = show_text(x,y-10,nil, "I've nade a huge mistake...\n",true, {1,1,1,1})
+    x,y = show_text(x,y-10,nil, "I've made a huge mistake...\n",true, {1,1,1,1})
     x,y = show_text(x,y,nil, "In that case, you may want to\nundo the most recent turns.\nTAP [UNDO] OR SWIPE UP ANYWHERE",true)
 
     local bg = sen.clsQuad()
@@ -408,7 +408,7 @@ local tutorial_data = {
      show_ico(i2,6,"TAP", true)
 
      x,y=show_caption_item(-0.75,-0.6,i2,"number of cells",{1,1,1,0.3})
-     x,y=show_text(x,y,nil, "usually, there are certainly\nmultiple cells (2, 3, 4 or\neven more). In order to succeed\nyou must put all of them to\ncorresponding circles. It doesn't\nmatter how you approach this,\nuse any turn sequence.",true)
+     x,y=show_text(x,y,nil, "usually, there are multiple\ncells (2, 3, 4 or even more).\nIn order to succeed you must\nplace all of them on\ncorresponding circles. It doesn't\nmatter how you approach this,\nuse any turn sequence.",true)
 
   end,
 
@@ -483,7 +483,7 @@ local tutorial_data = {
      x,y=show_text(x,y,nil, "Push them all !" ,true)
 
      x,y=show_caption_item(0,-32,nil,"STACK SIZE",{1,1,1,0.5})
-     x,y=show_text(x,y,nil, "pusher can handle\nany number of cells" ,true)
+     x,y=show_text(x,y,nil, "pushers can handle\nany number of cells" ,true)
 
      x,y=show_caption_item(-0.55,1,i3,"victory is close",{1,1,1,0.5})
   end,
@@ -567,7 +567,7 @@ local tutorial_data = {
      local x,y
      show_ico(i1,6,"TAP", true)
      x,y=show_caption_item(0,sf and 0.8 or 0.6,i2,"arrow on the board !",{1,1,1,0.4})
-     x,y=show_text(x,y,nil, "arrows allows you to\nchange cell's direction." ,true)
+     x,y=show_text(x,y,nil, "arrows allow you to\nchange cell direction." ,true)
   end,
 
   [51] = function(i1,i2)
@@ -576,7 +576,7 @@ local tutorial_data = {
      local x,y
      show_ico(i1,6,"TAP", true)
      x,y=show_caption_item(0,sf and 0.8 or 0.6,i2,"just like that",{1,1,1,0.4})
-     x,y=show_text(x,y,nil, "Let's finish this\nand let's move on" ,true)
+     x,y=show_text(x,y,nil, "Let's finish this\nand move on" ,true)
   end,
 
   [60] = function(i1,i2)
@@ -603,7 +603,7 @@ local tutorial_data = {
      local x,y
      show_ico(i1,6,"TAP", true)
      x,y=show_caption_item(-0.0,-0.4,i2,"FACT (2/6)",{1,1,1,0.1})
-     x,y=show_text(x,y,nil, "arrow permanently\nchanges a cell\ndirection" ,true)
+     x,y=show_text(x,y,nil, "arrows permanently\nchange the\ndirection of cells" ,true)
   end,
 
   [63] = function(i1,i2)
@@ -612,7 +612,7 @@ local tutorial_data = {
      local x,y
      show_ico(i1,6,"TAP", true)
      x,y=show_caption_item(-0.0,sf and 0.7 or 0.6,i2,"FACT (3/6)",{1,1,1,0.1})
-     x,y=show_text(x,y,nil, "arrow never change\nits direction" ,true)
+     x,y=show_text(x,y,nil, "arrows never change\ntheir direction" ,true)
   end,
 
   [64] = function(i1,i2)
@@ -621,7 +621,7 @@ local tutorial_data = {
      local x,y
      show_ico(i1,6,"TAP", true)
      x,y=show_caption_item(-0.0,sf and 0.6 or 0.5,i2,"FACT (4/6)",{1,1,1,0.1})
-     x,y=show_text(x,y,nil, "arrow never moves" ,true)
+     x,y=show_text(x,y,nil, "arrows never move" ,true)
   end,
 
   [65] = function(i1,i2)
@@ -629,7 +629,7 @@ local tutorial_data = {
      local sf =  (vb.r-vb.l) < 460
      local x,y
      show_ico(i1,6,"TAP", true)
-     x,y=show_caption_item(1.4,sf and 2 or 1,i2,"FACT (5/6)",{1,1,1,0.1})
+     x,y=show_caption_item(0.5,sf and 2 or 1,i2,"FACT (5/6)",{1,1,1,0.1})
      x,y=show_text(x,y,nil, "usually, there are no useless\narrows. you'll need to use all\nof them somehow." ,true)
   end,
 
@@ -641,7 +641,7 @@ local tutorial_data = {
      local pin = i1:get_neighbor(i1.state.dir)
      show_caption_item(-0.2,-0.2,pin,"FINISH",i1.state.color)
      x,y=show_caption_item(-0,-0.3,i2,"FACT (6/6)",i1.state.color)
-     x,y=show_text(x,y,nil, "cell can't jump\nover an arrow" ,true)
+     x,y=show_text(x,y,nil, "cells can't jump\nover an arrows" ,true)
   end,
 
   [67] = function(i1,i2)
