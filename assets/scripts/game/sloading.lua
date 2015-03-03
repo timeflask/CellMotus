@@ -37,6 +37,7 @@ local src=sen.screen()
 local incProgress = function (i)
   progress = progress + (i or 1)
   lb1.setText(format(res.str.lsLoading, 100.0 * progress / max_objects))
+  --lb1.setText(format(res.str.lsLoading, sen.screen().width))
   yield() 
 end 
 

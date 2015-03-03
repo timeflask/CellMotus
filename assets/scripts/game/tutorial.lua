@@ -327,7 +327,8 @@ local tutorial_data = {
   function ()
     -- FAIL
     local vb = sen.vp_box()
-    local sf = (vb.r-vb.l) > 620
+    local ms = g_screen.fonts.height.mecha_s
+    local sf = (vb.r-vb.l) > 81*ms
     mark_bad_items()
     local x,y,y_bg
     x,y = show_caption(-0.39,sf and -0.35 or -0,nil,"LEVEL FAILED", {1,0,0,1}, {1,0,0,1})
@@ -338,7 +339,7 @@ local tutorial_data = {
     x,y = show_text(x,y-10,nil, "board is a total mess ?!\n",true, {1,1,1,1})
     x,y = show_text(x,y,nil, "In that case, you may want to\nRESET the current level.\nTAP [RESET] OR SWIPE DOWN ANYWHERE",true)
 
-    if (vb.r-vb.l) > 620 then
+    if (vb.r-vb.l) > 81*ms then
       x = x + (vb.r-vb.l) * 0.35
       y = ys
     end
@@ -396,7 +397,7 @@ local tutorial_data = {
 
      x,y=show_caption(sf and -0.9 or 0,sf and 0.75 or -0.17,{type="pin"},"TARGET")
 
-     x,y=show_text(x,y,nil, "Target is not moving anywhere",true)
+     x,y=show_text(x,y,nil, "Target is not moving",true)
   end,
 
   -- LVL 1 - 2
@@ -412,11 +413,13 @@ local tutorial_data = {
 
   [22] = function(i1,i2)
      local vb = sen.vp_box()
-     local sf =  (vb.r-vb.l) < 460
+     local ms = g_screen.fonts.height.mecha_s
+     local sf =  (vb.r-vb.l) < 81*ms
+     
      local x,y
      if level.is_pinned(i1.state) then
        show_ico(i1,6,"GOOD", false, {0,0.5,0,1})
-       x,y=show_caption_item(-0.6,sf and 1.4 or 0.95,i1,"OK. IS IT LOCKED ?",i1.state.color)
+       x,y=show_caption_item(-0.6,sf and 1*ms/10 or 0.95,i1,"OK. IS IT LOCKED ?",i1.state.color)
        x,y=show_text(x,y,nil, "Answer is NO! Cells are\nnever locked. however, it's\na bad idea to touch this one.",true)
        show_ico(i2,6,"TAP", true)
        x,y=show_caption_item(sf and -1 or -0.4,sf and -0.6 or -0.55,i2,"on the verge of victory",i2.state.color)
@@ -624,7 +627,8 @@ local tutorial_data = {
 
   [65] = function(i1,i2)
      local vb = sen.vp_box()
-     local sf =  (vb.r-vb.l) < 460
+     local ms = g_screen.fonts.height.mecha_s
+     local sf =  (vb.r-vb.l) < 81*ms
      local x,y
      show_ico(i1,6,"TAP", true)
      x,y=show_caption_item(sf and 0.5 or 1.4,sf and 2 or 1,i2,"FACT (5/6)",{1,1,1,0.1})

@@ -12,5 +12,6 @@ APP_CPPFLAGS += -fexceptions
 ifeq ($(APP_OPTIM),debug)
   APP_CFLAGS := -O0 -DSEN_DEBUG -g $(APP_CFLAGS)
 else
-  APP_CFLAGS := -O2 -DNDEBUG -g $(APP_CFLAGS)
+  APP_CFLAGS := -O0 -DNDEBUG -g $(APP_CFLAGS)
+#  APP_CFLAGS := -O2 -DSEN_DEBUG -g $(APP_CFLAGS)
 endif 

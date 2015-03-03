@@ -245,7 +245,9 @@ sen_sprite_render(void* _self)
   sen_assert(_self);
 
   if ( ((node_t*)self)->color.a < F_EPSILON ) return;
+
   update_buffer(self);
+
 
   bbox = & ( ((node_t*) self)->bbox );
   vp = sen_view_get_viewport();

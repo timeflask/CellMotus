@@ -202,7 +202,8 @@ sen_node_set_update_model(void* _self)
   if (!self->children) return ;
   for (i = 0; i<self->children->size; ++i) {
     node_t* node = *(node_t**)vector_get(self->children, i);
-    sen_node_set_update_model(node);
+    if (node)
+      sen_node_set_update_model(node);
   }
 }
 
@@ -269,8 +270,11 @@ sen_render_node_children(void* _self)
 
   if (!self->children) return;
   //sen_node_sort_children_z(_self);
-  for (i = 0; i<self->children->size; ++i)
-    sen_render_node( *(node_t**)vector_get(self->children, i) );
+  for (i = 0; i<self->children->size; ++i){
+    node_t* child =   *(node_t**)vector_get(self->children, i) ;
+    if (child)
+      sen_render_node( child );
+  }
 }
 
 void

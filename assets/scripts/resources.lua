@@ -9,7 +9,7 @@ return {
   atlas_size = 1024,
 
   fonts = {
-    mecha_ss = {"mecha.ttf", math.max(10, src.fonts.small * 0.75)},
+    mecha_ss = {"mecha.ttf", math.max(11, src.fonts.small * 0.75)},
     mecha_s = {"mecha.ttf",  src.fonts.small},
     --mecha_sm = {"mecha.ttf", 15 + src.font_factor},
     mecha_m = {"mecha.ttf",  src.fonts.medium},

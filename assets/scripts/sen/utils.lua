@@ -276,9 +276,9 @@ local function _lazy_init_screen()
     --font_factor = font_factor,
     
     fonts = {
-      small = math.max(12, math.ceil(max2 / FONT_MIDDLE * 0.6 + d/160)), 
-      medium = math.max(16,math.ceil(max2 / FONT_MIDDLE  + d/160)), 
-      big =  math.max(30,math.ceil(max2 / FONT_MIDDLE * 1.5  + d/160)),
+      small = math.max(12, math.ceil(max2 / FONT_MIDDLE * 0.6 + 4*d/160)), 
+      medium = math.max(16,math.ceil(max2 / FONT_MIDDLE  + 4*d/160)), 
+      big =  math.max(30,math.ceil(max2 / FONT_MIDDLE * 1.5  + 4*d/160)),
       height = {} 
     }
   }
